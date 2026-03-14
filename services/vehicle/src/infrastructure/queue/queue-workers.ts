@@ -13,7 +13,7 @@ import {
 import {
   queueServiceCreateHandler,
   queueServiceUpdateHandler,
-} from "./queue-handlers/queue-service-handlers copy.js";
+} from "./queue-handlers/queue-service-handlers.js";
 
 function queueWorkerRegister(
   queue: Queue,

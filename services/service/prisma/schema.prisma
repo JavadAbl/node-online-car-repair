@@ -44,7 +44,7 @@ model InboxEvent {
   queue       String
   routingKey  String
   serviceName String
-  status      InboxEventStatus @default(PENDING)
+  status      InboxEventStatus @default(Pending)
   captureAt   DateTime         @default(now())
   handledAt   DateTime?
   error       String?
@@ -52,23 +52,15 @@ model InboxEvent {
 }
 
 model OutboxEvent {
-  id         Int               @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   routingKey String
-  status     OutboxEventStatus @default(PENDING)
-  captureAt  DateTime          @default(now())
-  handledAt  DateTime?
-  error      String?
+  publishAt  DateTime @default(now())
   payload    Json
 }
 
 enum InboxEventStatus {
-  PENDING
-  Handled
-  Error
-}
-
-enum OutboxEventStatus {
-  PENDING
+  Pending
+  InQueue
   Handled
   Error
 }

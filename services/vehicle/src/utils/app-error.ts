@@ -17,14 +17,30 @@ export class AppError extends Error {
   }
 }
 
-export const throwNotFound = (field: string) => {
-  throw new AppError(`${field} is not found`, StatusCodes.NOT_FOUND);
-};
+export class NotFoundError extends AppError {
+  constructor(entity: string, field: string, value: unknown, stack?: string) {
+    super(`${entity} ${field} with value ${value} not found`, StatusCodes.NOT_FOUND, stack);
+    this.name = "NotFoundError";
+  }
+}
 
-export const throwConflict = (field: string) => {
-  throw new AppError(`${field} already exists`, StatusCodes.CONFLICT);
-};
+export class ConflictError extends AppError {
+  constructor(entity: string, field: string, value: unknown, stack?: string) {
+    super(`${entity} conflict: ${field} with value ${value} already exists`, StatusCodes.CONFLICT, stack);
+    this.name = "ConflictError";
+  }
+}
 
-export const throwUnAuthorized = () => {
-  throw new AppError("Unauthorized", StatusCodes.UNAUTHORIZED);
-};
+export class BadRequestError extends AppError {
+  constructor(message: string = "Bad Request", stack?: string) {
+    super(message, StatusCodes.BAD_REQUEST, stack);
+    this.name = "BadRequestError";
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(message = "Unauthorized", stack?: string) {
+    super(message, StatusCodes.UNAUTHORIZED, stack);
+    this.name = "UnauthorizedError";
+  }
+}

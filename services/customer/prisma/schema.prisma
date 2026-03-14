@@ -15,14 +15,41 @@ datasource db {
 }
 
 model Customers {
-  id        Int    @id() @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String @unique()
-  mobile    String @unique()
-  city      String
-  address   String
+  id        Int     @id() @default(autoincrement())
+  firstName String?
+  lastName  String?
+  email     String? @unique()
+  mobile    String  @unique()
+  city      String?
+  address   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model InboxEvent {
+  id          Int              @id @default(autoincrement())
+  messageId   String @unique()
+  queue       String
+  routingKey  String
+  serviceName String
+  status      InboxEventStatus @default(Pending)
+  captureAt   DateTime         @default(now())
+  handledAt   DateTime?
+  error       String?
+  payload     Json
+}
+
+model OutboxEvent {
+  id         Int      @id @default(autoincrement())
+  routingKey String
+  publishAt  DateTime @default(now())
+  payload    Json
+}
+
+enum InboxEventStatus {
+  Pending
+  InQueue
+  Handled
+  Error
 }

@@ -24,6 +24,7 @@ async function sendOtp(payload: SendOtpDto) {
   await cacheCheckConnection();
   await cacheClient.setEx(`otp:${mobile}`, OTP_EXPIRE, otp);
 
+  //todo
   //Mock send sms
 
   return { otp };
@@ -57,6 +58,7 @@ async function deletePermission(id: number): Promise<void> {
 }
 
 function generateOtp() {
+  //todo
   //Mock for client
   return "123456";
   return randomInt(100000, 999999).toString();

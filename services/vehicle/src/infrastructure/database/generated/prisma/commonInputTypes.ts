@@ -348,23 +348,6 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
-export type EnumOutboxEventStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[]
-  notIn?: $Enums.OutboxEventStatus[]
-  not?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel> | $Enums.OutboxEventStatus
-}
-
-export type EnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[]
-  notIn?: $Enums.OutboxEventStatus[]
-  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-}
-
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[]
@@ -676,23 +659,6 @@ export type NestedJsonFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue
   gte?: runtime.InputJsonValue
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
-}
-
-export type NestedEnumOutboxEventStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[]
-  notIn?: $Enums.OutboxEventStatus[]
-  not?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel> | $Enums.OutboxEventStatus
-}
-
-export type NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutboxEventStatus | Prisma.EnumOutboxEventStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.OutboxEventStatus[]
-  notIn?: $Enums.OutboxEventStatus[]
-  not?: Prisma.NestedEnumOutboxEventStatusWithAggregatesFilter<$PrismaModel> | $Enums.OutboxEventStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutboxEventStatusFilter<$PrismaModel>
 }
 
 

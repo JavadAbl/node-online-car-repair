@@ -9,24 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const InboxEventStatus = {
-  PENDING: 'PENDING',
-  Handled: 'Handled',
-  Error: 'Error'
-} as const
-
-export type InboxEventStatus = (typeof InboxEventStatus)[keyof typeof InboxEventStatus]
-
-
-export const OutboxEventStatus = {
-  PENDING: 'PENDING',
-  Handled: 'Handled',
-  Error: 'Error'
-} as const
-
-export type OutboxEventStatus = (typeof OutboxEventStatus)[keyof typeof OutboxEventStatus]
-
-
 export const FuelType = {
   Gasoline: 'Gasoline',
   Diesel: 'Diesel',
@@ -64,3 +46,13 @@ export const VehicleStatus = {
 } as const
 
 export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
+
+
+export const InboxEventStatus = {
+  Pending: 'Pending',
+  InQueue: 'InQueue',
+  Handled: 'Handled',
+  Error: 'Error'
+} as const
+
+export type InboxEventStatus = (typeof InboxEventStatus)[keyof typeof InboxEventStatus]

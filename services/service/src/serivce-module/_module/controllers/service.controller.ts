@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
 import { ServiceEntityService } from '../services/service-entity.service';
-import { CreateServiceDto } from '../contract/dto/request/create-service.dto';
-import { ServiceDto } from '../contract/dto/response/service.dto';
-import { UpdateServiceDto } from '../contract/dto/request/update-service.dto';
+import { CreateServiceDto } from '../dto/request/create-service.dto';
+import { ServiceDto } from '../dto/response/service.dto';
+import { UpdateServiceDto } from '../dto/request/update-service.dto';
 
 @Controller('Service')
 export class ServiceController {

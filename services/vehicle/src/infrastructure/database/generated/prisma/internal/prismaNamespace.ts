@@ -907,9 +907,10 @@ export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFiel
 
 export const InboxEventScalarFieldEnum = {
   id: 'id',
+  messageId: 'messageId',
+  appId: 'appId',
   queue: 'queue',
   routingKey: 'routingKey',
-  serviceName: 'serviceName',
   status: 'status',
   captureAt: 'captureAt',
   handledAt: 'handledAt',
@@ -923,10 +924,7 @@ export type InboxEventScalarFieldEnum = (typeof InboxEventScalarFieldEnum)[keyof
 export const OutboxEventScalarFieldEnum = {
   id: 'id',
   routingKey: 'routingKey',
-  status: 'status',
-  captureAt: 'captureAt',
-  handledAt: 'handledAt',
-  error: 'error',
+  publishAt: 'publishAt',
   payload: 'payload'
 } as const
 
@@ -1015,9 +1013,10 @@ export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const InboxEventOrderByRelevanceFieldEnum = {
+  messageId: 'messageId',
+  appId: 'appId',
   queue: 'queue',
   routingKey: 'routingKey',
-  serviceName: 'serviceName',
   error: 'error'
 } as const
 
@@ -1025,8 +1024,7 @@ export type InboxEventOrderByRelevanceFieldEnum = (typeof InboxEventOrderByRelev
 
 
 export const OutboxEventOrderByRelevanceFieldEnum = {
-  routingKey: 'routingKey',
-  error: 'error'
+  routingKey: 'routingKey'
 } as const
 
 export type OutboxEventOrderByRelevanceFieldEnum = (typeof OutboxEventOrderByRelevanceFieldEnum)[keyof typeof OutboxEventOrderByRelevanceFieldEnum]
@@ -1112,13 +1110,6 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-/**
- * Reference to a field of type 'OutboxEventStatus'
- */
-export type EnumOutboxEventStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutboxEventStatus'>
     
 
 /**

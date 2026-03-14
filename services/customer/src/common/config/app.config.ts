@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import { nodeEnvs } from './config.type';
+import Joi from 'joi';
 
 export const config = () => ({
   NODE_ENV: process.env.NODE_ENV || 'development',
@@ -17,5 +18,27 @@ export const config = () => ({
 });
 
 export const appConfig = registerAs('app', config);
+
+export const configValidationSchema = Joi.object({
+  NODE_ENV: Joi.string()
+    .valid(...Object.values(nodeEnvs))
+    .default('development'),
+
+  HTTP_PORT: Joi.number().port().required(),
+  HTTP_HOST: Joi.string().hostname().required(),
+
+  DATABASE_HOST: Joi.string().required(),
+  DATABASE_PORT: Joi.number().port().required(),
+  DATABASE_USERNAME: Joi.string().required(),
+  DATABASE_PASSWORD: Joi.string().required(),
+  DATABASE_NAME: Joi.string().required(),
+
+  RABBITMQ_URL: Joi.string().uri().required(),
+
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().port().required(),
+  REDIS_PASSWORD: Joi.string().required(),
+});
+
 export const env = process.env.NODE_ENV;
 export const isDev = env === nodeEnvs.Development;
