@@ -10,7 +10,7 @@ import {
   RMQ_EXCHANGE,
   RMQ_P_RK_CUSTOMER_CREATE,
   RMQ_P_RK_CUSTOMER_UPDATE,
-} from 'src/infrastructure-modules/rmq-module/rmq.config';
+} from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 import { AuthUserCreate } from 'src/infrastructure-modules/rmq-module/contracts/auth-api.contract';
 
 @Injectable()

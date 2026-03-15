@@ -1,11 +1,18 @@
+//queue - provider.ts;
 import Queue from "bee-queue";
-import { config } from "../config.js";
 import {
   QUEUE_EVENT_CUSTOMER_CREATE,
   QUEUE_EVENT_CUSTOMER_UPDATE,
   QUEUE_EVENT_SERVICE_CREATE,
   QUEUE_EVENT_SERVICE_UPDATE,
-} from "./queue-config.js";
+} from "./config/queue-config.js";
+import { queueClient } from "./client/queue-client.js";
+import { workerClient } from "./client/worker-client.js";
+import {
+  queueCustomerCreateHandler,
+  queueCustomerUpdateHandler,
+} from "./handlers/queue-customer-handlers.js";
+import { queueServiceCreateHandler, queueServiceUpdateHandler } from "./handlers/queue-service-handlers.js";
 
 export let queueEventCustomerCreate: Queue;
 export let queueEventCustomerUpdate: Queue;
@@ -13,26 +20,15 @@ export let queueEventServiceCreate: Queue;
 export let queueEventServiceUpdate: Queue;
 
 export function startQueues() {
-  queueEventCustomerCreate = queueCreate(QUEUE_EVENT_CUSTOMER_CREATE);
-  queueEventCustomerUpdate = queueCreate(QUEUE_EVENT_CUSTOMER_UPDATE);
-  queueEventServiceCreate = queueCreate(QUEUE_EVENT_SERVICE_CREATE);
-  queueEventServiceUpdate = queueCreate(QUEUE_EVENT_SERVICE_UPDATE);
-}
+  queueEventCustomerCreate = queueClient.create(QUEUE_EVENT_CUSTOMER_CREATE);
+  queueEventCustomerUpdate = queueClient.create(QUEUE_EVENT_CUSTOMER_UPDATE);
+  queueEventServiceCreate = queueClient.create(QUEUE_EVENT_SERVICE_CREATE);
+  queueEventServiceUpdate = queueClient.create(QUEUE_EVENT_SERVICE_UPDATE);
 
-function queueCreate(queueName: string) {
-  const host = config.REDIS_HOST;
-  const port = config.REDIS_PORT;
-  const password = config.REDIS_PASSWORD;
-
-  const queue = new Queue(queueName, {
-    redis: { host, port, password },
-    removeOnSuccess: true,
-    removeOnFailure: true,
-  });
-
-  queue.once("ready", () => console.log(`Queue ${queueName} is connected`));
-
-  return queue;
+  workerClient.register(queueEventCustomerCreate, queueCustomerCreateHandler);
+  workerClient.register(queueEventCustomerUpdate, queueCustomerUpdateHandler);
+  workerClient.register(queueEventServiceCreate, queueServiceCreateHandler);
+  workerClient.register(queueEventServiceUpdate, queueServiceUpdateHandler);
 }
 
 export const queueGracefulShutdown = async () => {

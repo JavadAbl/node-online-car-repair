@@ -2,7 +2,7 @@ import { VehicleRepository } from "../infrastructure/database/Repository/vehicle
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
 import { CreateVehicle } from "../schemas/vehicle/request/create-vehicle.schema.js";
 import { UpdateVehicle } from "../schemas/vehicle/request/update-vehicle.schema.js";
-import { buildFindManyArgs } from "../utils/prisma-util.js";
+import { buildFindManyArgs } from "../utils/prisma.utils.js";
 
 const vehicleRep = new VehicleRepository();
 

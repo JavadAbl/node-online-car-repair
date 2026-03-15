@@ -2,8 +2,7 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from 'src/common/config/config.type';
-import { RMQ_EXCHANGE, RMQ_Q_AUTH_USER_CREATE } from './rmq.config';
-import { AuthApiConsumer } from './consumers/auth-api.cosumer';
+import { RMQ_EXCHANGE, RMQ_Q_AUTH_USER_CREATE } from './config/rmq.config';
 
 @Global()
 @Module({
@@ -25,7 +24,7 @@ import { AuthApiConsumer } from './consumers/auth-api.cosumer';
       }),
     }),
   ],
-  providers: [AuthApiConsumer],
+  providers: [],
   exports: [RabbitMQModule],
 })
 export class RmqModule {}

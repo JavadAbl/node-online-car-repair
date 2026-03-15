@@ -1,13 +1,14 @@
+//cron.provider.ts
 import { cronClient } from "./client/cron-client.js";
 import { CronExpression } from "./config/cron-expression.js";
 import { CRON_JOB_INBOX } from "./config/cron.config.js";
-import { CronInboxHandler } from "./handlers/cron-inbox.handler.js";
+import { CronEventsHandler } from "./handlers/cron-events.handler.js";
 
 export function startCronClient(): void {
   // Wrap the handler with the locking mechanism
-  const cronInboxHandler = createLockingTask(CronInboxHandler.handle);
+  const handleInboxEvents = createLockingTask(CronEventsHandler.handleInboxEvents);
 
-  cronClient.addJob(CRON_JOB_INBOX, CronExpression.EVERY_10_SECONDS, cronInboxHandler);
+  cronClient.addJob(CRON_JOB_INBOX, CronExpression.EVERY_10_SECONDS, handleInboxEvents);
 }
 
 /**

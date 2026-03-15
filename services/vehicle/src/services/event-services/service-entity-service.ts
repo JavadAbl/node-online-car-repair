@@ -1,5 +1,6 @@
 import { ServiceRepository } from "../../infrastructure/database/Repository/service.repository.js";
-import { CreateService, UpdateService } from "../../types/event-types/service-types.js";
+import { CreateService } from "../../schemas/event-schemas/service/create-service.schema.js";
+import { UpdateService } from "../../schemas/event-schemas/service/update-service.schema.js";
 
 const serviceRep = new ServiceRepository();
 

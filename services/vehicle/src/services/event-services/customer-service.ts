@@ -1,5 +1,6 @@
 import { CustomerRepository } from "../../infrastructure/database/Repository/customer.repository.js";
-import { CreateCustomer, UpdateCustomer } from "../../types/event-types/customer-types.js";
+import { CreateCustomer } from "../../schemas/event-schemas/customer/create-customer.schema.js";
+import { UpdateCustomer } from "../../schemas/event-schemas/customer/update-customer.schema.js";
 
 const customerRep = new CustomerRepository();
 

@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CustomerRepository } from '../repository/customer.repository';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { RMQ_EXCHANGE, RMQ_P_RK_CUSTOMER_CREATE } from 'src/infrastructure-modules/rmq-module/rmq.config';
+import {
+  RMQ_EXCHANGE,
+  RMQ_P_RK_CUSTOMER_CREATE,
+} from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 import { AuthUserCreate } from 'src/infrastructure-modules/rmq-module/contracts/auth-api.contract';
 import { OutboxEventRepository } from 'src/infrastructure-modules/event-box-module/Repositories/outbox-event.repository';
 

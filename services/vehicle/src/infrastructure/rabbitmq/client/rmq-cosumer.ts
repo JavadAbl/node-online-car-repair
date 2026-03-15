@@ -11,7 +11,7 @@ export type EventHandler = (
 export class RabbitMQConsumer {
   constructor(private readonly connection: AmqpConnectionManager) {}
 
-  consume(queue: string, handler: EventHandler) {
+  consume(queue: string, validator: (obj: any) => boolean, handler: EventHandler) {
     this.connection.createChannel({
       setup: async (channel: Channel) => {
         await channel.consume(queue, async (msg) => {
@@ -19,6 +19,8 @@ export class RabbitMQConsumer {
 
           const fields = msg.fields;
           const properties = msg.properties;
+          const content = msg.content;
+          validator(JSON.parse(content as unknown as string));
 
           try {
             await handler(
@@ -26,7 +28,7 @@ export class RabbitMQConsumer {
               properties.messageId,
               properties.appId,
               fields.routingKey,
-              msg.content.toString("utf8"),
+              content.toString("utf8"),
             );
             channel.ack(msg);
           } catch (err) {

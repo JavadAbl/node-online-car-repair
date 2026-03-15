@@ -27,17 +27,18 @@ model Customers {
   updatedAt DateTime @updatedAt
 }
 
+//Box Models-------------------------------------------------------
 model InboxEvent {
-  id          Int              @id @default(autoincrement())
-  messageId   String @unique()
-  queue       String
-  routingKey  String
-  serviceName String
-  status      InboxEventStatus @default(Pending)
-  captureAt   DateTime         @default(now())
-  handledAt   DateTime?
-  error       String?
-  payload     Json
+  id         Int              @id @default(autoincrement())
+  messageId  String           @unique()
+  appId      String
+  queue      String
+  routingKey String
+  status     InboxEventStatus @default(Pending)
+  captureAt  DateTime         @default(now())
+  handledAt  DateTime?
+  error      String?
+  payload    Json
 }
 
 model OutboxEvent {
