@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CustomerRepository } from '../repository/customer.repository';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   RMQ_EXCHANGE,
   RMQ_P_RK_CUSTOMER_CREATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
-import { AuthUserCreate } from 'src/infrastructure-modules/rmq-module/contracts/auth-api.contract';
 import { OutboxEventRepository } from 'src/infrastructure-modules/event-box-module/Repositories/outbox-event.repository';
+import { CustomerRepository } from 'src/customer-module/_module/repository/customer.repository';
+import { UserCreate } from '../contracts/user-create';
 
 @Injectable()
-export class CustomerEventService {
+export class UserService {
   constructor(
     private readonly customerRep: CustomerRepository,
     private readonly rmq: AmqpConnection,
     private readonly outboxRep: OutboxEventRepository,
   ) {}
 
-  async createFromEvent(payload: AuthUserCreate): Promise<void> {
+  async createUser(payload: UserCreate): Promise<void> {
     const { mobile } = payload;
     await this.customerRep.checkDuplicateBy({ where: { mobile } }, 'mobile', mobile);
     const customer = await this.customerRep.create({ data: payload });

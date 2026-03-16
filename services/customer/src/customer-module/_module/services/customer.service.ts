@@ -8,10 +8,8 @@ import { plainToInstance } from 'class-transformer';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   RMQ_EXCHANGE,
-  RMQ_P_RK_CUSTOMER_CREATE,
   RMQ_P_RK_CUSTOMER_UPDATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
-import { AuthUserCreate } from 'src/infrastructure-modules/rmq-module/contracts/auth-api.contract';
 
 @Injectable()
 export class CustomerService {
@@ -19,14 +17,6 @@ export class CustomerService {
     private readonly customerRep: CustomerRepository,
     private readonly rmq: AmqpConnection,
   ) {}
-
-  async createFromEvent(payload: AuthUserCreate): Promise<CustomerDto> {
-    const { mobile } = payload;
-    await this.customerRep.checkDuplicateBy({ where: { mobile } }, 'mobile', mobile);
-    const customer = await this.customerRep.create({ data: payload });
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_CUSTOMER_CREATE, customer);
-    return plainToInstance(CustomerDto, customer);
-  }
 
   getMany(query: GetManyQueryType<'Customers'>) {
     const predicate = buildFindManyArgs(query, { searchableFields: ['firstName', 'lastName', 'email'] });

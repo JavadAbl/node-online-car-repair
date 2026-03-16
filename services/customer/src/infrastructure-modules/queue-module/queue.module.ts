@@ -2,10 +2,10 @@ import { Global, Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from 'src/common/config/config.type';
-import { QUEUE_AUTH_API } from './queue.config';
-import { AuthApiJobProvider } from './job-providers/auth-api-job.provider';
+import { QUEUE_AUTH_API } from './config/queue.config';
 import { AuthApiJobWorker } from './job-workers/auth-api.worker';
-import { CustomerModule } from 'src/customer-module/customer.module';
+import { EventServicesModule } from 'src/event-services-module/event-services.module';
+import { JobProvider } from './job.provider';
 
 @Global()
 @Module({
@@ -25,9 +25,9 @@ import { CustomerModule } from 'src/customer-module/customer.module';
       },
     }),
     BullModule.registerQueue({ name: QUEUE_AUTH_API }),
-    CustomerModule,
+    EventServicesModule,
   ],
-  providers: [AuthApiJobProvider, AuthApiJobWorker],
-  exports: [AuthApiJobProvider],
+  providers: [JobProvider, AuthApiJobWorker],
+  exports: [JobProvider],
 })
 export class QueueModule {}
