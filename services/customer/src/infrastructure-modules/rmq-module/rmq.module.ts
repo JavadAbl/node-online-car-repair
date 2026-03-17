@@ -3,6 +3,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from 'src/common/config/config.type';
 import { RMQ_EXCHANGE, RMQ_Q_AUTH_USER_CREATE } from './config/rmq.config';
+import { RabbitMQPublisher } from './rmq-publisher.service';
+import { RabbitMQInboxConsumer } from './consumers/rmq-inbox.cosumer';
 
 @Global()
 @Module({
@@ -24,7 +26,7 @@ import { RMQ_EXCHANGE, RMQ_Q_AUTH_USER_CREATE } from './config/rmq.config';
       }),
     }),
   ],
-  providers: [],
-  exports: [RabbitMQModule],
+  providers: [RabbitMQPublisher, RabbitMQInboxConsumer],
+  exports: [RabbitMQPublisher],
 })
 export class RmqModule {}

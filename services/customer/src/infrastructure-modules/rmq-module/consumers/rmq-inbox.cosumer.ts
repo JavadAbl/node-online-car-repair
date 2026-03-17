@@ -11,10 +11,10 @@ import { validateOrRejectObject } from 'src/common/utils/app.utils';
 import { UserCreate } from 'src/event-services-module/contracts/user-create';
 
 @Injectable()
-export class RabbitMQInboxHandler {
+export class RabbitMQInboxConsumer {
   constructor(private readonly inboxRep: InboxEventRepository) {}
 
-  private async handle(payload: unknown, msg: ConsumeMessage) {
+  private async handle(payload: unknown, msg: ConsumeMessage, queue: string) {
     const fields = msg.fields;
     const properties = msg.properties;
 
@@ -29,7 +29,7 @@ export class RabbitMQInboxHandler {
       data: {
         payload: msg.content,
         routingKey: fields.routingKey,
-        queue: RMQ_Q_AUTH_USER_CREATE,
+        queue,
         appId: properties.appId,
         messageId: properties.messageId,
       },
@@ -44,7 +44,7 @@ export class RabbitMQInboxHandler {
   })
   async handleUserCreate(payload: unknown, msg: ConsumeMessage) {
     try {
-      await this.handle(payload, msg);
+      await this.handle(payload, msg, RMQ_Q_AUTH_USER_CREATE);
     } catch (err) {
       console.error(err);
       return new Nack(false);

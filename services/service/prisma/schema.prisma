@@ -39,20 +39,23 @@ enum WorkShift {
   Night
 }
 
+//Box Models-------------------------------------------------------
 model InboxEvent {
-  id          Int              @id @default(autoincrement())
-  queue       String
-  routingKey  String
-  serviceName String
-  status      InboxEventStatus @default(Pending)
-  captureAt   DateTime         @default(now())
-  handledAt   DateTime?
-  error       String?
-  payload     Json
+  id         Int              @id @default(autoincrement())
+  messageId  String           @unique()
+  appId      String
+  queue      String
+  routingKey String
+  status     InboxEventStatus @default(Pending)
+  captureAt  DateTime         @default(now())
+  handledAt  DateTime?
+  error      String?
+  payload    Json
 }
 
 model OutboxEvent {
   id         Int      @id @default(autoincrement())
+  messageId  String   @unique()
   routingKey String
   publishAt  DateTime @default(now())
   payload    Json

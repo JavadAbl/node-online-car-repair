@@ -6,32 +6,24 @@ import { ServiceRepository } from '../repository/service.repository';
 import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { plainToInstance } from 'class-transformer';
 import { UpdateServiceDto } from '../dto/request/update-service.dto';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { RabbitMQPublisher } from 'src/infrastructure-modules/rmq-module/rmq-publisher.service';
 import {
-  RMQ_EXCHANGE,
   RMQ_P_RK_SERVICE_CREATE,
   RMQ_P_RK_SERVICE_UPDATE,
-} from 'src/infrastructure-modules/rmq-module/rmq.config';
-import { OutboxEventRepository } from 'src/infrastructure-modules/event-box-module/Repositories/outbox-event.repository';
+} from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 
 @Injectable()
 export class ServiceEntityService {
   constructor(
     private readonly serviceRep: ServiceRepository,
-    private readonly rmq: AmqpConnection,
-    private readonly outboxRep: OutboxEventRepository,
+    private readonly rmqPublisher: RabbitMQPublisher,
   ) {}
 
   async create(payload: CreateServiceDto): Promise<ServiceDto> {
     const { name } = payload;
     await this.serviceRep.checkDuplicateBy({ where: { name } }, 'name', name);
     const service = await this.serviceRep.create({ data: payload });
-
-    const serviceSerialized = JSON.stringify(service);
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_SERVICE_CREATE, serviceSerialized);
-    await this.outboxRep.create({
-      data: { routingKey: RMQ_P_RK_SERVICE_CREATE, payload: serviceSerialized },
-    });
+    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_CREATE, service);
     return plainToInstance(ServiceDto, service);
   }
 
@@ -49,11 +41,7 @@ export class ServiceEntityService {
   async update(id: number, payload: UpdateServiceDto): Promise<ServiceDto> {
     await this.serviceRep.findAndCheckExistsBy({ where: { id } }, 'id', id);
     const updatedService = await this.serviceRep.update({ where: { id }, data: payload });
-    const updatedServiceSerialized = JSON.stringify(updatedService);
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_SERVICE_UPDATE, updatedServiceSerialized);
-    await this.outboxRep.create({
-      data: { routingKey: RMQ_P_RK_SERVICE_UPDATE, payload: updatedServiceSerialized },
-    });
+    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_UPDATE, updatedService);
     return plainToInstance(ServiceDto, updatedService);
   }
 

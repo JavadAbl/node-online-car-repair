@@ -10,6 +10,9 @@ import {
   RMQ_Q_CUSTOMER_CREATE,
   RMQ_Q_CUSTOMER_UPDATE,
   RMQ_Q_RK_CUSTOMER_CREATE,
+  RMQ_Q_RK_CUSTOMER_UPDATE,
+  RMQ_Q_RK_SERVICE_CREATE,
+  RMQ_Q_RK_SERVICE_UPDATE,
   RMQ_Q_SERVICE_CREATE,
   RMQ_Q_SERVICE_UPDATE,
 } from "./config/rmq-config.js";
@@ -21,6 +24,9 @@ const connection = rmqClient.connect();
 export async function startRmq() {
   const setup = new RabbitMQSetup(connection);
   await setup.setupQueue(RMQ_Q_CUSTOMER_CREATE, RMQ_Q_RK_CUSTOMER_CREATE);
+  await setup.setupQueue(RMQ_Q_CUSTOMER_UPDATE, RMQ_Q_RK_CUSTOMER_UPDATE);
+  await setup.setupQueue(RMQ_Q_SERVICE_CREATE, RMQ_Q_RK_SERVICE_CREATE);
+  await setup.setupQueue(RMQ_Q_SERVICE_UPDATE, RMQ_Q_RK_SERVICE_UPDATE);
 
   const consumer = new RabbitMQConsumer(connection);
   consumer.consume(RMQ_Q_CUSTOMER_CREATE, validateCustomerCreate, RabbitMQInboxHandler.handle);

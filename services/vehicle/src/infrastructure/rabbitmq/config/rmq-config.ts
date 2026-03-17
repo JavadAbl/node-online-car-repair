@@ -1,4 +1,5 @@
 //rabbitmq.config.ts
+export const RMQ_APP_ID = "vehicle.api";
 export const RMQ_EXCHANGE = "app_exchange";
 
 //Queues

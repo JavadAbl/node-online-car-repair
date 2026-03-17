@@ -1,4 +1,5 @@
 import { Channel, AmqpConnectionManager } from "amqp-connection-manager";
+import { BadRequestError } from "../../../utils/app-error.js";
 
 export type EventHandler = (
   queue: string,
@@ -20,9 +21,13 @@ export class RabbitMQConsumer {
           const fields = msg.fields;
           const properties = msg.properties;
           const content = msg.content;
-          validator(JSON.parse(content as unknown as string));
+
+          console.log(123232231, typeof JSON.parse(content as unknown as string));
 
           try {
+            const validateResult = validator(JSON.parse(content as unknown as string));
+            if (!validateResult) throw new BadRequestError("Invalid event payload");
+
             await handler(
               queue,
               properties.messageId,

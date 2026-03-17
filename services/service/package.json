@@ -38,6 +38,8 @@
   },
   "dependencies": {
     "@golevelup/nestjs-rabbitmq": "^7.1.2",
+    "@nestjs/schedule": "^6.1.1",
+    "@nestjs/bull": "^11.0.4",
     "@nestjs/common": "^11.1.13",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.1.13",
@@ -50,7 +52,8 @@
     "class-validator": "^0.14.3",
     "joi": "^18.0.2",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "bull": "^4.16.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

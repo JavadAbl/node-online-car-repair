@@ -1,3 +1,4 @@
+export const RMQ_APP_ID = 'customer.api';
 export const RMQ_EXCHANGE = 'app_exchange';
 
 //Queues

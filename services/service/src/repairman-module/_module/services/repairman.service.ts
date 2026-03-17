@@ -6,32 +6,24 @@ import { GetManyQueryType } from 'src/common/contract/query/get-many-query';
 import { RepairmanRepository } from '../repository/repairman.repository';
 import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { plainToInstance } from 'class-transformer';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { OutboxEventRepository } from 'src/infrastructure-modules/event-box-module/Repositories/outbox-event.repository';
+import { RabbitMQPublisher } from 'src/infrastructure-modules/rmq-module/rmq-publisher.service';
 import {
-  RMQ_EXCHANGE,
-  RMQ_P_RK_REPAIRMAN_CREATE,
-  RMQ_P_RK_REPAIRMAN_UPDATE,
-} from 'src/infrastructure-modules/rmq-module/rmq.config';
+  RMQ_P_RK_SERVICE_CREATE,
+  RMQ_P_RK_SERVICE_UPDATE,
+} from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 
 @Injectable()
 export class RepairmanService {
   constructor(
     private readonly repairmanRep: RepairmanRepository,
-    private readonly rmq: AmqpConnection,
-    private readonly outboxRep: OutboxEventRepository,
+    private readonly rmqPublisher: RabbitMQPublisher,
   ) {}
 
   async create(payload: CreateRepairmanDto): Promise<RepairmanDto> {
     const { employeeNumber } = payload;
     await this.repairmanRep.checkDuplicateBy({ where: { employeeNumber } }, 'employeeNumber', employeeNumber);
     const repairman = await this.repairmanRep.create({ data: payload });
-
-    const repairmanSerialized = JSON.stringify(repairman);
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_REPAIRMAN_CREATE, repairmanSerialized);
-    await this.outboxRep.create({
-      data: { routingKey: RMQ_P_RK_REPAIRMAN_CREATE, payload: repairmanSerialized },
-    });
+    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_CREATE, repairman);
     return plainToInstance(RepairmanDto, repairman);
   }
 
@@ -49,12 +41,7 @@ export class RepairmanService {
   async update(id: number, payload: UpdateRepairmanDto): Promise<RepairmanDto> {
     await this.repairmanRep.findAndCheckExistsBy({ where: { id } }, 'id', id);
     const updatedRepairman = await this.repairmanRep.update({ where: { id }, data: payload });
-
-    const updatedRepairmanSerialized = JSON.stringify(updatedRepairman);
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_REPAIRMAN_UPDATE, updatedRepairmanSerialized);
-    await this.outboxRep.create({
-      data: { routingKey: RMQ_P_RK_REPAIRMAN_UPDATE, payload: updatedRepairmanSerialized },
-    });
+    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_UPDATE, updatedRepairman);
     return plainToInstance(RepairmanDto, updatedRepairman);
   }
 

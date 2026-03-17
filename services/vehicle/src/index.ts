@@ -9,9 +9,9 @@ async function run() {
   validateConfig();
   await startDatabase();
   await startHttpServer();
-  startCronClient();
   await startRmq();
   startQueues();
+  startCronClient();
   try {
   } catch (error) {
     console.error(error);

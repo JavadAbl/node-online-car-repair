@@ -2,8 +2,8 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from 'src/common/config/config.type';
-import { AuthApiConsumer } from './consumers/auth-api.cosumer';
-import { RMQ_EXCHANGE } from './rmq.config';
+import { RMQ_EXCHANGE } from './config/rmq.config';
+import { RabbitMQPublisher } from './rmq-publisher.service';
 
 @Global()
 @Module({
@@ -22,7 +22,7 @@ import { RMQ_EXCHANGE } from './rmq.config';
       }),
     }),
   ],
-  providers: [AuthApiConsumer],
-  exports: [RabbitMQModule],
+  providers: [RabbitMQPublisher],
+  exports: [RabbitMQPublisher],
 })
 export class RmqModule {}

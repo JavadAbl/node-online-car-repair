@@ -15,5 +15,5 @@ export type CreateCustomer = Static<typeof CreateCustomerSchema>;
 const validator = TypeCompiler.Compile(CreateCustomerSchema);
 
 export function validateCustomerCreate(obj: any) {
-  return !validator.Check(obj);
+  return validator.Check(obj);
 }

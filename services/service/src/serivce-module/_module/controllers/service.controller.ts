@@ -30,7 +30,7 @@ export class ServiceController {
   @Get()
   @HttpCode(HttpStatus.OK)
   getManyService(@Query() query: GetManyQuery): Promise<ServiceDto[]> {
-    return this.serviceEntityService.findMany(query as GetManyQueryType<'Service'>);
+    return this.serviceEntityService.getMany(query as GetManyQueryType<'Service'>);
   }
 
   @Get(':id')

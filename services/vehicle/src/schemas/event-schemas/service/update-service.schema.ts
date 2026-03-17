@@ -12,5 +12,5 @@ export type UpdateService = Static<typeof UpdateServiceSchema>;
 const validator = TypeCompiler.Compile(UpdateServiceSchema);
 
 export function validateServiceUpdate(obj: any) {
-  return !validator.Check(obj);
+  return validator.Check(obj);
 }

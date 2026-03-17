@@ -154,6 +154,7 @@ export type InboxEventScalarFieldEnum = (typeof InboxEventScalarFieldEnum)[keyof
 
 export const OutboxEventScalarFieldEnum = {
   id: 'id',
+  messageId: 'messageId',
   routingKey: 'routingKey',
   publishAt: 'publishAt',
   payload: 'payload'
@@ -255,6 +256,7 @@ export type InboxEventOrderByRelevanceFieldEnum = (typeof InboxEventOrderByRelev
 
 
 export const OutboxEventOrderByRelevanceFieldEnum = {
+  messageId: 'messageId',
   routingKey: 'routingKey'
 } as const
 
