@@ -12,7 +12,7 @@ export type EventHandler = (
 export class RabbitMQConsumer {
   constructor(private readonly connection: AmqpConnectionManager) {}
 
-  consume(queue: string, validator: (obj: any) => boolean, handler: EventHandler) {
+  consume(queue: string, validator: (obj: any) => any, handler: EventHandler) {
     this.connection.createChannel({
       setup: async (channel: Channel) => {
         await channel.consume(queue, async (msg) => {
@@ -22,18 +22,16 @@ export class RabbitMQConsumer {
           const properties = msg.properties;
           const content = msg.content;
 
-          console.log(123232231, typeof JSON.parse(content as unknown as string));
-
           try {
-            const validateResult = validator(JSON.parse(content as unknown as string));
-            if (!validateResult) throw new BadRequestError("Invalid event payload");
+            const payload = validator(JSON.parse(content as unknown as string));
+            // if (!validateResult) throw new BadRequestError("Invalid event payload");
 
             await handler(
               queue,
               properties.messageId,
               properties.appId,
               fields.routingKey,
-              content.toString("utf8"),
+              JSON.stringify(payload),
             );
             channel.ack(msg);
           } catch (err) {

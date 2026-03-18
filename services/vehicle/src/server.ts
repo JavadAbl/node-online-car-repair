@@ -5,8 +5,13 @@ import { errorHandler } from "./plugins/error-handler.js";
 import { vehicleRoutes } from "./routes/vehicle.route.js";
 import { vehicleServiceRoutes } from "./routes/vehicle-service.route.js";
 import fastify from "fastify";
+import { testRoutes } from "./routes/test.route.js";
 
-export const app = fastify({ logger: false, caseSensitive: false });
+export const app = fastify({
+  logger: false,
+  caseSensitive: false,
+  ajv: { customOptions: { removeAdditional: "all" } },
+});
 
 export async function startHttpServer() {
   // Register Swagger for API documentation
@@ -29,6 +34,7 @@ export async function startHttpServer() {
     });
   }
 
+  app.register(testRoutes, { prefix: "/Test" });
   app.register(vehicleRoutes, { prefix: "/Vehicles" });
   app.register(vehicleServiceRoutes, { prefix: "/VehicleService" });
 
