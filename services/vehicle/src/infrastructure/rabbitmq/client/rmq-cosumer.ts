@@ -24,7 +24,6 @@ export class RabbitMQConsumer {
 
           try {
             const payload = validator(JSON.parse(content as unknown as string));
-            // if (!validateResult) throw new BadRequestError("Invalid event payload");
 
             await handler(
               queue,

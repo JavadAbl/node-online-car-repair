@@ -45,6 +45,7 @@ export function enumToObject<E extends Record<string, string | number>>(e: E): {
 }
 
 export async function validateOrRejectObject<T extends object>(model: new () => T, obj: object) {
-  const instance = plainToInstance(model, obj);
+  const instance = plainToInstance(model, obj, { excludeExtraneousValues: true });
   await validateOrReject(instance);
+  return instance;
 }

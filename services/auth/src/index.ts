@@ -1,20 +1,14 @@
 import { startCacheClient } from "./infrastructure/cache/cache-provider.js";
 import { validateConfig } from "./infrastructure/config.js";
 import { startDatabase } from "./infrastructure/database/prisma-provider.js";
-import { startCronJobs } from "./infrastructure/node-cron/cron-jobs.js";
-import { queueGracefulShutdown, startQueues } from "./infrastructure/queue/queue-provider.js";
-import { startQueueWorkers } from "./infrastructure/queue/queue-workers.js";
-import { rmqGracefulShutdown, startRmq } from "./infrastructure/rabbitmq/rabbitmq-provider.js";
+import { startRmq, stopRmq } from "./infrastructure/rabbitmq/rmq.provider.js";
 import { startHttpServer } from "./server.js";
 
 async function run() {
   validateConfig();
   await startDatabase();
   await startHttpServer();
-  startCronJobs();
   await startRmq();
-  startQueues();
-  startQueueWorkers();
   await startCacheClient();
   try {
   } catch (error: any) {
@@ -33,8 +27,7 @@ process.on("SIGTERM", async () => {
 });
 
 async function gracefulShutdown() {
-  await rmqGracefulShutdown();
-  await queueGracefulShutdown();
+  await stopRmq();
   process.exit(0);
 }
 

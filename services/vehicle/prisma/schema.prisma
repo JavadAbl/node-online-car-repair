@@ -55,12 +55,13 @@ model VehicleService {
 
 //Reference Tables--------------------------------------------------------
 model CustomerReference {
-  id           Int    @id
-  firstName    String
-  lastName     String
-  nationalCode String
-  mobile       String
-  email        String
+  id        Int     @id
+  firstName String?
+  lastName  String?
+  email     String? @unique()
+  mobile    String  @unique()
+  city      String?
+  address   String?
 
   vehicles Vehicle[]
 }

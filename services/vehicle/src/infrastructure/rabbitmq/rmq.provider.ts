@@ -5,6 +5,7 @@ import { validateServiceUpdate } from "../../schemas/event-schemas/service/updat
 import { config } from "../config.js";
 import { RabbitMQClient } from "./client/rmq-client.js";
 import { RabbitMQConsumer } from "./client/rmq-cosumer.js";
+import { RabbitMQPublisher } from "./client/rmq-publisher.js";
 import { RabbitMQSetup } from "./client/rmq-setup.js";
 import {
   RMQ_Q_CUSTOMER_CREATE,
@@ -38,3 +39,5 @@ export async function startRmq() {
 export async function stopRmq() {
   await rmqClient.close();
 }
+
+export const rmqPublisher = new RabbitMQPublisher(connection);

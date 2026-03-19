@@ -3,6 +3,9 @@ export const RMQ_EXCHANGE = 'app_exchange';
 
 //Queues
 export const RMQ_Q_AUTH_USER_CREATE = 'customer.api_user.create';
+export const RMQ_Q_AUTH_USER_CREATE_RETRY = 'customer.api_user.create-retry';
+export const RMQ_Q_AUTH_USER_CREATE_RETRY_RK = 'customer.api_user.create-retry-rk';
+export const RMQ_Q_AUTH_USER_CREATE_DLQ = 'customer.api_user.create-dlq';
 export const RMQ_Q_RK_AUTH_USER_CREATE = 'auth.api_user.create';
 
 //Publish

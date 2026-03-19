@@ -3,7 +3,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import { config, isDev } from "./infrastructure/config.js";
 import { errorHandler } from "./plugins/error-handler.js";
 import fastify from "fastify";
-import { startRouter } from "./routes/router.js";
+import { setupRouter } from "./routes/router.js";
 
 export const app = fastify({ logger: false, caseSensitive: false });
 
@@ -30,7 +30,7 @@ export async function startHttpServer() {
 
   app.setErrorHandler(errorHandler);
 
-  await startRouter(app);
+  await setupRouter(app);
 
   const port = config.HTTP_PORT;
   const address = config.HTTP_HOST;

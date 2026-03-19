@@ -10,21 +10,26 @@ export class RabbitMQSetup {
         await channel.assertExchange(RMQ_EXCHANGE, "direct", { durable: true });
 
         const retryQueue = `${queue}-retry`;
+        const retryRK = `${queue}-retry-rk`;
+        const queueDLQ = `${queue}-dlq`;
+
         await channel.assertQueue(retryQueue, {
           durable: true,
           arguments: {
             "x-dead-letter-exchange": RMQ_EXCHANGE,
-            "x-dead-letter-routing-key": routingKey,
+            "x-dead-letter-routing-key": queueDLQ,
             "x-message-ttl": 60000,
           },
         });
+        await channel.bindQueue(retryQueue, RMQ_EXCHANGE, retryRK);
+
         await channel.assertQueue(queue, {
           durable: true,
-          arguments: { "x-dead-letter-exchange": RMQ_EXCHANGE, "x-dead-letter-routing-key": retryQueue },
+          arguments: { "x-dead-letter-exchange": RMQ_EXCHANGE, "x-dead-letter-routing-key": retryRK },
         });
 
-        await channel.bindQueue(retryQueue, RMQ_EXCHANGE, retryQueue);
         await channel.bindQueue(queue, RMQ_EXCHANGE, routingKey);
+        await channel.bindQueue(queue, RMQ_EXCHANGE, queueDLQ);
       },
     });
 

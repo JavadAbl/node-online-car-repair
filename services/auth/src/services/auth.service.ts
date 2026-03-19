@@ -39,7 +39,7 @@ async function verifyOtp(payload: VerifyOtpDto): Promise<AuthDto> {
 
   if (otp !== cachedOtp) throw new UnauthorizedError("Wrong otp code");
 
-  const user = await userService.getUserForLogin(mobile);
+  const user = await userService.getOrCreateUserForLogin(mobile);
 
   const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user.id });
   return { accessToken, refreshToken, user };

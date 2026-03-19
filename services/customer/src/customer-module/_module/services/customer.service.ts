@@ -5,18 +5,26 @@ import { GetManyQueryType } from 'src/common/contract/query/get-many-query';
 import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { CustomerRepository } from '../repository/customer.repository';
 import { plainToInstance } from 'class-transformer';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
-  RMQ_EXCHANGE,
+  RMQ_P_RK_CUSTOMER_CREATE,
   RMQ_P_RK_CUSTOMER_UPDATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
+import { RabbitMQPublisher } from 'src/infrastructure-modules/rmq-module/rmq-publisher.service';
+import { UserCreateEvent } from 'src/infrastructure-modules/rmq-module/contracts/user-create-event';
 
 @Injectable()
 export class CustomerService {
   constructor(
     private readonly customerRep: CustomerRepository,
-    private readonly rmq: AmqpConnection,
+    private readonly rmqPublisher: RabbitMQPublisher,
   ) {}
+
+  async createUser(payload: UserCreateEvent): Promise<void> {
+    const { mobile } = payload;
+    await this.customerRep.checkDuplicateBy({ where: { mobile } }, 'mobile', mobile);
+    const customer = await this.customerRep.create({ data: payload });
+    await this.rmqPublisher.publish(RMQ_P_RK_CUSTOMER_CREATE, customer);
+  }
 
   getMany(query: GetManyQueryType<'Customers'>) {
     const predicate = buildFindManyArgs(query, { searchableFields: ['firstName', 'lastName', 'email'] });
@@ -36,7 +44,7 @@ export class CustomerService {
   async update(id: number, payload: UpdateCustomerDto): Promise<CustomerDto> {
     await this.customerRep.findAndCheckExistsBy({ where: { id } }, 'id', id);
     const updatedCustomer = await this.customerRep.update({ where: { id }, data: payload });
-    await this.rmq.publish(RMQ_EXCHANGE, RMQ_P_RK_CUSTOMER_UPDATE, updatedCustomer);
+    await this.rmqPublisher.publish(RMQ_P_RK_CUSTOMER_UPDATE, updatedCustomer);
     return plainToInstance(CustomerDto, updatedCustomer);
   }
 

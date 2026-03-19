@@ -888,9 +888,10 @@ export const CustomerReferenceScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  nationalCode: 'nationalCode',
+  email: 'email',
   mobile: 'mobile',
-  email: 'email'
+  city: 'city',
+  address: 'address'
 } as const
 
 export type CustomerReferenceScalarFieldEnum = (typeof CustomerReferenceScalarFieldEnum)[keyof typeof CustomerReferenceScalarFieldEnum]
@@ -981,9 +982,10 @@ export type VehicleServiceOrderByRelevanceFieldEnum = (typeof VehicleServiceOrde
 export const CustomerReferenceOrderByRelevanceFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
-  nationalCode: 'nationalCode',
+  email: 'email',
   mobile: 'mobile',
-  email: 'email'
+  city: 'city',
+  address: 'address'
 } as const
 
 export type CustomerReferenceOrderByRelevanceFieldEnum = (typeof CustomerReferenceOrderByRelevanceFieldEnum)[keyof typeof CustomerReferenceOrderByRelevanceFieldEnum]

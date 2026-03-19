@@ -1,18 +1,23 @@
 import { prisma } from "../infrastructure/database/prisma-provider.js";
 import { PermissionRepository } from "../infrastructure/database/Repository/permission.repository.js";
 import { UserRepository } from "../infrastructure/database/Repository/user.repository.js";
+import { RMQ_P_RK_USER_CREATE } from "../infrastructure/rabbitmq/config/rmq-config.js";
+import { rmqPublisher } from "../infrastructure/rabbitmq/rmq.provider.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
 import { SetUserPermissionDto } from "../schemas/user/request/set-user-permission.schema.js";
 import { SetUserRoleDto } from "../schemas/user/request/set-user-role.schema.js";
 import { buildFindManyArgs } from "../utils/prisma.util.js";
 
-export const userService = { getMany, getUserForLogin, setUserRole, setUserPermissions };
+export const userService = { getMany, getOrCreateUserForLogin, setUserRole, setUserPermissions };
 const userRep = new UserRepository();
 const permissionRep = new PermissionRepository();
 
-async function getUserForLogin(mobile: string) {
+async function getOrCreateUserForLogin(mobile: string) {
   let user = await userRep.findUnique({ where: { mobile } });
-  if (!user) user = await userRep.create({ data: { mobile } });
+  if (!user) {
+    user = await userRep.create({ data: { mobile } });
+    await rmqPublisher.publish(RMQ_P_RK_USER_CREATE, user);
+  }
 
   const permissions = await permissionRep.findMany({
     where: { UserPermissions: { every: { userId: user.id } } },
