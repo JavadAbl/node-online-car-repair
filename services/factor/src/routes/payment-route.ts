@@ -1,7 +1,7 @@
 import express from "express";
 import { useValidate } from "../middlewares/use-validate.js";
-import { CreatePaymentSchema } from "../schemas/payment/create-payment-schema.js";
-import { UpdatePaymentSchema } from "../schemas/payment/update-payment-schema.js";
+import { CreatePaymentSchema } from "../schemas/payment/request/create-payment-schema.js";
+import { UpdatePaymentSchema } from "../schemas/payment/request/update-payment-schema.js";
 import { paymentController } from "../controllers/payment-controller.js";
 import { GetManyQuerySchema } from "../schemas/common/get-many-request.schema.js";
 import { ParamIdSchema } from "../schemas/common/param-id-schema.js";

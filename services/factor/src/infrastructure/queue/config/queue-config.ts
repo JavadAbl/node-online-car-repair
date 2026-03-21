@@ -1,0 +1,15 @@
+export const QUEUE_EVENT_CUSTOMER_CREATE = "vehicle.event_customer_create";
+export const WORKER_EVENT_CUSTOMER_CREATE_CONCURRENCY = 1;
+export const WORKER_EVENT_CUSTOMER_CREATE_INTERVAL_DELAY = 2500;
+
+export const QUEUE_EVENT_CUSTOMER_UPDATE = "vehicle.event_customer_update";
+export const WORKER_EVENT_CUSTOMER_UPDATE_CONCURRENCY = 1;
+export const WORKER_EVENT_CUSTOMER_UPDATE_INTERVAL_DELAY = 2500;
+
+export const QUEUE_EVENT_SERVICE_CREATE = "vehicle.event_service_create";
+export const WORKER_EVENT_SERVICE_CREATE_CONCURRENCY = 1;
+export const WORKER_EVENT_SERVICE_CREATE_INTERVAL_DELAY = 2500;
+
+export const QUEUE_EVENT_SERVICE_UPDATE = "vehicle.event_service_update";
+export const WORKER_EVENT_SERVICE_UPDATE_CONCURRENCY = 1;
+export const WORKER_EVENT_SERVICE_UPDATE_INTERVAL_DELAY = 2500;

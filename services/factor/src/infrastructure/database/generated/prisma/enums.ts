@@ -9,24 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const InboxEventStatus = {
-  PENDING: 'PENDING',
-  Handled: 'Handled',
-  Error: 'Error'
-} as const
-
-export type InboxEventStatus = (typeof InboxEventStatus)[keyof typeof InboxEventStatus]
-
-
-export const OutboxEventStatus = {
-  PENDING: 'PENDING',
-  Handled: 'Handled',
-  Error: 'Error'
-} as const
-
-export type OutboxEventStatus = (typeof OutboxEventStatus)[keyof typeof OutboxEventStatus]
-
-
 export const FactorStatus = {
   DRAFT: 'DRAFT',
   ISSUED: 'ISSUED',
@@ -57,3 +39,13 @@ export const PaymentStatus = {
 } as const
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const InboxEventStatus = {
+  Pending: 'Pending',
+  InQueue: 'InQueue',
+  Handled: 'Handled',
+  Error: 'Error'
+} as const
+
+export type InboxEventStatus = (typeof InboxEventStatus)[keyof typeof InboxEventStatus]

@@ -2,13 +2,13 @@ import { StatusCodes } from "http-status-codes";
 import { FactorItem } from "../infrastructure/database/generated/prisma/client.js";
 import { prisma } from "../infrastructure/database/prisma-provider.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
-import { CreateFactor } from "../schemas/factor/create-factor-schema.js";
-import { UpdateFactor } from "../schemas/factor/update-factor-schema.js";
+import { CreateFactor } from "../schemas/factor/request/create-factor-schema.js";
+import { UpdateFactor } from "../schemas/factor/request/update-factor-schema.js";
 import { FactorDto } from "../types/dto/factor/factor-dto.js";
 import { Service } from "../types/event-types/service-event-types.js";
-import { AppError, NotFoundError } from "../utils/app-error.js";
-import { generateFactorNumber } from "../utils/app-utils.js";
-import { buildFindManyArgs } from "../utils/prisma-util.js";
+import { AppError, NotFoundError } from "../utils/app.error.js";
+import { generateFactorNumber } from "../utils/app.utils.js";
+import { buildFindManyArgs } from "../utils/prisma.util.js";
 import { serviceEntityService } from "./service-reference-service.js";
 
 function getMany(query: GetManyQuery<"Factor">) {

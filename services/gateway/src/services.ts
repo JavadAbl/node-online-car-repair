@@ -1,1 +1,1 @@
-export const SERVICES = { notification: "http://localhost:3020", vehicle: "http://localhost:3021" };
+export const SERVICES = { notification: "https://localhost:3020", vehicle: "https://localhost:3021" };

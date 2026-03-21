@@ -1,6 +1,6 @@
 import { prisma } from "../infrastructure/database/prisma-provider.js";
 import { CreateCustomer, UpdateCustomer } from "../types/event-types/customer-event-types.js";
-import { NotFoundError } from "../utils/app-error.js";
+import { NotFoundError } from "../utils/app.error.js";
 
 async function createCustomer(payload: CreateCustomer) {
   const { id } = payload;

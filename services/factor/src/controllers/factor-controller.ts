@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { factorService } from "../services/factor-service.js";
 import { TypedRequest } from "../types/express.js";
-import { CreateFactor } from "../schemas/factor/create-factor-schema.js";
+import { CreateFactor } from "../schemas/factor/request/create-factor-schema.js";
 import { ParamId } from "../schemas/common/param-id-schema.js";
-import { UpdateFactor } from "../schemas/factor/update-factor-schema.js";
+import { UpdateFactor } from "../schemas/factor/request/update-factor-schema.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
 import { Factor } from "../infrastructure/database/generated/prisma/client.js";
 

@@ -11,10 +11,9 @@ async function createService(payload: CreateService) {
 }
 
 async function updateService(payload: UpdateService) {
-  const { id } = payload;
+  const { id, ...body } = payload;
   await serviceRep.findAndCheckExistsBy({ select: { id: true }, where: { id } }, "id", id);
-  delete payload.id;
-  return await serviceRep.update({ select: { id: true }, where: { id }, data: payload });
+  return await serviceRep.update({ select: { id: true }, where: { id }, data: body });
 }
 
 export const serviceService = { createService, updateService };

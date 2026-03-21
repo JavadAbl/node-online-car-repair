@@ -38,27 +38,30 @@ export type CustomerReferenceMinAggregateOutputType = {
   id: number | null
   firstName: string | null
   lastName: string | null
-  nationalCode: string | null
-  mobile: string | null
   email: string | null
+  mobile: string | null
+  city: string | null
+  address: string | null
 }
 
 export type CustomerReferenceMaxAggregateOutputType = {
   id: number | null
   firstName: string | null
   lastName: string | null
-  nationalCode: string | null
-  mobile: string | null
   email: string | null
+  mobile: string | null
+  city: string | null
+  address: string | null
 }
 
 export type CustomerReferenceCountAggregateOutputType = {
   id: number
   firstName: number
   lastName: number
-  nationalCode: number
-  mobile: number
   email: number
+  mobile: number
+  city: number
+  address: number
   _all: number
 }
 
@@ -75,27 +78,30 @@ export type CustomerReferenceMinAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  nationalCode?: true
-  mobile?: true
   email?: true
+  mobile?: true
+  city?: true
+  address?: true
 }
 
 export type CustomerReferenceMaxAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  nationalCode?: true
-  mobile?: true
   email?: true
+  mobile?: true
+  city?: true
+  address?: true
 }
 
 export type CustomerReferenceCountAggregateInputType = {
   id?: true
   firstName?: true
   lastName?: true
-  nationalCode?: true
-  mobile?: true
   email?: true
+  mobile?: true
+  city?: true
+  address?: true
   _all?: true
 }
 
@@ -187,11 +193,12 @@ export type CustomerReferenceGroupByArgs<ExtArgs extends runtime.Types.Extension
 
 export type CustomerReferenceGroupByOutputType = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName: string | null
+  lastName: string | null
+  email: string | null
   mobile: string
-  email: string
+  city: string | null
+  address: string | null
   _count: CustomerReferenceCountAggregateOutputType | null
   _avg: CustomerReferenceAvgAggregateOutputType | null
   _sum: CustomerReferenceSumAggregateOutputType | null
@@ -219,45 +226,49 @@ export type CustomerReferenceWhereInput = {
   OR?: Prisma.CustomerReferenceWhereInput[]
   NOT?: Prisma.CustomerReferenceWhereInput | Prisma.CustomerReferenceWhereInput[]
   id?: Prisma.IntFilter<"CustomerReference"> | number
-  firstName?: Prisma.StringFilter<"CustomerReference"> | string
-  lastName?: Prisma.StringFilter<"CustomerReference"> | string
-  nationalCode?: Prisma.StringFilter<"CustomerReference"> | string
+  firstName?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  lastName?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  email?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
   mobile?: Prisma.StringFilter<"CustomerReference"> | string
-  email?: Prisma.StringFilter<"CustomerReference"> | string
+  city?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  address?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
   factors?: Prisma.FactorListRelationFilter
 }
 
 export type CustomerReferenceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  firstName?: Prisma.SortOrder
-  lastName?: Prisma.SortOrder
-  nationalCode?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   mobile?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   factors?: Prisma.FactorOrderByRelationAggregateInput
   _relevance?: Prisma.CustomerReferenceOrderByRelevanceInput
 }
 
 export type CustomerReferenceWhereUniqueInput = Prisma.AtLeast<{
   id?: number
+  email?: string
+  mobile?: string
   AND?: Prisma.CustomerReferenceWhereInput | Prisma.CustomerReferenceWhereInput[]
   OR?: Prisma.CustomerReferenceWhereInput[]
   NOT?: Prisma.CustomerReferenceWhereInput | Prisma.CustomerReferenceWhereInput[]
-  firstName?: Prisma.StringFilter<"CustomerReference"> | string
-  lastName?: Prisma.StringFilter<"CustomerReference"> | string
-  nationalCode?: Prisma.StringFilter<"CustomerReference"> | string
-  mobile?: Prisma.StringFilter<"CustomerReference"> | string
-  email?: Prisma.StringFilter<"CustomerReference"> | string
+  firstName?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  lastName?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  city?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
+  address?: Prisma.StringNullableFilter<"CustomerReference"> | string | null
   factors?: Prisma.FactorListRelationFilter
-}, "id">
+}, "id" | "email" | "mobile">
 
 export type CustomerReferenceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  firstName?: Prisma.SortOrder
-  lastName?: Prisma.SortOrder
-  nationalCode?: Prisma.SortOrder
+  firstName?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   mobile?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CustomerReferenceCountOrderByAggregateInput
   _avg?: Prisma.CustomerReferenceAvgOrderByAggregateInput
   _max?: Prisma.CustomerReferenceMaxOrderByAggregateInput
@@ -270,78 +281,86 @@ export type CustomerReferenceScalarWhereWithAggregatesInput = {
   OR?: Prisma.CustomerReferenceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CustomerReferenceScalarWhereWithAggregatesInput | Prisma.CustomerReferenceScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"CustomerReference"> | number
-  firstName?: Prisma.StringWithAggregatesFilter<"CustomerReference"> | string
-  lastName?: Prisma.StringWithAggregatesFilter<"CustomerReference"> | string
-  nationalCode?: Prisma.StringWithAggregatesFilter<"CustomerReference"> | string
+  firstName?: Prisma.StringNullableWithAggregatesFilter<"CustomerReference"> | string | null
+  lastName?: Prisma.StringNullableWithAggregatesFilter<"CustomerReference"> | string | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"CustomerReference"> | string | null
   mobile?: Prisma.StringWithAggregatesFilter<"CustomerReference"> | string
-  email?: Prisma.StringWithAggregatesFilter<"CustomerReference"> | string
+  city?: Prisma.StringNullableWithAggregatesFilter<"CustomerReference"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"CustomerReference"> | string | null
 }
 
 export type CustomerReferenceCreateInput = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
   mobile: string
-  email: string
+  city?: string | null
+  address?: string | null
   factors?: Prisma.FactorCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerReferenceUncheckedCreateInput = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
   mobile: string
-  email: string
+  city?: string | null
+  address?: string | null
   factors?: Prisma.FactorUncheckedCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerReferenceUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   factors?: Prisma.FactorUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerReferenceUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   factors?: Prisma.FactorUncheckedUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerReferenceCreateManyInput = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
   mobile: string
-  email: string
+  city?: string | null
+  address?: string | null
 }
 
 export type CustomerReferenceUpdateManyMutationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerReferenceUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerReferenceScalarRelationFilter = {
@@ -359,9 +378,10 @@ export type CustomerReferenceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  nationalCode?: Prisma.SortOrder
-  mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  mobile?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  address?: Prisma.SortOrder
 }
 
 export type CustomerReferenceAvgOrderByAggregateInput = {
@@ -372,18 +392,20 @@ export type CustomerReferenceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  nationalCode?: Prisma.SortOrder
-  mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  mobile?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  address?: Prisma.SortOrder
 }
 
 export type CustomerReferenceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
-  nationalCode?: Prisma.SortOrder
-  mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  mobile?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  address?: Prisma.SortOrder
 }
 
 export type CustomerReferenceSumOrderByAggregateInput = {
@@ -406,20 +428,22 @@ export type CustomerReferenceUpdateOneRequiredWithoutFactorsNestedInput = {
 
 export type CustomerReferenceCreateWithoutFactorsInput = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
   mobile: string
-  email: string
+  city?: string | null
+  address?: string | null
 }
 
 export type CustomerReferenceUncheckedCreateWithoutFactorsInput = {
   id: number
-  firstName: string
-  lastName: string
-  nationalCode: string
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
   mobile: string
-  email: string
+  city?: string | null
+  address?: string | null
 }
 
 export type CustomerReferenceCreateOrConnectWithoutFactorsInput = {
@@ -440,20 +464,22 @@ export type CustomerReferenceUpdateToOneWithWhereWithoutFactorsInput = {
 
 export type CustomerReferenceUpdateWithoutFactorsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type CustomerReferenceUncheckedUpdateWithoutFactorsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  nationalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mobile?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -491,9 +517,10 @@ export type CustomerReferenceSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  nationalCode?: boolean
-  mobile?: boolean
   email?: boolean
+  mobile?: boolean
+  city?: boolean
+  address?: boolean
   factors?: boolean | Prisma.CustomerReference$factorsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerReferenceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["customerReference"]>
@@ -504,12 +531,13 @@ export type CustomerReferenceSelectScalar = {
   id?: boolean
   firstName?: boolean
   lastName?: boolean
-  nationalCode?: boolean
-  mobile?: boolean
   email?: boolean
+  mobile?: boolean
+  city?: boolean
+  address?: boolean
 }
 
-export type CustomerReferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "nationalCode" | "mobile" | "email", ExtArgs["result"]["customerReference"]>
+export type CustomerReferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "mobile" | "city" | "address", ExtArgs["result"]["customerReference"]>
 export type CustomerReferenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   factors?: boolean | Prisma.CustomerReference$factorsArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerReferenceCountOutputTypeDefaultArgs<ExtArgs>
@@ -522,11 +550,12 @@ export type $CustomerReferencePayload<ExtArgs extends runtime.Types.Extensions.I
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    firstName: string
-    lastName: string
-    nationalCode: string
+    firstName: string | null
+    lastName: string | null
+    email: string | null
     mobile: string
-    email: string
+    city: string | null
+    address: string | null
   }, ExtArgs["result"]["customerReference"]>
   composites: {}
 }
@@ -900,9 +929,10 @@ export interface CustomerReferenceFieldRefs {
   readonly id: Prisma.FieldRef<"CustomerReference", 'Int'>
   readonly firstName: Prisma.FieldRef<"CustomerReference", 'String'>
   readonly lastName: Prisma.FieldRef<"CustomerReference", 'String'>
-  readonly nationalCode: Prisma.FieldRef<"CustomerReference", 'String'>
-  readonly mobile: Prisma.FieldRef<"CustomerReference", 'String'>
   readonly email: Prisma.FieldRef<"CustomerReference", 'String'>
+  readonly mobile: Prisma.FieldRef<"CustomerReference", 'String'>
+  readonly city: Prisma.FieldRef<"CustomerReference", 'String'>
+  readonly address: Prisma.FieldRef<"CustomerReference", 'String'>
 }
     
 

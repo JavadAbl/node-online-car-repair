@@ -124,9 +124,10 @@ export const CustomerReferenceScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
   lastName: 'lastName',
-  nationalCode: 'nationalCode',
+  email: 'email',
   mobile: 'mobile',
-  email: 'email'
+  city: 'city',
+  address: 'address'
 } as const
 
 export type CustomerReferenceScalarFieldEnum = (typeof CustomerReferenceScalarFieldEnum)[keyof typeof CustomerReferenceScalarFieldEnum]
@@ -143,9 +144,10 @@ export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFiel
 
 export const InboxEventScalarFieldEnum = {
   id: 'id',
+  messageId: 'messageId',
+  appId: 'appId',
   queue: 'queue',
   routingKey: 'routingKey',
-  serviceName: 'serviceName',
   status: 'status',
   captureAt: 'captureAt',
   handledAt: 'handledAt',
@@ -158,11 +160,9 @@ export type InboxEventScalarFieldEnum = (typeof InboxEventScalarFieldEnum)[keyof
 
 export const OutboxEventScalarFieldEnum = {
   id: 'id',
+  messageId: 'messageId',
   routingKey: 'routingKey',
-  status: 'status',
-  captureAt: 'captureAt',
-  handledAt: 'handledAt',
-  error: 'error',
+  publishAt: 'publishAt',
   payload: 'payload'
 } as const
 
@@ -218,9 +218,10 @@ export type PaymentOrderByRelevanceFieldEnum = (typeof PaymentOrderByRelevanceFi
 export const CustomerReferenceOrderByRelevanceFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
-  nationalCode: 'nationalCode',
+  email: 'email',
   mobile: 'mobile',
-  email: 'email'
+  city: 'city',
+  address: 'address'
 } as const
 
 export type CustomerReferenceOrderByRelevanceFieldEnum = (typeof CustomerReferenceOrderByRelevanceFieldEnum)[keyof typeof CustomerReferenceOrderByRelevanceFieldEnum]
@@ -251,9 +252,10 @@ export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const InboxEventOrderByRelevanceFieldEnum = {
+  messageId: 'messageId',
+  appId: 'appId',
   queue: 'queue',
   routingKey: 'routingKey',
-  serviceName: 'serviceName',
   error: 'error'
 } as const
 
@@ -261,8 +263,8 @@ export type InboxEventOrderByRelevanceFieldEnum = (typeof InboxEventOrderByRelev
 
 
 export const OutboxEventOrderByRelevanceFieldEnum = {
-  routingKey: 'routingKey',
-  error: 'error'
+  messageId: 'messageId',
+  routingKey: 'routingKey'
 } as const
 
 export type OutboxEventOrderByRelevanceFieldEnum = (typeof OutboxEventOrderByRelevanceFieldEnum)[keyof typeof OutboxEventOrderByRelevanceFieldEnum]

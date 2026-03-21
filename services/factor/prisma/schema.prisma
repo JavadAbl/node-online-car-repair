@@ -15,7 +15,7 @@ model Factor {
   factorNumber String       @unique
   status       FactorStatus @default(DRAFT)
   issuedAt     DateTime     @default(now())
-  totalPrice   Float
+  totalPrice   Int
   description  String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -32,8 +32,8 @@ model FactorItem {
   id          Int     @id @default(autoincrement())
   description String?
   quantity    Int     @default(1)
-  unitPrice   Float
-  totalPrice  Float
+  unitPrice   Int
+  totalPrice  Int
 
   factor   Factor @relation(fields: [factorId], references: [id])
   factorId Int
@@ -44,7 +44,7 @@ model FactorItem {
 
 model Payment {
   id            Int           @id @default(autoincrement())
-  amount        Float
+  amount        Int
   method        PaymentMethod
   status        PaymentStatus @default(PENDING)
   transactionId String // From payment gateway (e.g., Stripe, PayPal)
@@ -60,12 +60,13 @@ model Payment {
 
 //Reference Tables--------------------------------------------------------
 model CustomerReference {
-  id           Int    @id
-  firstName    String
-  lastName     String
-  nationalCode String
-  mobile       String
-  email        String
+  id        Int     @id
+  firstName String?
+  lastName  String?
+  email     String? @unique()
+  mobile    String  @unique()
+  city      String?
+  address   String?
 
   factors Factor[]
 }
@@ -73,46 +74,12 @@ model CustomerReference {
 model ServiceReference {
   id    Int    @id
   name  String
-  price Float
+  price Int
 
   factorItems FactorItem[]
 }
 
-model InboxEvent {
-  id          Int              @id @default(autoincrement())
-  queue       String
-  routingKey  String
-  serviceName String
-  status      InboxEventStatus @default(PENDING)
-  captureAt   DateTime         @default(now())
-  handledAt   DateTime?
-  error       String?
-  payload     Json
-}
-
-model OutboxEvent {
-  id         Int               @id @default(autoincrement())
-  routingKey String
-  status     OutboxEventStatus @default(PENDING)
-  captureAt  DateTime          @default(now())
-  handledAt  DateTime?
-  error      String?
-  payload    Json
-}
-
 // Enums---------------------------------------------------------------
-enum InboxEventStatus {
-  PENDING
-  Handled
-  Error
-}
-
-enum OutboxEventStatus {
-  PENDING
-  Handled
-  Error
-}
-
 enum FactorStatus {
   DRAFT
   ISSUED
@@ -134,4 +101,33 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+}
+
+//Box Models-------------------------------------------------------
+model InboxEvent {
+  id         Int              @id @default(autoincrement())
+  messageId  String           @unique()
+  appId      String
+  queue      String
+  routingKey String
+  status     InboxEventStatus @default(Pending)
+  captureAt  DateTime         @default(now())
+  handledAt  DateTime?
+  error      String?
+  payload    Json
+}
+
+model OutboxEvent {
+  id         Int      @id @default(autoincrement())
+  messageId  String   @unique()
+  routingKey String
+  publishAt  DateTime @default(now())
+  payload    Json
+}
+
+enum InboxEventStatus {
+  Pending
+  InQueue
+  Handled
+  Error
 }

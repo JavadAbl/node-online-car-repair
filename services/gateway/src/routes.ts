@@ -27,16 +27,33 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
         // ---------------------------------------------------------
         // 2. The Main Gateway Routes (Existing)
         // ---------------------------------------------------------
-        serviceInstance.all(`/${serviceName}/:tail(.*)`, async (request, reply) => {
-          const tail = (request.params as { tail?: string }).tail ?? "";
-          const dest = tail ? `/${tail}` : "/";
-          return reply.from(dest);
-        });
 
-        serviceInstance.all(`/${serviceName}`, async (request, reply) => {
-          reply.redirect(`/${serviceName}/`);
-        });
+        serviceInstance.all(
+          `/${serviceName}/:tail(.*)`,
+          { preValidation: [serviceInstance.auth] },
+          async (request, reply) => {
+            const tail = (request.params as { tail?: string }).tail ?? "";
+            const dest = tail ? `/${tail}` : "/";
+            return reply.from(dest);
+          },
+        );
 
+        serviceInstance.all(
+          `/${serviceName}`,
+          { preValidation: [serviceInstance.auth] },
+          async (request, reply) => {
+            reply.redirect(`/${serviceName}/`);
+          },
+        );
+
+        if (serviceName === "vehicle") {
+          serviceInstance.get("/vehicle/test/", (request, reply) => {
+            return reply.from("/test");
+          });
+          serviceInstance.get("/vehicle/test", (request, reply) => {
+            return reply.from("/test");
+          });
+        }
         // ---------------------------------------------------------
         // 3. The Swagger Proxy Routes (Moved here for HTTP/2)
         // ---------------------------------------------------------

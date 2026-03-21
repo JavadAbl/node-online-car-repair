@@ -251,7 +251,7 @@ export type FactorWhereInput = {
   factorNumber?: Prisma.StringFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalPrice?: Prisma.IntFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -285,7 +285,7 @@ export type FactorWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.FactorWhereInput | Prisma.FactorWhereInput[]
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalPrice?: Prisma.IntFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -320,7 +320,7 @@ export type FactorScalarWhereWithAggregatesInput = {
   factorNumber?: Prisma.StringWithAggregatesFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusWithAggregatesFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.FloatWithAggregatesFilter<"Factor"> | number
+  totalPrice?: Prisma.IntWithAggregatesFilter<"Factor"> | number
   description?: Prisma.StringNullableWithAggregatesFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
@@ -358,7 +358,7 @@ export type FactorUpdateInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,7 +372,7 @@ export type FactorUncheckedUpdateInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,7 +397,7 @@ export type FactorUpdateManyMutationInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,7 +408,7 @@ export type FactorUncheckedUpdateManyInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -496,7 +496,7 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type FloatFieldUpdateOperationsInput = {
+export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
@@ -506,14 +506,6 @@ export type FloatFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type FactorCreateNestedOneWithoutItemsInput = {
@@ -631,7 +623,7 @@ export type FactorUpdateWithoutItemsInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -644,7 +636,7 @@ export type FactorUncheckedUpdateWithoutItemsInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,7 +689,7 @@ export type FactorUpdateWithoutPaymentInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -710,7 +702,7 @@ export type FactorUncheckedUpdateWithoutPaymentInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -777,7 +769,7 @@ export type FactorScalarWhereInput = {
   factorNumber?: Prisma.StringFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalPrice?: Prisma.IntFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -799,7 +791,7 @@ export type FactorUpdateWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -812,7 +804,7 @@ export type FactorUncheckedUpdateWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -825,7 +817,7 @@ export type FactorUncheckedUpdateManyWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1293,7 +1285,7 @@ export interface FactorFieldRefs {
   readonly factorNumber: Prisma.FieldRef<"Factor", 'String'>
   readonly status: Prisma.FieldRef<"Factor", 'FactorStatus'>
   readonly issuedAt: Prisma.FieldRef<"Factor", 'DateTime'>
-  readonly totalPrice: Prisma.FieldRef<"Factor", 'Float'>
+  readonly totalPrice: Prisma.FieldRef<"Factor", 'Int'>
   readonly description: Prisma.FieldRef<"Factor", 'String'>
   readonly createdAt: Prisma.FieldRef<"Factor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Factor", 'DateTime'>

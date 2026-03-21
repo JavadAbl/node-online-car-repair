@@ -2,7 +2,7 @@ import { ServiceReferenceFindManyArgs } from "../infrastructure/database/generat
 import { prisma } from "../infrastructure/database/prisma-provider.js";
 import { toServiceDto } from "../types/dto/serivce/service-dto.js";
 import { CreateService, UpdateService } from "../types/event-types/service-event-types.js";
-import { NotFoundError } from "../utils/app-error.js";
+import { NotFoundError } from "../utils/app.error.js";
 
 async function getById(id: number) {
   const service = await prisma.serviceReference.findUnique({ where: { id } });

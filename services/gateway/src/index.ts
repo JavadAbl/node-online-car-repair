@@ -1,12 +1,11 @@
 // index.ts
-import fastify from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { appConfig } from "./utils/app-config.js";
-import { fastifyReplyFrom } from "@fastify/reply-from";
 import { SERVICES } from "./services.js";
-import { authPlugin } from "./plugins/auth-plugin.js";
-import swagger from "@fastify/swagger"; // REQUIRED DEPENDENCY
+import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { serviceProxyPlugin } from "./routes.js";
+import { fastifyJwt } from "@fastify/jwt";
 
 export const app = fastify({
   logger: true,
@@ -33,8 +32,15 @@ async function startHttpServer() {
 }
 
 async function setupFastifyPlugins() {
-  //  Auth plugin
-  await app.register(authPlugin);
+  app.register(fastifyJwt, { secret: "supersecretkey" });
+
+  app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {
+    try {
+      await request.jwtVerify();
+    } catch (err) {
+      reply.send(err);
+    }
+  });
 
   //  Swagger core (minimal config - only needed for swagger-ui dependency)
   await app.register(swagger, {

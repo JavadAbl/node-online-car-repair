@@ -11,10 +11,9 @@ async function createCustomer(payload: CreateCustomer) {
 }
 
 async function updateCustomer(payload: UpdateCustomer) {
-  const { id } = payload;
+  const { id, ...body } = payload;
   await customerRep.findAndCheckExistsBy({ select: { id: true }, where: { id } }, "id", id);
-  delete payload.id;
-  return await customerRep.update({ select: { id: true }, where: { id }, data: payload });
+  return await customerRep.update({ select: { id: true }, where: { id }, data: body });
 }
 
 export const customerService = { createCustomer, updateCustomer };

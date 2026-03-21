@@ -2,13 +2,7 @@ import fs from "fs";
 import path from "path";
 
 // Define the configuration with the same logic as your source file
-const config = {
-  NODE_ENV: "development",
-  HTTP_PORT: 3000,
-  HTTP_HOST: "localhost",
-  KEYCLOAK_ADDRESS: "http://localhost:8080",
-  KEYCLOAK_REALM: "master",
-};
+const config = { NODE_ENV: "development", HTTP_PORT: 3000, HTTP_HOST: "localhost" };
 
 // 1. Convert the object into a string format for .env (KEY=VALUE)
 const envContent = Object.entries(config)

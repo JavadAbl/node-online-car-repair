@@ -69,7 +69,7 @@ model CustomerReference {
 model ServiceReference {
   id    Int    @id
   name  String
-  price Float
+  price Int
 
   vehicleServiceHistories VehicleService[]
 }

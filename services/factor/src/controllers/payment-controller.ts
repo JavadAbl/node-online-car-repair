@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { paymentService } from "../services/payment-service.js";
 import { TypedRequest } from "../types/express.js";
-import { CreatePayment } from "../schemas/payment/create-payment-schema.js";
-import { UpdatePayment } from "../schemas/payment/update-payment-schema.js";
+import { CreatePayment } from "../schemas/payment/request/create-payment-schema.js";
+import { UpdatePayment } from "../schemas/payment/request/update-payment-schema.js";
 import { ParamId } from "../schemas/common/param-id-schema.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
 

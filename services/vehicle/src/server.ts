@@ -6,9 +6,17 @@ import { vehicleRoutes } from "./routes/vehicle.route.js";
 import { vehicleServiceRoutes } from "./routes/vehicle-service.route.js";
 import fastify from "fastify";
 import { testRoutes } from "./routes/test.route.js";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 export const app = fastify({
   logger: false,
+  http2: true,
+  https: {
+    key: readFileSync(join(process.cwd(), "localhost-private.key")),
+    cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
+    keepAlive: true,
+  },
   caseSensitive: false,
   ajv: { customOptions: { removeAdditional: "all" } },
 });
