@@ -14,7 +14,10 @@ import { CustomerService } from '../services/customer.service';
 import { UpdateCustomerDto } from '../dto/request/update-customer.dto';
 import { CustomerDto } from '../dto/response/customer.dto';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { genControllerPermissionName } from 'src/app-permissions';
 
+@Auth({ permission: genControllerPermissionName(CustomerController.name) })
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}

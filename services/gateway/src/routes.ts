@@ -34,7 +34,17 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
           async (request, reply) => {
             const tail = (request.params as { tail?: string }).tail ?? "";
             const dest = tail ? `/${tail}` : "/";
-            return reply.from(dest);
+
+            const jwtPayload = request.user as any;
+
+            return reply.from(dest, {
+              rewriteRequestHeaders: (req, headers) => ({
+                ...headers,
+                "x-user-id": jwtPayload.userId,
+                "x-user-role": jwtPayload.role,
+                "x-user-permissions": jwtPayload.permissions,
+              }),
+            });
           },
         );
 
@@ -46,6 +56,7 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
           },
         );
 
+        //Public routes
         if (serviceName === "vehicle") {
           serviceInstance.get("/vehicle/test/", (request, reply) => {
             return reply.from("/test");

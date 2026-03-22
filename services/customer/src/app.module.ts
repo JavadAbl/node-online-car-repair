@@ -7,6 +7,8 @@ import { PrismaModule } from './infrastructure-modules/prsima-module/prisma.modu
 import { CronModule } from './infrastructure-modules/cron-module/cron.module';
 import { QueueModule } from './infrastructure-modules/queue-module/queue.module';
 import { EventBoxModule } from './infrastructure-modules/event-box-module/event-box.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   imports: [
@@ -26,6 +28,6 @@ import { EventBoxModule } from './infrastructure-modules/event-box-module/event-
     EventBoxModule,
     CustomerModule,
   ],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}

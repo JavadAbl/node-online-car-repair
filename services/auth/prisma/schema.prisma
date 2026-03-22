@@ -33,8 +33,9 @@ model UserPermission {
 }
 
 model Permission {
-  id   Int    @id @default(autoincrement())
-  name String @unique()
+  id   Int            @id @default(autoincrement())
+  name String         @unique()
+  type PermissionType
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
@@ -42,44 +43,45 @@ model Permission {
   UserPermissions UserPermission[]
 }
 
-model InboxEvent {
-  id          Int              @id @default(autoincrement())
-  queue       String
-  routingKey  String
-  serviceName String
-  status      InboxEventStatus @default(PENDING)
-  captureAt   DateTime         @default(now())
-  handledAt   DateTime?
-  error       String?
-  payload     Json
-}
-
-model OutboxEvent {
-  id         Int               @id @default(autoincrement())
-  routingKey String
-  status     OutboxEventStatus @default(PENDING)
-  captureAt  DateTime          @default(now())
-  handledAt  DateTime?
-  error      String?
-  payload    Json
-}
-
 // Enums-------------------------------------------------------------------------
-enum InboxEventStatus {
-  PENDING
-  Handled
-  Error
-}
-
-enum OutboxEventStatus {
-  PENDING
-  Handled
-  Error
-}
-
 enum Role {
   Admin
   NewUser
   Customer
   Operator
+}
+
+enum PermissionType {
+  Service
+  Controller
+  Action
+}
+
+//Box Models-------------------------------------------------------
+model InboxEvent {
+  id         Int              @id @default(autoincrement())
+  messageId  String           @unique()
+  appId      String
+  queue      String
+  routingKey String
+  status     InboxEventStatus @default(Pending)
+  captureAt  DateTime         @default(now())
+  handledAt  DateTime?
+  error      String?
+  payload    Json
+}
+
+model OutboxEvent {
+  id         Int      @id @default(autoincrement())
+  messageId  String   @unique()
+  routingKey String
+  publishAt  DateTime @default(now())
+  payload    Json
+}
+
+enum InboxEventStatus {
+  Pending
+  InQueue
+  Handled
+  Error
 }

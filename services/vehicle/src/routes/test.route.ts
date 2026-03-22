@@ -7,7 +7,7 @@ import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { Value } from "@sinclair/typebox/value";
 
 export const testRoutes: FastifyPluginAsync = async (app) => {
-  app.get("/", (request, reply) => {
+  app.get("/", { auth: { roles: ["Admin"] } }, (request, reply) => {
     return { x: 1 };
   });
 

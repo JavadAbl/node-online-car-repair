@@ -26,8 +26,6 @@ async function sendOtp(payload: SendOtpDto) {
 
   //todo
   //Mock send sms
-
-  return { otp };
 }
 
 async function verifyOtp(payload: VerifyOtpDto): Promise<AuthDto> {

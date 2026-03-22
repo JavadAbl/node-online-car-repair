@@ -8,14 +8,15 @@ import fastify from "fastify";
 import { testRoutes } from "./routes/test.route.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { authPlugin } from "./plugins/auth.plugin.js";
 
 export const app = fastify({
-  logger: false,
+  logger: true,
   http2: true,
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
-    keepAlive: true,
+    //   allowHTTP1: true,
   },
   caseSensitive: false,
   ajv: { customOptions: { removeAdditional: "all" } },
@@ -41,6 +42,8 @@ export async function startHttpServer() {
       uiConfig: { deepLinking: false, docExpansion: "list", persistAuthorization: true },
     });
   }
+
+  app.register(authPlugin);
 
   app.register(testRoutes, { prefix: "/Test" });
   app.register(vehicleRoutes, { prefix: "/Vehicles" });

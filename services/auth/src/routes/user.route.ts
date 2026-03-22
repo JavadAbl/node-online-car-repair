@@ -1,11 +1,15 @@
 import { FastifyPluginAsync } from "fastify";
 import { userService } from "../services/user.service.js";
 import { SetUserRoleRouteType, SetUserRoleSchema } from "../schemas/user/request/set-user-role.schema.js";
+import { GetManyUsersRouteType, GetManyUsersSchema } from "../schemas/user/request/get-many-users.schema.js";
 import {
   SetUserPermissionRouteType,
   SetUserPermissionSchema,
 } from "../schemas/user/request/set-user-permission.schema.js";
-import { GetManyUsersRouteType, GetManyUsersSchema } from "../schemas/user/request/get-many-users.schema.js";
+import {
+  GetUserPermissionRouteType,
+  GetUserPermissionSchema,
+} from "../schemas/user/request/get-user-permission.schema.js";
 
 export const userRoutes: FastifyPluginAsync = async (app) => {
   // Get many users ------------------------------------------------
@@ -22,12 +26,30 @@ export const userRoutes: FastifyPluginAsync = async (app) => {
     },
   );
 
-  // Set user permissions ------------------------------------------------
+  // Add user permissions ------------------------------------------------
   app.post<SetUserPermissionRouteType>(
     "Admin/:id/SetPermissions",
     { schema: SetUserPermissionSchema },
     async (request, reply) => {
-      return userService.setUserPermissions(request.params.id, request.body);
+      return userService.addUserPermissions(request.params.id, request.body);
+    },
+  );
+
+  // Remove user permissions ------------------------------------------------
+  app.post<SetUserPermissionRouteType>(
+    "Admin/:id/SetPermissions",
+    { schema: SetUserPermissionSchema },
+    async (request, reply) => {
+      return userService.removeUserPermissions(request.params.id, request.body);
+    },
+  );
+
+  // Get user permissions ------------------------------------------------
+  app.get<GetUserPermissionRouteType>(
+    "Admin/:id/SetPermissions",
+    { schema: GetUserPermissionSchema },
+    async (request, reply) => {
+      return userService.getUserPermissions(request.params.id);
     },
   );
 };

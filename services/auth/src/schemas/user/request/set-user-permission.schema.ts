@@ -3,7 +3,7 @@ import { RouteGenericInterface, FastifySchema } from "fastify";
 import { IdParams, IdParamsSchema } from "../../common/id-params.schema.js";
 
 const SetUserPermissionBodySchema = Type.Object({
-  permissionIds: Type.Array(Type.Integer({ description: "Id of the permission" })),
+  name: Type.String({ description: "Name of the permission" }),
 });
 
 export const SetUserPermissionSchema: FastifySchema = {
@@ -19,5 +19,5 @@ export type SetUserPermissionDto = Static<typeof SetUserPermissionBodySchema>;
 export interface SetUserPermissionRouteType extends RouteGenericInterface {
   Params: IdParams;
   Body: SetUserPermissionDto;
-  Reply: undefined;
+  Reply: void;
 }

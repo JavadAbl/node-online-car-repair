@@ -13,30 +13,26 @@ import {
 
 export const authRoutes: FastifyPluginAsync = async (app) => {
   // Send otp ------------------------------------------------
-  app.post<SendOtpRouteType>("Send", { schema: SendOtpSchema }, async (request, reply) => {
-    return authService.sendOtp(request.body);
-  });
+  app.post<SendOtpRouteType>("Send", { schema: SendOtpSchema }, async (request, reply) =>
+    authService.sendOtp(request.body),
+  );
 
   // Send otp ------------------------------------------------
-  app.post<VerifyOtpRouteType>("Verify", { schema: VerifyOtpSchema }, async (request, reply) => {
-    return authService.verifyOtp(request.body);
-  });
+  app.post<VerifyOtpRouteType>("Verify", { schema: VerifyOtpSchema }, async (request, reply) =>
+    authService.verifyOtp(request.body),
+  );
 
   // Create Permission------------------------------------------------
   app.post<CreatePermissionRouteType>(
     "Admin/Permission",
     { schema: CreatePermissionSchema },
-    async (request, reply) => {
-      return authService.createPermission(request.body);
-    },
+    async (request, reply) => authService.createPermission(request.body),
   );
 
   // Delete Permission------------------------------------------------
   app.delete<DeletePermissionRouteType>(
     "Admin/Permission/:id",
     { schema: DeletePermissionSchema },
-    async (request, reply) => {
-      return authService.deletePermission(request.params.id);
-    },
+    async (request, reply) => authService.deletePermission(request.params.id),
   );
 };
