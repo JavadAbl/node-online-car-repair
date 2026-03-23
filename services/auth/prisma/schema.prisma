@@ -20,27 +20,40 @@ model User {
   userPermissions UserPermission[]
 }
 
+model PermissionReference {
+  name String         @id
+  type PermissionType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  RolePermissions RolePermission[]
+  userPermissions UserPermission[]
+}
+
 model UserPermission {
   id Int @id @default(autoincrement())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-  permissionId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  permission     PermissionReference @relation(fields: [permissionName], references: [name], onDelete: Cascade)
+  permissionName String
 }
 
-model Permission {
-  id   Int            @id @default(autoincrement())
-  name String         @unique()
-  type PermissionType
-
+model RolePermission {
+  id        Int      @id @default(autoincrement())
+  role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  UserPermissions UserPermission[]
+  permission     PermissionReference @relation(fields: [permissionName], references: [name], onDelete: Cascade)
+  permissionName String
+
+  @@unique([role, permissionName])
 }
 
 // Enums-------------------------------------------------------------------------

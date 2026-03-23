@@ -4,7 +4,7 @@ import { validateServiceCreate } from "../../schemas/event-schemas/service/creat
 import { validateServiceUpdate } from "../../schemas/event-schemas/service/update-service.schema.js";
 import { config } from "../config.js";
 import { RabbitMQClient } from "./client/rmq-client.js";
-import { RabbitMQConsumer } from "./client/rmq-cosumer.js";
+import { RabbitMQConsumer } from "./client/rmq-consumer.js";
 import { RabbitMQPublisher } from "./client/rmq-publisher.js";
 import { RabbitMQSetup } from "./client/rmq-setup.js";
 import {

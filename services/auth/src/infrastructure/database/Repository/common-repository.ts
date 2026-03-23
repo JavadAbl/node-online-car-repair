@@ -3,6 +3,9 @@ import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../prisma-provider.js";
 
 export class Repository<TModel extends keyof typeof prisma> {
+  get prisma() {
+    return prisma;
+  }
   constructor(private readonly model: TModel) {}
 
   private get entityName(): string {

@@ -42,7 +42,7 @@ export class AuthService {
       );
   }
 
-  createRolePermissions(rolePermissionEvent: RolePermissionCreateEvent) {
+  createRolePermission(rolePermissionEvent: RolePermissionCreateEvent) {
     const { name, role } = rolePermissionEvent;
     return this.authRep.createRolePermission({ data: { permissionName: name, role } });
   }

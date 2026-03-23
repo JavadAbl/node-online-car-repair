@@ -7,10 +7,10 @@ import { VerifyOtpDto } from "../schemas/auth/request/verify-otp.schema.js";
 import { userService } from "./user.service.js";
 import { tokenService } from "./token.service.js";
 import { AuthDto } from "../schemas/auth/reply/auth.schema.js";
-import { CreatePermissionDto } from "../schemas/auth/request/create-permission.schema.js";
 import { PermissionRepository } from "../infrastructure/database/Repository/permission.repository.js";
+import { PermissionsSyncEvent } from "../schemas/event-schemas/auth/permission-sync.schema.js";
 
-export const authService = { sendOtp, verifyOtp, createPermission, deletePermission };
+export const authService = { sendOtp, verifyOtp, syncPermission };
 const permissionRep = new PermissionRepository();
 
 const OTP_EXPIRE = 120; // 120 Second expiry
@@ -43,16 +43,27 @@ async function verifyOtp(payload: VerifyOtpDto): Promise<AuthDto> {
   return { accessToken, refreshToken, user };
 }
 
-async function createPermission(payload: CreatePermissionDto): Promise<void> {
-  const { name } = payload;
-  const lowerName = name.toLocaleLowerCase();
-  await permissionRep.checkDuplicateBy({ where: { name: lowerName } }, "name", name);
-  await permissionRep.create({ data: { name: lowerName } });
-}
+async function syncPermission(payload: PermissionsSyncEvent): Promise<void> {
+  // Use a transaction to ensure data integrity
+  await permissionRep.prisma.$transaction(async (tx) => {
+    // 1. Extract the names of the incoming permissions
+    const incomingNames = payload.map((p) => p.name);
 
-async function deletePermission(id: number): Promise<void> {
-  await permissionRep.findAndCheckExistsBy({ where: { id } }, "id", id);
-  await permissionRep.remove({ where: { id } });
+    // 2. Delete permissions that are NOT in the incoming array
+    // This handles the requirement: "if there is extra permission that doesnt exists in array should be removed"
+    await tx.permission.deleteMany({ where: { name: { notIn: incomingNames } } });
+
+    // 3. Upsert (Update or Insert) the incoming permissions
+    // This handles the requirement: "new permissions should be inserted"
+    // It also handles cases where the permission exists but the 'Type' might have changed.
+    for (const permission of payload) {
+      await tx.permission.upsert({
+        where: { name: permission.name },
+        update: { type: permission.type }, // Update type if it changed
+        create: { name: permission.name, type: permission.type },
+      });
+    }
+  });
 }
 
 function generateOtp() {
