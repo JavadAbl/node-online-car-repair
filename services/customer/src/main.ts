@@ -4,11 +4,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/error-handler/error-handler.filter';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from './common/config/config.type';
-import { addControllerPermissions } from './app-permissions';
+import { AuthService } from './infrastructure-modules/auth-module/auth.service';
 import { CustomerController } from './customer-module/_module/controllers/customer.controller';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const authService = app.get<AuthService>(AuthService);
+
+  authService.addControllerPermissions(CustomerController);
+  await authService.setupPermissions();
 
   app.useGlobalFilters(new AllExceptionsFilter());
 
@@ -17,8 +22,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<ConfigType>);
   const port = configService.get<AppConfig>('app')!.HTTP_PORT;
-
-  addControllerPermissions(CustomerController);
 
   await app.listen(port);
 }

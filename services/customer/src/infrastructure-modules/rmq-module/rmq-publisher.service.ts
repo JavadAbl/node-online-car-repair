@@ -22,4 +22,14 @@ export class RabbitMQPublisher {
     });
     await this.outboxRep.create({ data: { routingKey, payload: serializedPayload, messageId } });
   }
+
+  async publishNoLog<T>(routingKey: string, payload: T) {
+    const messageId = randomUUID();
+
+    await this.connection.publish(RMQ_EXCHANGE, routingKey, payload, {
+      appId: RMQ_APP_ID,
+      messageId,
+      persistent: true,
+    });
+  }
 }

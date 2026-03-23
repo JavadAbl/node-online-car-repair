@@ -9,6 +9,7 @@ import { QueueModule } from './infrastructure-modules/queue-module/queue.module'
 import { EventBoxModule } from './infrastructure-modules/event-box-module/event-box.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
+import { AuthModule } from './infrastructure-modules/auth-module/auth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthGuard } from './common/guards/auth.guard';
         abortEarly: true, // Stops validation on the first error
       },
     }),
+    AuthModule,
     QueueModule,
     RmqModule,
     PrismaModule,

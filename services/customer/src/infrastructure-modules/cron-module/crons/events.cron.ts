@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
-import { JOB_AUTH_USER_CREATE } from '../../queue-module/config/queue.config';
+import {
+  JOB_AUTH_ROLE_PERMISSION_CREATE,
+  JOB_AUTH_USER_CREATE,
+} from '../../queue-module/config/queue.config';
 import { InboxEventRepository } from '../../event-box-module/Repositories/inbox-event.repository';
-import { RMQ_Q_AUTH_USER_CREATE } from '../../rmq-module/config/rmq.config';
+import {
+  RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
+  RMQ_Q_AUTH_USER_CREATE,
+} from '../../rmq-module/config/rmq.config';
 import { CronLockService } from '../cron-lock.service';
 import { JobProvider } from 'src/infrastructure-modules/queue-module/job.provider';
 
@@ -23,6 +29,10 @@ export class InboxEventCron {
         switch (event.queue) {
           case RMQ_Q_AUTH_USER_CREATE:
             await this.jobProvider.addAuthApiJob(JOB_AUTH_USER_CREATE, event);
+            break;
+
+          case RMQ_Q_AUTH_ROLE_PERMISSION_CREATE:
+            await this.jobProvider.addAuthApiJob(JOB_AUTH_ROLE_PERMISSION_CREATE, event);
             break;
         }
       }

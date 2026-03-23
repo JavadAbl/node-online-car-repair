@@ -15,33 +15,28 @@ import { UpdateCustomerDto } from '../dto/request/update-customer.dto';
 import { CustomerDto } from '../dto/response/customer.dto';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
 import { Auth } from 'src/common/decorators/auth.decorator';
-import { genControllerPermissionName } from 'src/app-permissions';
 
-@Auth({ permission: genControllerPermissionName(CustomerController.name) })
 @Controller('customers')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Auth(CustomerController.name, CustomerController.prototype.getManyCustomers.name)
   @Get()
-  @HttpCode(HttpStatus.OK)
   getManyCustomers(@Query() query: GetManyQuery): Promise<CustomerDto[]> {
     return this.customerService.getMany(query as GetManyQueryType<'Customers'>);
   }
 
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
   async getById(@Param('id', ParseIntPipe) id: number): Promise<CustomerDto> {
     return this.customerService.getById(id);
   }
 
   @Get('mobile/:mobile')
-  @HttpCode(HttpStatus.OK)
   async getByMobile(@Param('mobile') mobile: string): Promise<CustomerDto> {
     return this.customerService.getByMobile(mobile);
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.OK)
   async update(
     @Param(ParseIntPipe) id: number,
     @Body() updateCustomerDto: UpdateCustomerDto,

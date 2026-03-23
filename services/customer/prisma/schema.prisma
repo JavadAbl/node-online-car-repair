@@ -27,6 +27,42 @@ model Customers {
   updatedAt DateTime @updatedAt
 }
 
+// Auth-------------------------------------------------------------------------
+model Permission {
+  name String         @id
+  type PermissionType
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  RolePermissions RolePermission[]
+}
+
+model RolePermission {
+  id        Int      @id @default(autoincrement())
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  permission     Permission @relation(fields: [permissionName], references: [name], onDelete: Cascade)
+  permissionName String
+
+  @@unique([role, permissionName])
+}
+
+enum Role {
+  Admin
+  NewUser
+  Customer
+  Operator
+}
+
+enum PermissionType {
+  Service
+  Controller
+  Action
+}
+
 //Box Models-------------------------------------------------------
 model InboxEvent {
   id         Int              @id @default(autoincrement())

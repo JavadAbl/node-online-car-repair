@@ -1,36 +1,40 @@
 // auth.guard.ts
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthConfig } from '../decorators/auth.decorator';
 import { DECORATOR_AUTH_KEY } from '../decorators/decorator-keys';
-import { Role } from 'src/app-permissions';
+import { AuthService } from 'src/infrastructure-modules/auth-module/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private readonly authService: AuthService,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const authConfig = this.reflector.getAllAndOverride<AuthConfig>(DECORATOR_AUTH_KEY, [
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const actionPermission = this.reflector.getAllAndOverride<string>(DECORATOR_AUTH_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    if (!authConfig) return true;
+    if (!actionPermission) return true;
 
     const request = context.switchToHttp().getRequest();
 
     const userRole = request.headers['x-user-role'];
-    const userPermission = request.headers['x-user-permissions'];
-    console.log(authConfig);
+    const userPermissions: string[] =
+      request.headers['x-user-permissions'] && JSON.parse(request.headers['x-user-permissions']);
 
-    if (userRole === Role.Admin) return true;
+    if (userPermissions && Array.isArray(userPermissions)) {
+      const permissionMatch = userPermissions.some((userPermission) =>
+        actionPermission.includes(userPermission),
+      );
+      if (permissionMatch) return true;
+    }
 
-    const roleMatch = authConfig.roles && authConfig.roles.includes(userRole) ? true : false;
-
-    const permissionMatch = authConfig?.permission && authConfig.permission === userPermission ? true : false;
-
-    if (roleMatch || permissionMatch) {
-      return true;
+    if (userRole) {
+      const roleMatch = await this.authService.findIncludedRolePermission(userRole, actionPermission);
+      if (roleMatch) return true;
     }
 
     throw new ForbiddenException();
