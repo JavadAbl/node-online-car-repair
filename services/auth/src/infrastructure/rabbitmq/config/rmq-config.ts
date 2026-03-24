@@ -8,3 +8,5 @@ export const RMQ_Q_RK_CUSTOMER_PERMISSION_SYNC = "customer.api-permission.sync";
 
 //Publish
 export const RMQ_P_RK_USER_CREATE = "auth.api_user.create";
+export const RMQ_P_RK_ROLE_PERMISSION_CREATE = "auth.api-role.permission.create";
+export const RMQ_P_RK_ROLE_PERMISSION_DELETE = "auth.api-role.permission.delete";

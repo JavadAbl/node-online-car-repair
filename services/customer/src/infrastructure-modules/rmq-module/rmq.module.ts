@@ -5,17 +5,12 @@ import { AppConfig, ConfigType } from 'src/common/config/config.type';
 import {
   RMQ_EXCHANGE,
   RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
-  RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_DLQ,
-  RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_RETRY,
-  RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_RETRY_RK,
+  RMQ_Q_AUTH_ROLE_PERMISSION_DELETE,
   RMQ_Q_AUTH_USER_CREATE,
-  RMQ_Q_AUTH_USER_CREATE_DLQ,
-  RMQ_Q_AUTH_USER_CREATE_RETRY,
-  RMQ_Q_AUTH_USER_CREATE_RETRY_RK,
 } from './config/rmq.config';
 import { RabbitMQPublisher } from './rmq-publisher.service';
-import { RabbitMQInboxConsumer } from './consumers/rmq-inbox.consumer';
-import { RabbitMQAuthConsumer } from './consumers/rmq-auth.consumer';
+import { generateQueueRetryConfig } from './rmq.utils';
+import { RabbitMQEventConsumer } from './consumers/rmq-event.consumer';
 
 @Global()
 @Module({
@@ -27,27 +22,9 @@ import { RabbitMQAuthConsumer } from './consumers/rmq-auth.consumer';
         uri: config.get<AppConfig>('app')!.RABBITMQ_URL,
         exchanges: [{ name: RMQ_EXCHANGE, type: 'direct', createExchangeIfNotExists: true }],
         queues: [
-          {
-            exchange: RMQ_EXCHANGE,
-            name: RMQ_Q_AUTH_USER_CREATE_RETRY,
-            routingKey: [RMQ_Q_AUTH_USER_CREATE_RETRY_RK],
-            options: {
-              deadLetterExchange: RMQ_EXCHANGE,
-              deadLetterRoutingKey: RMQ_Q_AUTH_USER_CREATE_DLQ,
-              messageTtl: 60000,
-            },
-          },
-
-          {
-            exchange: RMQ_EXCHANGE,
-            name: RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_RETRY,
-            routingKey: [RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_RETRY_RK],
-            options: {
-              deadLetterExchange: RMQ_EXCHANGE,
-              deadLetterRoutingKey: RMQ_Q_AUTH_ROLE_PERMISSION_CREATE_DLQ,
-              messageTtl: 60000,
-            },
-          },
+          generateQueueRetryConfig(RMQ_Q_AUTH_USER_CREATE),
+          generateQueueRetryConfig(RMQ_Q_AUTH_ROLE_PERMISSION_CREATE),
+          generateQueueRetryConfig(RMQ_Q_AUTH_ROLE_PERMISSION_DELETE),
         ],
         connectionInitOptions: { wait: true },
 
@@ -55,13 +32,14 @@ import { RabbitMQAuthConsumer } from './consumers/rmq-auth.consumer';
           main: { prefetchCount: 10, default: true },
           [RMQ_Q_AUTH_USER_CREATE]: { prefetchCount: 10, default: false },
           [RMQ_Q_AUTH_ROLE_PERMISSION_CREATE]: { prefetchCount: 10, default: false },
+          [RMQ_Q_AUTH_ROLE_PERMISSION_DELETE]: { prefetchCount: 10, default: false },
         },
 
         enableControllerDiscovery: true,
       }),
     }),
   ],
-  providers: [RabbitMQPublisher, RabbitMQInboxConsumer, RabbitMQAuthConsumer],
+  providers: [RabbitMQPublisher, RabbitMQEventConsumer],
   exports: [RabbitMQPublisher],
 })
 export class RmqModule {}

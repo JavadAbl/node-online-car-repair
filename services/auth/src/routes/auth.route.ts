@@ -3,13 +3,14 @@ import { SendOtpRouteType, SendOtpSchema } from "../schemas/auth/request/send-ot
 import { authService } from "../services/auth.service.js";
 import { VerifyOtpRouteType, VerifyOtpSchema } from "../schemas/auth/request/verify-otp.schema.js";
 import {
-  CreatePermissionRouteType,
-  CreatePermissionSchema,
-} from "../schemas/auth/request/create-permission.schema.js";
+  CreateRolePermissionRouteType,
+  CreateRolePermissionSchema,
+} from "../schemas/auth/request/create-role-permission.schema.js";
 import {
-  DeletePermissionRouteType,
-  DeletePermissionSchema,
-} from "../schemas/auth/request/delete-permission.schema.js";
+  DeleteRolePermissionRouteType,
+  DeleteRolePermissionSchema,
+} from "../schemas/auth/request/delete-role-permission.schema copy.js";
+import { StatusCodes } from "http-status-codes";
 
 export const authRoutes: FastifyPluginAsync = async (app) => {
   // Send otp ------------------------------------------------
@@ -22,17 +23,23 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
     authService.verifyOtp(request.body),
   );
 
-  // Create Permission------------------------------------------------
-  app.post<CreatePermissionRouteType>(
+  // Create Role Permission------------------------------------------------
+  app.post<CreateRolePermissionRouteType>(
     "Admin/Permission",
-    { schema: CreatePermissionSchema },
-    async (request, reply) => authService.createPermission(request.body),
+    { schema: CreateRolePermissionSchema },
+    async (request, reply) => {
+      reply.statusCode = StatusCodes.CREATED;
+      return authService.createRolePermission(request.body);
+    },
   );
 
-  // Delete Permission------------------------------------------------
-  app.delete<DeletePermissionRouteType>(
+  // Delete Role Permission------------------------------------------------
+  app.delete<DeleteRolePermissionRouteType>(
     "Admin/Permission/:id",
-    { schema: DeletePermissionSchema },
-    async (request, reply) => authService.deletePermission(request.params.id),
+    { schema: DeleteRolePermissionSchema },
+    async (request, reply) => {
+      await authService.deleteRolePermission(request.params.id);
+      reply.status(StatusCodes.NO_CONTENT);
+    },
   );
 };

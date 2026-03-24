@@ -11,12 +11,12 @@ export const CreateRolePermissionSchema: FastifySchema = {
   body: CreateRolePermissionBodySchema,
   description: "Create a role permission",
   tags: ["Auth"],
-  response: { 201: Type.Void() },
+  response: { 201: Type.Null() },
 };
 
-export type CreateRolePermissionDto = Static<typeof CreateRolePermissionBodySchema>;
+export type CreateRolePermission = Static<typeof CreateRolePermissionBodySchema>;
 
 export interface CreateRolePermissionRouteType extends RouteGenericInterface {
-  Body: CreateRolePermissionDto;
+  Body: CreateRolePermission;
   Reply: void;
 }

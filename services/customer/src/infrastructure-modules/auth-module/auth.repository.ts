@@ -15,6 +15,10 @@ export class AuthRepository {
     return this.prismaProvider.rolePermission.create(criteria);
   }
 
+  deleteRolePermission(criteria: Prisma.RolePermissionDeleteArgs) {
+    return this.prismaProvider.rolePermission.delete(criteria);
+  }
+
   async syncPermissions(permissions: { name: string; type: PermissionType }[]) {
     // Use a transaction to ensure data integrity
     await this.prismaProvider.$transaction(async (tx) => {

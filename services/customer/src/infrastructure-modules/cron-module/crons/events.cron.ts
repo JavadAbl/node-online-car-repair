@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import {
   JOB_AUTH_ROLE_PERMISSION_CREATE,
+  JOB_AUTH_ROLE_PERMISSION_DELETE,
   JOB_AUTH_USER_CREATE,
 } from '../../queue-module/config/queue.config';
 import { InboxEventRepository } from '../../event-box-module/Repositories/inbox-event.repository';
 import {
   RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
+  RMQ_Q_AUTH_ROLE_PERMISSION_DELETE,
   RMQ_Q_AUTH_USER_CREATE,
 } from '../../rmq-module/config/rmq.config';
 import { CronLockService } from '../cron-lock.service';
@@ -33,6 +35,10 @@ export class InboxEventCron {
 
           case RMQ_Q_AUTH_ROLE_PERMISSION_CREATE:
             await this.jobProvider.addAuthApiJob(JOB_AUTH_ROLE_PERMISSION_CREATE, event);
+            break;
+
+          case RMQ_Q_AUTH_ROLE_PERMISSION_DELETE:
+            await this.jobProvider.addAuthApiJob(JOB_AUTH_ROLE_PERMISSION_DELETE, event);
             break;
         }
       }

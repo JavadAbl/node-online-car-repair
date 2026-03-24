@@ -8,7 +8,8 @@ import { PermissionType, Role } from 'src/generated/prisma/enums';
 import { AuthRepository } from './auth.repository';
 import { RabbitMQPublisher } from '../rmq-module/rmq-publisher.service';
 import { RMQ_P_RK_PERMISSIONS } from '../rmq-module/config/rmq.config';
-import { RolePermissionCreateEvent } from '../rmq-module/contracts/role-permission-event';
+import { RolePermissionCreateEvent } from '../rmq-module/contracts/role-permission-create-event';
+import { RolePermissionDeleteEvent } from '../rmq-module/contracts/role-permission-delete-event';
 
 @Injectable()
 export class AuthService {
@@ -43,8 +44,13 @@ export class AuthService {
   }
 
   createRolePermission(rolePermissionEvent: RolePermissionCreateEvent) {
-    const { name, role } = rolePermissionEvent;
-    return this.authRep.createRolePermission({ data: { permissionName: name, role } });
+    const { name, role, id } = rolePermissionEvent;
+    return this.authRep.createRolePermission({ data: { permissionName: name, role, id } });
+  }
+
+  deleteRolePermission(rolePermissionEvent: RolePermissionDeleteEvent) {
+    const { id } = rolePermissionEvent;
+    return this.authRep.deleteRolePermission({ where: { id } });
   }
 
   findIncludedRolePermission(role: Role, permissionName: string) {

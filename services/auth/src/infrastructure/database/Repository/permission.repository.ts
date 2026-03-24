@@ -1,7 +1,9 @@
 import { Repository } from "./common-repository.js";
 
-export class PermissionRepository extends Repository<"permission"> {
+class PermissionRepository extends Repository<"permission"> {
   constructor() {
     super("permission");
   }
 }
+
+export const permissionRepository = new PermissionRepository();

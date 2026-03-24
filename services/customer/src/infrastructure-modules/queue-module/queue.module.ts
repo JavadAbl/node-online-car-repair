@@ -6,6 +6,7 @@ import { QUEUE_AUTH_API } from './config/queue.config';
 import { AuthApiJobWorker } from './job-workers/auth-api.worker';
 import { JobProvider } from './job.provider';
 import { CustomerModule } from 'src/customer-module/customer.module';
+import { AuthModule } from '../auth-module/auth.module';
 
 @Global()
 @Module({
@@ -26,6 +27,7 @@ import { CustomerModule } from 'src/customer-module/customer.module';
     }),
     BullModule.registerQueue({ name: QUEUE_AUTH_API }),
     CustomerModule,
+    AuthModule,
   ],
   providers: [JobProvider, AuthApiJobWorker],
   exports: [JobProvider],

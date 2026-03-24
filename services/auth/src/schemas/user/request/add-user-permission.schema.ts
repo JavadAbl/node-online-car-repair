@@ -2,22 +2,22 @@ import { Type, Static } from "@sinclair/typebox";
 import { RouteGenericInterface, FastifySchema } from "fastify";
 import { IdParams, IdParamsSchema } from "../../common/id-params.schema.js";
 
-const SetUserPermissionBodySchema = Type.Object({
+const AddUserPermissionBodySchema = Type.Object({
   name: Type.String({ description: "Name of the permission" }),
 });
 
-export const SetUserPermissionSchema: FastifySchema = {
+export const AddUserPermissionSchema: FastifySchema = {
   params: IdParamsSchema,
-  body: SetUserPermissionBodySchema,
-  description: "Set an user permission",
+  body: AddUserPermissionBodySchema,
+  description: "Add an user permission",
   tags: ["User"],
   response: { 200: Type.Null() },
 };
 
-export type SetUserPermissionDto = Static<typeof SetUserPermissionBodySchema>;
+export type AddUserPermissionDto = Static<typeof AddUserPermissionBodySchema>;
 
-export interface SetUserPermissionRouteType extends RouteGenericInterface {
+export interface AddUserPermissionRouteType extends RouteGenericInterface {
   Params: IdParams;
-  Body: SetUserPermissionDto;
+  Body: AddUserPermissionDto;
   Reply: void;
 }

@@ -3,6 +3,7 @@ import { Processor, Process } from '@nestjs/bull';
 import { type Job } from 'bull';
 import {
   JOB_AUTH_ROLE_PERMISSION_CREATE,
+  JOB_AUTH_ROLE_PERMISSION_DELETE,
   JOB_AUTH_USER_CREATE,
   QUEUE_AUTH_API,
 } from '../config/queue.config';
@@ -10,8 +11,9 @@ import { InboxEventRepository } from '../../event-box-module/Repositories/inbox-
 import { InboxEvent } from 'src/generated/prisma/client';
 import { CustomerService } from 'src/customer-module/_module/services/customer.service';
 import { AuthService } from 'src/infrastructure-modules/auth-module/auth.service';
-import { RolePermissionCreateEvent } from 'src/infrastructure-modules/rmq-module/contracts/role-permission-event';
+import { RolePermissionCreateEvent } from 'src/infrastructure-modules/rmq-module/contracts/role-permission-create-event';
 import { UserCreateEvent } from 'src/infrastructure-modules/rmq-module/contracts/user-create-event';
+import { RolePermissionDeleteEvent } from 'src/infrastructure-modules/rmq-module/contracts/role-permission-delete-event';
 
 @Processor(QUEUE_AUTH_API)
 export class AuthApiJobWorker {
@@ -39,7 +41,20 @@ export class AuthApiJobWorker {
     const { id, payload } = job.data;
     try {
       const parsedPayload: RolePermissionCreateEvent = JSON.parse(payload as string);
-      await this.authService.createRolePermissions(parsedPayload);
+      await this.authService.createRolePermission(parsedPayload);
+      await this.inboxRep.update({ where: { id }, data: { status: 'Handled', handledAt: new Date() } });
+    } catch (error) {
+      console.error(error);
+      await this.inboxRep.update({ where: { id }, data: { status: 'Error' } });
+    }
+  }
+
+  @Process(JOB_AUTH_ROLE_PERMISSION_DELETE)
+  async handleAuthRolePermissionDelete(job: Job<InboxEvent>) {
+    const { id, payload } = job.data;
+    try {
+      const parsedPayload: RolePermissionDeleteEvent = JSON.parse(payload as string);
+      await this.authService.deleteRolePermission(parsedPayload);
       await this.inboxRep.update({ where: { id }, data: { status: 'Handled', handledAt: new Date() } });
     } catch (error) {
       console.error(error);

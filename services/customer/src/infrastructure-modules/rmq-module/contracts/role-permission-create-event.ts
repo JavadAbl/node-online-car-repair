@@ -1,9 +1,14 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from 'src/generated/prisma/enums';
 
 @Exclude()
 export class RolePermissionCreateEvent {
+  @Expose()
+  @IsInt()
+  @IsNotEmpty()
+  id: number;
+
   @Expose()
   @IsString()
   @IsNotEmpty()

@@ -39,7 +39,7 @@ model Permission {
 }
 
 model RolePermission {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id
   role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
