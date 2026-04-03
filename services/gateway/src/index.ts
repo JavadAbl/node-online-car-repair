@@ -6,9 +6,15 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { serviceProxyPlugin } from "./routes.js";
 import { fastifyJwt } from "@fastify/jwt";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 export const app = fastify({
   logger: true,
+  https: {
+    key: readFileSync(join(process.cwd(), "localhost-private.key")),
+    cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
+  },
   routerOptions: { caseSensitive: false, ignoreTrailingSlash: false },
 });
 
@@ -32,7 +38,7 @@ async function startHttpServer() {
 }
 
 async function setupFastifyPlugins() {
-  app.register(fastifyJwt, { secret: "supersecretkey" });
+  app.register(fastifyJwt, { secret: "your-secret-key-for-hashing" });
 
   app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {
     try {

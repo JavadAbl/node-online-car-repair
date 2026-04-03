@@ -4,8 +4,20 @@ import { config, isDev } from "./infrastructure/config.js";
 import { errorHandler } from "./plugins/error-handler.js";
 import fastify from "fastify";
 import { setupRouter } from "./routes/router.js";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { userContextPlugin } from "./plugins/user-context.plugin.js";
 
-export const app = fastify({ logger: false, caseSensitive: false });
+export const app = fastify({
+  logger: false,
+  caseSensitive: false,
+  ignoreTrailingSlash: true,
+  http2: true,
+  https: {
+    key: readFileSync(join(process.cwd(), "localhost-private.key")),
+    cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
+  },
+});
 
 export async function startHttpServer() {
   // Register Swagger for API documentation
@@ -27,6 +39,8 @@ export async function startHttpServer() {
       uiConfig: { deepLinking: false, docExpansion: "list", persistAuthorization: true },
     });
   }
+
+  app.register(userContextPlugin);
 
   app.setErrorHandler(errorHandler);
 

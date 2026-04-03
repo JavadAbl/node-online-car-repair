@@ -16,8 +16,10 @@ import {
   RMQ_P_RK_ROLE_PERMISSION_CREATE,
   RMQ_P_RK_ROLE_PERMISSION_DELETE,
 } from "../infrastructure/rabbitmq/config/rmq-config.js";
-
-export const authService = { sendOtp, verifyOtp, syncPermission, createRolePermission, deleteRolePermission };
+import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
+import { buildFindManyArgs } from "../utils/prisma.util.js";
+import { RolePermissionDto } from "../schemas/auth/reply/role-permission.schema.js";
+import { RefreshDto } from "../schemas/auth/request/refresh.schema.js";
 
 const OTP_EXPIRE = 120; // 120 Second expiry
 
@@ -46,7 +48,18 @@ async function verifyOtp(payload: VerifyOtpDto): Promise<AuthDto> {
   const user = await userService.getOrCreateUserForLogin(mobile);
 
   const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user.id });
-  return { accessToken, refreshToken, user };
+  return { accessToken, refreshToken };
+}
+
+async function refresh(payload: RefreshDto): Promise<AuthDto> {
+  const { refreshToken } = payload;
+
+  const refreshPayload = tokenService.verifyRefreshToken(refreshToken);
+  const { accessToken, refreshToken: newRefreshToken } = tokenService.generateTokens({
+    userId: refreshPayload.id,
+  });
+
+  return { accessToken, refreshToken: newRefreshToken };
 }
 
 async function syncPermission(payload: PermissionsSyncEvent): Promise<void> {
@@ -72,11 +85,22 @@ async function syncPermission(payload: PermissionsSyncEvent): Promise<void> {
   });
 }
 
+function getRolePermissions(query: GetManyQuery<"RolePermission">): Promise<RolePermissionDto[]> {
+  const criteria = buildFindManyArgs<"RolePermission">(query);
+  return rolePermissionRepository.findMany(criteria);
+}
+
 async function createRolePermission(payload: CreateRolePermission): Promise<void> {
   const { permissionName, role } = payload;
-  await rolePermissionRepository.findAndCheckExistsBy(
+  await rolePermissionRepository.checkDuplicateBy(
     { where: { permissionName, role } },
     "permissionName",
+    permissionName,
+  );
+
+  await permissionRepository.findAndCheckExistsBy(
+    { where: { name: permissionName } },
+    "name",
     permissionName,
   );
   const createdRolePermission = await rolePermissionRepository.create({ data: { permissionName, role } });
@@ -95,3 +119,13 @@ function generateOtp() {
   return "123456";
   return randomInt(100000, 999999).toString();
 }
+
+export const authService = {
+  sendOtp,
+  verifyOtp,
+  syncPermission,
+  createRolePermission,
+  deleteRolePermission,
+  getRolePermissions,
+  refresh,
+};

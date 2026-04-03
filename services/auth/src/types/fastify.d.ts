@@ -1,7 +1,24 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 
 declare module "fastify" {
-  interface FastifyInstance {
-    authenticate: (request: any, reply: any) => Promise<void>;
+  interface FastifyRequest {
+    user: UserContext;
   }
+
+  interface FastifyInstance {
+    auth: (
+      request: FastifyRequest,
+      reply: FastifyReply,
+      required: { roles?: string[]; permissions?: string[] },
+    ) => Promise<void>;
+  }
+
+  interface RouteShorthandOptions {
+    auth?: { roles?: string[]; permissions?: string[] };
+  }
+}
+
+export interface UserContext {
+  id: number;
+  role: string;
 }

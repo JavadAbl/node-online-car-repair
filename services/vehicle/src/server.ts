@@ -16,7 +16,6 @@ export const app = fastify({
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
-    //   allowHTTP1: true,
   },
   caseSensitive: false,
   ajv: { customOptions: { removeAdditional: "all" } },

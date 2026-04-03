@@ -14,6 +14,7 @@ import { InboxEventRepository } from 'src/infrastructure-modules/event-box-modul
 import { RolePermissionCreateEvent } from '../contracts/role-permission-create-event';
 import { generateQueueConfig, generateQueueDLQ } from '../rmq.utils';
 import { RolePermissionDeleteEvent } from '../contracts/role-permission-delete-event';
+import { UserCreateEvent } from '../contracts/user-create-event';
 
 @Injectable()
 export class RabbitMQEventConsumer extends RabbitMQCommonConsumer {
@@ -29,7 +30,8 @@ export class RabbitMQEventConsumer extends RabbitMQCommonConsumer {
   )
   async handleUserCreate(payload: unknown, msg: ConsumeMessage) {
     try {
-      await this.handle(payload, msg, RMQ_Q_AUTH_USER_CREATE);
+      // throw new Error('test');
+      await this.handle(payload, msg, RMQ_Q_AUTH_USER_CREATE, UserCreateEvent);
     } catch (err) {
       console.error(err);
       return new Nack(false);

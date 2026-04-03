@@ -10,15 +10,6 @@ import { DeleteUserPermissionDto } from "../schemas/user/request/delete-user-per
 import { SetUserRoleDto } from "../schemas/user/request/set-user-role.schema.js";
 import { buildFindManyArgs } from "../utils/prisma.util.js";
 
-export const userService = {
-  getMany,
-  getOrCreateUserForLogin,
-  setUserRole,
-  addUserPermission,
-  removeUserPermission,
-  getUserPermissions,
-};
-
 async function getOrCreateUserForLogin(mobile: string) {
   let user = await userRepository.findUnique({ where: { mobile } });
   if (!user) {
@@ -73,3 +64,17 @@ async function getUserPermissions(userId: number): Promise<PermissionDto[]> {
   });
   return x;
 }
+
+async function getUserById(id: number) {
+  return userRepository.findFirst({ where: { id }, select: { id: true, mobile: true } });
+}
+
+export const userService = {
+  getMany,
+  getOrCreateUserForLogin,
+  setUserRole,
+  addUserPermission,
+  removeUserPermission,
+  getUserById,
+  getUserPermissions,
+};

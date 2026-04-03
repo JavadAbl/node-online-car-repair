@@ -44,8 +44,8 @@ export class AuthService {
   }
 
   createRolePermission(rolePermissionEvent: RolePermissionCreateEvent) {
-    const { name, role, id } = rolePermissionEvent;
-    return this.authRep.createRolePermission({ data: { permissionName: name, role, id } });
+    const { permissionName, role, id } = rolePermissionEvent;
+    return this.authRep.createRolePermission({ data: { permissionName, role, id } });
   }
 
   deleteRolePermission(rolePermissionEvent: RolePermissionDeleteEvent) {

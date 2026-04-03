@@ -1,6 +1,7 @@
 import { Static, Type } from "@sinclair/typebox";
 import { FastifySchema, RouteGenericInterface } from "fastify";
 import { AuthDto, AuthDtoSchema } from "../reply/auth.schema.js";
+import { StatusCodes } from "http-status-codes";
 
 const VerifyOtpBodySchema = Type.Object({
   mobile: Type.String({ description: "Mobile Number" }),
@@ -11,7 +12,7 @@ export const VerifyOtpSchema: FastifySchema = {
   body: VerifyOtpBodySchema,
   description: "Verify an otp",
   tags: ["Auth"],
-  response: { 200: AuthDtoSchema },
+  response: { [StatusCodes.OK]: AuthDtoSchema },
 };
 
 export type VerifyOtpDto = Static<typeof VerifyOtpBodySchema>;

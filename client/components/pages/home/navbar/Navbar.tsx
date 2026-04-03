@@ -4,8 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import { Wrench, Phone, Menu } from "lucide-react";
 import Link from "next/link";
 import ThemeModeToggle from "./theme-mode-toggle";
+import { auth } from "@/lib/shared/auth";
 
-export function Navbar() {
+export async function Navbar() {
+  const { isAuth, user } = await auth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -51,11 +54,21 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <Button variant="ghost" className="text-muted-foreground">
             <Phone className="mr-2 h-4 w-4" />
-            (555) 123-4567
+            {user?.mobile}
           </Button>
 
           <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            Book Now
+            {!isAuth && (
+              <Link className="w-full h-full" href={"/login"}>
+                Login
+              </Link>
+            )}
+
+            {isAuth && (
+              <Link className="w-full h-full" href={"/services"}>
+                New Service
+              </Link>
+            )}
           </Button>
 
           <ThemeModeToggle />

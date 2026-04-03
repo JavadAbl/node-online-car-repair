@@ -12,7 +12,7 @@ export class RolePermissionCreateEvent {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  permissionName: string;
 
   @Expose()
   @IsEnum(Role)

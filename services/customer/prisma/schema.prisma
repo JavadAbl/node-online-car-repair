@@ -73,7 +73,7 @@ model InboxEvent {
   status     InboxEventStatus @default(Pending)
   captureAt  DateTime         @default(now())
   handledAt  DateTime?
-  error      String?
+  error      Json?
   payload    Json
 }
 

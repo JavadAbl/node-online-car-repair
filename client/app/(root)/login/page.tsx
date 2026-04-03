@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,22 +18,45 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Separator } from "@/components/ui/separator";
+import { sendOtpAction } from "@/lib/features/auth/actions/send-otp.action";
+import { verifyOtpAction } from "@/lib/features/auth/actions/verify-otp.action";
+import { toast } from "sonner";
+import { authAction } from "@/lib/features/auth/actions/auth.action";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
-  const [step, setStep] = useState<"mobile" | "otp">("mobile"); // "mobile" or "otp"
+  const router = useRouter();
+  const [step, setStep] = useState<"mobile" | "otp">("mobile");
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  const handleSendOtp = () => {
-    // Mock sending OTP
-    console.log("Sending OTP to:", mobileNumber);
+  useLayoutEffect(() => {
+    (async () => {
+      const res = await authAction();
+      if (res.success) router.replace("/");
+      else setIsAuthLoading(false);
+    })();
+  }, []);
+
+  const handleSendOtp = async () => {
+    const res = await sendOtpAction({ mobile: mobileNumber });
+    if (!res.success) {
+      toast.error(res.error);
+      return;
+    }
     setStep("otp");
   };
 
-  const handleVerifyOtp = () => {
-    // Mock OTP verification
-    console.log("Verifying OTP:", otp);
+  const handleVerifyOtp = async () => {
+    const res = await verifyOtpAction({ mobile: mobileNumber, otp });
+    if (!res.success) {
+      toast.error(res.error);
+      return;
+    }
   };
+
+  if (isAuthLoading) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

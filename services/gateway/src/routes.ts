@@ -57,14 +57,22 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
         );
 
         //Public routes
-        if (serviceName === "vehicle") {
-          serviceInstance.get("/vehicle/test/", (request, reply) => {
-            return reply.from("/test");
+        if (serviceName === "auth-api") {
+          serviceInstance.post("/Auth-Api/Auth/SendOtp", (request, reply) => {
+            return reply.from("/Auth/SendOtp");
           });
-          serviceInstance.get("/vehicle/test", (request, reply) => {
-            return reply.from("/test");
+          serviceInstance.post("/Auth-Api/Auth/SendOtp/", (request, reply) => {
+            return reply.from("/Auth/SendOtp");
+          });
+
+          serviceInstance.post("/Auth-Api/Auth/VerifyOtp", (request, reply) => {
+            return reply.from("/Auth/VerifyOtp");
+          });
+          serviceInstance.post("/Auth-Api/Auth/VerifyOtp/", (request, reply) => {
+            return reply.from("/Auth/VerifyOtp");
           });
         }
+
         // ---------------------------------------------------------
         // 3. The Swagger Proxy Routes (Moved here for HTTP/2)
         // ---------------------------------------------------------

@@ -12,6 +12,7 @@ export class RabbitMQCommonConsumer {
     console.log('before:', payload);
     let validatedPayload = payload;
     if (validateClass) validatedPayload = await validateOrRejectObject(validateClass, payload as object);
+    console.log('after:', validatedPayload);
 
     const existingEvent = await this.inboxRep.findUnique({ where: { messageId: properties.messageId } });
     if (existingEvent) {

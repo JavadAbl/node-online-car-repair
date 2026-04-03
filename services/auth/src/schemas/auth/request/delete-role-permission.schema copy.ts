@@ -4,9 +4,9 @@ import { IdParams, IdParamsSchema } from "../../common/id-params.schema.js";
 import { StatusCodes } from "http-status-codes";
 
 export const DeleteRolePermissionSchema: FastifySchema = {
-  body: IdParamsSchema,
+  params: IdParamsSchema,
   description: "Delete a role permission",
-  tags: ["Auth"],
+  tags: ["RolePermission"],
   response: { [StatusCodes.NO_CONTENT]: Type.Null() },
 };
 

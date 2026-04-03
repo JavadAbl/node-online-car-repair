@@ -5,13 +5,10 @@ const userContextPluginHandler: FastifyPluginAsync = async (fastify) => {
   fastify.decorateRequest("user");
 
   fastify.addHook("onRequest", async (request) => {
-    const userId = request.headers["x-user-id"];
-    const role = request.headers["x-user-role"];
+    const userId: string = request.headers["x-user-id"] as string;
+    const role: string = request.headers["x-user-role"] as string;
 
-    request.user = {
-      id: typeof userId === "string" ? userId : undefined,
-      role: typeof role === "string" ? role : undefined,
-    };
+    request.user = { id: Number(userId), role };
   });
 };
 

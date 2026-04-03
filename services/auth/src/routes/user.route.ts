@@ -14,8 +14,17 @@ import {
   DeleteUserPermissionRouteType,
   DeleteUserPermissionSchema,
 } from "../schemas/user/request/delete-user-permission.schema copy.js";
+import {
+  GetUserByContextRouteType,
+  GetUserByContextSchema,
+} from "../schemas/user/request/get-user-by-context.schema.js";
 
 export const userRoutes: FastifyPluginAsync = async (app) => {
+  // GetUserByContext  ------------------------------------------------
+  app.get<GetUserByContextRouteType>("/", { schema: GetUserByContextSchema }, async (request, reply) => {
+    return userService.getUserById(request.user.id);
+  });
+
   // Get many users ------------------------------------------------
   app.get<GetManyUsersRouteType>("Admin", { schema: GetManyUsersSchema }, async (request, reply) => {
     return userService.getMany(request.query);

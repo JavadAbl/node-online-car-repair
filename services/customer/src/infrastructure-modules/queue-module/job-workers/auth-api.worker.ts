@@ -32,7 +32,7 @@ export class AuthApiJobWorker {
       await this.inboxRep.update({ where: { id }, data: { status: 'Handled', handledAt: new Date() } });
     } catch (error) {
       console.error(error);
-      await this.inboxRep.update({ where: { id }, data: { status: 'Error' } });
+      await this.inboxRep.update({ where: { id }, data: { status: 'Error', error: JSON.stringify(error) } });
     }
   }
 
@@ -45,7 +45,7 @@ export class AuthApiJobWorker {
       await this.inboxRep.update({ where: { id }, data: { status: 'Handled', handledAt: new Date() } });
     } catch (error) {
       console.error(error);
-      await this.inboxRep.update({ where: { id }, data: { status: 'Error' } });
+      await this.inboxRep.update({ where: { id }, data: { status: 'Error', error: JSON.stringify(error) } });
     }
   }
 
@@ -58,7 +58,7 @@ export class AuthApiJobWorker {
       await this.inboxRep.update({ where: { id }, data: { status: 'Handled', handledAt: new Date() } });
     } catch (error) {
       console.error(error);
-      await this.inboxRep.update({ where: { id }, data: { status: 'Error' } });
+      await this.inboxRep.update({ where: { id }, data: { status: 'Error', error: JSON.stringify(error) } });
     }
   }
 }
