@@ -34,6 +34,8 @@ export default function AuthPage() {
   useLayoutEffect(() => {
     (async () => {
       const res = await authAction();
+      console.log(res);
+
       if (res.success) router.replace("/");
       else setIsAuthLoading(false);
     })();

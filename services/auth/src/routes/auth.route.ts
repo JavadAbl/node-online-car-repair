@@ -30,7 +30,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
 
   // Refresh Token ------------------------------------------------
   app.post<RefreshRouteType>("Refresh", { schema: RefreshSchema }, async (request, reply) =>
-    authService.verifyOtp(request.body),
+    authService.refresh(request.body),
   );
 
   // Get Role Permissions------------------------------------------------

@@ -71,6 +71,13 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
           serviceInstance.post("/Auth-Api/Auth/VerifyOtp/", (request, reply) => {
             return reply.from("/Auth/VerifyOtp");
           });
+
+          serviceInstance.post("/Auth-Api/Auth/Refresh", (request, reply) => {
+            return reply.from("/Auth/Refresh");
+          });
+          serviceInstance.post("/Auth-Api/Auth/Refresh/", (request, reply) => {
+            return reply.from("/Auth/Refresh");
+          });
         }
 
         // ---------------------------------------------------------

@@ -2,7 +2,7 @@
 
 import { VerifyOtpRequest, VerifyOtpSchema } from "../schema/verify-schema";
 import { cookies } from "next/headers";
-import { createApi } from "@/lib/base-api";
+import { createApi } from "@/lib/shared/base-api";
 import { AuthDto } from "../auth.type";
 import { redirect } from "next/navigation";
 import { ActionState } from "../../common/common.type";
@@ -36,17 +36,17 @@ export async function verifyOtpAction(
     // Shorter expiry (e.g., 15 mins or whatever your backend logic dictates)
     cookieStore.set("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "lax", // or 'strict'
       path: "/",
-      maxAge: 60 * 15, // Example: 15 minutes
+      maxAge: 10 * 1, // Example: 15 minutes
     });
 
     // Set Refresh Token
     // Longer expiry (e.g., 7 days)
     cookieStore.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7, // Example: 7 days

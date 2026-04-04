@@ -2,7 +2,7 @@
 
 import { ActionState } from "../../common/common.type";
 import { SendOtpRequest, SendOtpSchema } from "../schema/register-schema";
-import { createApi } from "@/lib/base-api";
+import { createApi } from "@/lib/shared/base-api";
 
 export async function sendOtpAction(
   data: SendOtpRequest,

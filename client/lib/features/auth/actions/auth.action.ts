@@ -7,7 +7,7 @@ export async function authAction(): Promise<ActionState> {
   try {
     const res = await auth();
 
-    if (res) return { success: true, data: res };
+    if (res.isAuth) return { success: true, data: res };
     else return { success: false };
   } catch (error: any) {
     console.error(error);

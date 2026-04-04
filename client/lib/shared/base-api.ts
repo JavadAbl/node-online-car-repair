@@ -17,12 +17,12 @@ export async function createApi() {
 
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
-  const refreshToken = cookieStore.get("accessToken")?.value;
+  const refreshToken = cookieStore.get("refreshToken")?.value;
 
   if (accessToken)
     instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
 
-  /*  instance.interceptors.response.use(
+  instance.interceptors.response.use(
     (r) => r,
     async (error: AxiosError) => {
       const original = error.config as InternalAxiosRequestConfig<any> & {
@@ -39,9 +39,18 @@ export async function createApi() {
       let refreshPromise = refreshLocks.get(key);
 
       if (!refreshPromise) {
-        refreshPromise = fetch("/api/auth/refresh", {
+        // Construct the Cookie header string manually from the cookieStore
+        const cookieHeader = cookieStore
+          .getAll()
+          .map((c) => `${c.name}=${c.value}`)
+          .join("; ");
+
+        refreshPromise = fetch("http://localhost:3001/api/auth/refresh", {
           method: "POST",
           cache: "no-store",
+          headers: {
+            Cookie: cookieHeader,
+          },
         })
           .then((r) => {
             if (!r.ok) throw new Error("refresh failed");
@@ -56,11 +65,12 @@ export async function createApi() {
       }
 
       const newToken = await refreshPromise;
+
       original.headers.Authorization = `Bearer ${newToken}`;
 
       return instance(original);
     },
-  ); */
+  );
 
   return instance;
 }
