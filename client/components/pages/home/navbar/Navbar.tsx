@@ -1,19 +1,37 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { Wrench, Phone, Menu } from "lucide-react";
+import { Wrench, Menu, Phone } from "lucide-react";
 import Link from "next/link";
 import ThemeModeToggle from "./theme-mode-toggle";
-import { auth } from "@/lib/shared/auth";
-import { ToastHandler } from "@/components/shared/toast-handler";
+import { useLayoutEffect, useState } from "react";
+import { authAction } from "@/lib/features/auth/actions/auth.action";
+import { UserDto } from "@/lib/features/auth/auth.type";
+import { toast } from "sonner";
 
-export async function Navbar() {
-  const { isAuth, user, error } = await auth();
+export function Navbar() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<UserDto>();
+  const [isAuth, setIsAuth] = useState(false);
+
+  useLayoutEffect(() => {
+    authAction(true)
+      .then((res) => {
+        if (res.isAuth) {
+          setUser(res.user);
+          setIsAuth(true);
+        }
+        if (res.error) toast.error(res.error);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  if (isLoading) return null;
 
   return (
     <>
-      <ToastHandler error={error || null} />
-
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}

@@ -6,6 +6,8 @@ import { createApi } from "@/lib/shared/base-api";
 import { AuthDto } from "../auth.type";
 import { redirect } from "next/navigation";
 import { ActionState } from "../../common/common.type";
+import { setTokens } from "@/lib/shared/tokens";
+import { extractErrorMessage } from "@/lib/shared/utils";
 
 export async function verifyOtpAction(
   data: VerifyOtpRequest,
@@ -29,33 +31,12 @@ export async function verifyOtpAction(
 
     const { accessToken, refreshToken } = res.data;
 
-    // 2. Set Cookies (HttpOnly for security)
-    const cookieStore = await cookies();
-
-    // Set Access Token
-    // Shorter expiry (e.g., 15 mins or whatever your backend logic dictates)
-    cookieStore.set("accessToken", accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax", // or 'strict'
-      path: "/",
-      maxAge: 10 * 1, // Example: 15 minutes
-    });
-
-    // Set Refresh Token
-    // Longer expiry (e.g., 7 days)
-    cookieStore.set("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7, // Example: 7 days
-    });
+    await setTokens(accessToken, refreshToken);
   } catch (error: any) {
     console.error(error);
     return {
       success: false,
-      error: error?.message || "Failed to verifyOtp. Please try again.",
+      error: extractErrorMessage(error),
     };
   }
 

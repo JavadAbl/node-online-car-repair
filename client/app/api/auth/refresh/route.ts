@@ -14,7 +14,6 @@ export async function POST() {
     // Call your backend
     const res = await refreshTokenCall(refreshToken);
     const data = res.data;
-    console.log(data);
 
     // 1. Create the response object first
     const response = NextResponse.json({

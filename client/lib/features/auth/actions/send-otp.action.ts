@@ -1,5 +1,6 @@
 "use server";
 
+import { extractErrorMessage } from "@/lib/shared/utils";
 import { ActionState } from "../../common/common.type";
 import { SendOtpRequest, SendOtpSchema } from "../schema/register-schema";
 import { createApi } from "@/lib/shared/base-api";
@@ -28,7 +29,7 @@ export async function sendOtpAction(
     console.error(error);
     return {
       success: false,
-      error: error?.message || "Failed to sendOtp. Please try again.",
+      error: extractErrorMessage(error),
     };
   }
 }

@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -35,3 +36,13 @@ export function emptyObjectFieldsToNull<T extends Record<string, any>>(
 export type RemoveNullValues<T> = {
   [K in keyof T]: Exclude<T[K], null>;
 };
+
+export function extractErrorMessage(error: any): string {
+  if (error instanceof AxiosError)
+    if (typeof error.response?.data?.message === "string")
+      return error.response?.data?.message;
+
+  if (error.message) return error.message;
+
+  return "An unknown error happened";
+}

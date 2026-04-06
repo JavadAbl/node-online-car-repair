@@ -56,7 +56,7 @@ async function refresh(payload: RefreshDto): Promise<AuthDto> {
 
   const refreshPayload = tokenService.verifyRefreshToken(refreshToken);
   const { accessToken, refreshToken: newRefreshToken } = tokenService.generateTokens({
-    userId: refreshPayload.id,
+    userId: refreshPayload.userId,
   });
 
   return { accessToken, refreshToken: newRefreshToken };

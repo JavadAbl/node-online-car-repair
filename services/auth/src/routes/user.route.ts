@@ -22,6 +22,8 @@ import {
 export const userRoutes: FastifyPluginAsync = async (app) => {
   // GetUserByContext  ------------------------------------------------
   app.get<GetUserByContextRouteType>("/", { schema: GetUserByContextSchema }, async (request, reply) => {
+    console.log(request.user);
+
     return userService.getUserById(request.user.id);
   });
 

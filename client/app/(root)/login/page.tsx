@@ -32,13 +32,11 @@ export default function AuthPage() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useLayoutEffect(() => {
-    (async () => {
-      const res = await authAction();
-      console.log(res);
-
-      if (res.success) router.replace("/");
-      else setIsAuthLoading(false);
-    })();
+    authAction(true)
+      .then((res) => {
+        if (res.isAuth) router.replace("/");
+      })
+      .finally(() => setIsAuthLoading(false));
   }, []);
 
   const handleSendOtp = async () => {
