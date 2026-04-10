@@ -25,6 +25,8 @@ export class AuthGuard implements CanActivate {
     const userPermissions: string[] =
       request.headers['x-user-permissions'] && JSON.parse(request.headers['x-user-permissions']);
 
+    if (userRole === 'Admin') return true;
+
     if (userPermissions && Array.isArray(userPermissions)) {
       const permissionMatch = userPermissions.some((userPermission) =>
         actionPermission.includes(userPermission),

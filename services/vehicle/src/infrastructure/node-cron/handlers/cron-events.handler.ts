@@ -5,14 +5,19 @@ import { jobClient } from "../../queue/client/job-client.js";
 import {
   queueEventCustomerCreate,
   queueEventCustomerUpdate,
+  queueEventRolePermissionCreate,
+  queueEventRolePermissionDelete,
   queueEventServiceCreate,
   queueEventServiceUpdate,
 } from "../../queue/queue-provider.js";
 import {
+  RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
+  RMQ_Q_AUTH_ROLE_PERMISSION_DELETE,
   RMQ_Q_CUSTOMER_CREATE,
   RMQ_Q_CUSTOMER_UPDATE,
   RMQ_Q_RK_SERVICE_UPDATE,
   RMQ_Q_SERVICE_CREATE,
+  RMQ_Q_SERVICE_UPDATE,
 } from "../../rabbitmq/config/rmq-config.js";
 
 export class CronEventsHandler {
@@ -33,8 +38,16 @@ export class CronEventsHandler {
           jobClient.create(queueEventServiceCreate, event);
           break;
 
-        case RMQ_Q_RK_SERVICE_UPDATE:
+        case RMQ_Q_SERVICE_UPDATE:
           jobClient.create(queueEventServiceUpdate, event);
+          break;
+
+        case RMQ_Q_AUTH_ROLE_PERMISSION_CREATE:
+          jobClient.create(queueEventRolePermissionCreate, event);
+          break;
+
+        case RMQ_Q_AUTH_ROLE_PERMISSION_DELETE:
+          jobClient.create(queueEventRolePermissionDelete, event);
           break;
 
         default:

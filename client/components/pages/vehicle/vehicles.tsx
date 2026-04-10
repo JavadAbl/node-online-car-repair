@@ -1,16 +1,9 @@
 "use client";
-import { useApi } from "@/lib/hooks/use-api";
-import { getCustomerVehiclesAction } from "@/lib/features/vehicle/actions/get-customer-vehicles.action";
-import Test from "./test";
+import { useGetCustomerVehiclesQuery } from "@/lib/features/vehicle/vehicle-api";
 
 export default function Vehicles() {
-  const { data } = useApi(() => getCustomerVehiclesAction());
-  console.log(data);
+  const { data } = useGetCustomerVehiclesQuery();
+  console.log("data", data);
 
-  return (
-    <div>
-      vehicles
-      {/* <Test /> */}
-    </div>
-  );
+  return <div>vehicles</div>;
 }

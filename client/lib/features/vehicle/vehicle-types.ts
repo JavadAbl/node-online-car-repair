@@ -1,4 +1,8 @@
-import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_STATUS } from "./vehicle.enum";
+import {
+  FUEL_TYPES,
+  TRANSMISSION_TYPES,
+  VEHICLE_STATUS,
+} from "./vehicle-enums";
 
 export interface VehicleDto {
   id: number;

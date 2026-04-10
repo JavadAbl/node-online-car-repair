@@ -48,6 +48,25 @@ export const VehicleStatus = {
 export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
 
 
+export const Role = {
+  Admin: 'Admin',
+  NewUser: 'NewUser',
+  Customer: 'Customer',
+  Operator: 'Operator'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const PermissionType = {
+  Service: 'Service',
+  Controller: 'Controller',
+  Action: 'Action'
+} as const
+
+export type PermissionType = (typeof PermissionType)[keyof typeof PermissionType]
+
+
 export const InboxEventStatus = {
   Pending: 'Pending',
   InQueue: 'InQueue',

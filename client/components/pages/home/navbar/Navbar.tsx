@@ -13,25 +13,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ThemeModeToggle from "./theme-mode-toggle";
-import { useAuth } from "@/lib/hooks/use-auth";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
 import { authActions } from "@/lib/features/auth/auth-slice";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect } from "react";
 
 export function Navbar() {
   const dis = useAppDispatch();
   const { isAuth, user } = useAppSelector((s) => s.auth);
-  const { isLoading } = useAuth();
   const router = useRouter();
-  console.log(isAuth);
 
   const handleLogout = async () => {
     dis(authActions.logout());
     router.replace("/");
   };
-
-  if (isLoading) return null;
 
   return (
     <>

@@ -1,15 +1,23 @@
-export const QUEUE_EVENT_CUSTOMER_CREATE = "vehicle.event_customer_create";
+export const QUEUE_EVENT_CUSTOMER_CREATE = "vehicle.event-customer.create";
 export const WORKER_EVENT_CUSTOMER_CREATE_CONCURRENCY = 1;
 export const WORKER_EVENT_CUSTOMER_CREATE_INTERVAL_DELAY = 2500;
 
-export const QUEUE_EVENT_CUSTOMER_UPDATE = "vehicle.event_customer_update";
+export const QUEUE_EVENT_CUSTOMER_UPDATE = "vehicle.event-customer.update";
 export const WORKER_EVENT_CUSTOMER_UPDATE_CONCURRENCY = 1;
 export const WORKER_EVENT_CUSTOMER_UPDATE_INTERVAL_DELAY = 2500;
 
-export const QUEUE_EVENT_SERVICE_CREATE = "vehicle.event_service_create";
+export const QUEUE_EVENT_SERVICE_CREATE = "vehicle.event-service.create";
 export const WORKER_EVENT_SERVICE_CREATE_CONCURRENCY = 1;
 export const WORKER_EVENT_SERVICE_CREATE_INTERVAL_DELAY = 2500;
 
-export const QUEUE_EVENT_SERVICE_UPDATE = "vehicle.event_service_update";
+export const QUEUE_EVENT_SERVICE_UPDATE = "vehicle.event-service.update";
 export const WORKER_EVENT_SERVICE_UPDATE_CONCURRENCY = 1;
 export const WORKER_EVENT_SERVICE_UPDATE_INTERVAL_DELAY = 2500;
+
+export const QUEUE_EVENT_ROLE_PERMISSION_CREATE = "vehicle.event-role.permission.create";
+export const WORKER_EVENT_ROLE_PERMISSION_CREATE_CONCURRENCY = 1;
+export const WORKER_EVENT_ROLE_PERMISSION_CREATE_INTERVAL_DELAY = 2500;
+
+export const QUEUE_EVENT_ROLE_PERMISSION_DELETE = "vehicle.event-role.permission.delete";
+export const WORKER_EVENT_ROLE_PERMISSION_DELETE_CONCURRENCY = 1;
+export const WORKER_EVENT_ROLE_PERMISSION_DELETE_INTERVAL_DELAY = 2500;

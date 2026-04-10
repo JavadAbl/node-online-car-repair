@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,11 +21,10 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
-  useGetUserQuery,
   useSendOtpMutation,
   useVerifyOtpMutation,
 } from "@/lib/features/auth/auth-api";
-import { useAppDispatch } from "@/lib/hooks/use-state";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
 import { authActions } from "@/lib/features/auth/auth-slice";
 
 export default function AuthPage() {
@@ -37,11 +36,13 @@ export default function AuthPage() {
 
   const [mutateSendOtp] = useSendOtpMutation();
   const [mutateVerifyOtp] = useVerifyOtpMutation();
-  const { data: userRes, isLoading: isLoadingGetUser } = useGetUserQuery();
+  const isAuth = useAppSelector((s) => s.auth.isAuth);
 
-  useLayoutEffect(() => {
-    if (userRes) router.replace("/");
-  }, [router, userRes]);
+  useEffect(() => {
+    if (isAuth) {
+      router.replace("/");
+    }
+  }, [isAuth, router]);
 
   const handleSendOtp = async () => {
     const res = await mutateSendOtp({ mobile: mobileNumber });
@@ -60,12 +61,10 @@ export default function AuthPage() {
           refreshToken: res.data.refreshToken,
         }),
       );
-      router.replace("/");
-      //   window.location.replace("/");
+      //   router.replace("/");
+      window.location.replace("/");
     } else toast.error(res.error?.data?.message);
   };
-
-  if (isLoadingGetUser) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

@@ -18,12 +18,13 @@ import {
   UpdateVehicleSchema,
 } from "../schemas/vehicle/request/update-vehicle.schema.js";
 import { VehicleDto } from "../schemas/vehicle/reply/vehicle.schema.js";
+import { VehicleController_GetAllVehicles } from "../infrastructure/auth/permissions.js";
 
 export const vehicleRoutes: FastifyPluginAsync = async (app) => {
   // Get all vehicles----------------------------------------------
   app.get<GetVehiclesRouteType>(
     "/",
-    { schema: GetVehiclesSchema },
+    { schema: GetVehiclesSchema, auth: { permission: VehicleController_GetAllVehicles } },
     (request, reply) => vehicleService.getMany(request.query) as unknown as VehicleDto[],
   );
 

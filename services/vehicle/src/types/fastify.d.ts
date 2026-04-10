@@ -6,15 +6,11 @@ declare module "fastify" {
   }
 
   interface FastifyInstance {
-    auth: (
-      request: FastifyRequest,
-      reply: FastifyReply,
-      required: { roles?: string[]; permissions?: string[] },
-    ) => Promise<void>;
+    auth: (request: FastifyRequest, reply: FastifyReply, required: { permission?: string }) => Promise<void>;
   }
 
   interface RouteShorthandOptions {
-    auth?: { roles?: string[]; permissions?: string[] };
+    auth?: { permission: string };
   }
 }
 

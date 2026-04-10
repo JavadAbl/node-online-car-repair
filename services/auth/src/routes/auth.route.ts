@@ -23,7 +23,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
     authService.sendOtp(request.body),
   );
 
-  // Send otp ------------------------------------------------
+  // Verify otp ------------------------------------------------
   app.post<VerifyOtpRouteType>("VerifyOtp", { schema: VerifyOtpSchema }, async (request, reply) =>
     authService.verifyOtp(request.body),
   );

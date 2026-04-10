@@ -14,3 +14,12 @@ export const RMQ_Q_RK_SERVICE_CREATE = "service.api-service.create";
 
 export const RMQ_Q_SERVICE_UPDATE = "vehicle.api-service.update";
 export const RMQ_Q_RK_SERVICE_UPDATE = "service.api-service.update";
+
+export const RMQ_Q_AUTH_ROLE_PERMISSION_CREATE = `vehicle.api-role.permission.create`;
+export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_CREATE = "auth.api-role.permission.create";
+
+export const RMQ_Q_AUTH_ROLE_PERMISSION_DELETE = `vehicle.api-role.permission.delete`;
+export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_DELETE = "auth.api-role.permission.delete";
+
+//Publish
+export const RMQ_P_RK_PERMISSIONS = "vehicle.api-permission.sync";

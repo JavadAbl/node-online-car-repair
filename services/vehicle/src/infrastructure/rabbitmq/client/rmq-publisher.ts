@@ -23,4 +23,14 @@ export class RabbitMQPublisher {
     });
     await prisma.outboxEvent.create({ data: { routingKey, payload: serializedPayload, messageId } });
   }
+
+  async publishNoLog<T>(routingKey: string, payload: T) {
+    const messageId = randomUUID();
+
+    await this.channel.publish(RMQ_EXCHANGE, routingKey, payload, {
+      appId: RMQ_APP_ID,
+      messageId,
+      persistent: true,
+    });
+  }
 }

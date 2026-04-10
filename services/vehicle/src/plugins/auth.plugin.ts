@@ -1,25 +1,30 @@
 import fp from "fastify-plugin";
 import { FastifyPluginAsync } from "fastify";
 import { StatusCodes } from "http-status-codes";
+import { authService } from "../infrastructure/auth/auth.service.js";
 
 const authPluginHandler: FastifyPluginAsync = async (fastify) => {
   fastify.decorate("auth", async function (request, reply, required) {
-    const userRole = request.headers["x-user-role"];
-    const userPermissionsRaw = request.headers["x-user-permissions"];
+    const { permission: actionPermission } = required;
+    const userRole: any = request.headers["x-user-role"];
+    const userPermissions: string[] =
+      request.headers["x-user-permissions"] && JSON.parse(request.headers["x-user-permissions"] as string);
 
-    const userPermissions = typeof userPermissionsRaw === "string" ? userPermissionsRaw.split(",") : [];
+    if (userRole === "Admin" || !actionPermission) return;
 
-    if (required.roles && !required.roles.includes(userRole as string)) {
-      return reply.code(StatusCodes.FORBIDDEN).send();
+    if (userPermissions && Array.isArray(userPermissions)) {
+      const permissionMatch = userPermissions.some((userPermission) =>
+        actionPermission.includes(userPermission),
+      );
+      if (permissionMatch) return;
     }
 
-    if (required.permissions) {
-      const hasAll = required.permissions.every((p) => userPermissions.includes(p));
-
-      if (!hasAll) {
-        return reply.code(StatusCodes.FORBIDDEN).send();
-      }
+    if (userRole) {
+      const roleMatch = await authService.findIncludedRolePermission(userRole, actionPermission);
+      if (roleMatch) return;
     }
+
+    return reply.code(StatusCodes.FORBIDDEN).send();
   });
 
   // Automatically attach auth to routes

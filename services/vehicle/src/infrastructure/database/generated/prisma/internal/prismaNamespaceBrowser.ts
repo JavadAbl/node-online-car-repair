@@ -55,6 +55,8 @@ export const ModelName = {
   VehicleService: 'VehicleService',
   CustomerReference: 'CustomerReference',
   ServiceReference: 'ServiceReference',
+  Permission: 'Permission',
+  RolePermission: 'RolePermission',
   InboxEvent: 'InboxEvent',
   OutboxEvent: 'OutboxEvent'
 } as const
@@ -135,6 +137,27 @@ export const ServiceReferenceScalarFieldEnum = {
 } as const
 
 export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFieldEnum)[keyof typeof ServiceReferenceScalarFieldEnum]
+
+
+export const PermissionScalarFieldEnum = {
+  name: 'name',
+  type: 'type',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  permissionName: 'permissionName'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
 export const InboxEventScalarFieldEnum = {
@@ -227,6 +250,20 @@ export const ServiceReferenceOrderByRelevanceFieldEnum = {
 } as const
 
 export type ServiceReferenceOrderByRelevanceFieldEnum = (typeof ServiceReferenceOrderByRelevanceFieldEnum)[keyof typeof ServiceReferenceOrderByRelevanceFieldEnum]
+
+
+export const PermissionOrderByRelevanceFieldEnum = {
+  name: 'name'
+} as const
+
+export type PermissionOrderByRelevanceFieldEnum = (typeof PermissionOrderByRelevanceFieldEnum)[keyof typeof PermissionOrderByRelevanceFieldEnum]
+
+
+export const RolePermissionOrderByRelevanceFieldEnum = {
+  permissionName: 'permissionName'
+} as const
+
+export type RolePermissionOrderByRelevanceFieldEnum = (typeof RolePermissionOrderByRelevanceFieldEnum)[keyof typeof RolePermissionOrderByRelevanceFieldEnum]
 
 
 export const JsonNullValueFilter = {

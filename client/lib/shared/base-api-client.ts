@@ -58,7 +58,7 @@ export const baseApi: BaseQueryFn<
             // NOTE: Adjust the URL and parameters to match your Keycloak/OpenID configuration
             // This example assumes a standard OAuth2 Token Endpoint (often at /protocol/openid-connect/token for Keycloak)
             const refreshResult = await fetch(
-              `${BASE_ADDRESS}auth/refresh-token`,
+              `${BASE_ADDRESS}Auth-Api/Auth/Refresh`,
               {
                 method: "POST",
                 headers: {
@@ -76,10 +76,9 @@ export const baseApi: BaseQueryFn<
               console.log(2);
               // 4. Update the Redux store with the new access token
               api.dispatch(
-                authActions.setCredentials({
+                authActions.setTokens({
                   accessToken: data.accessToken,
                   refreshToken: data.refreshToken,
-                  tokenObject: jwtDecode(data.accessToken),
                 }),
               );
               console.log(343);

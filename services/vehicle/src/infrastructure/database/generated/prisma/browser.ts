@@ -38,6 +38,16 @@ export type CustomerReference = Prisma.CustomerReferenceModel
  */
 export type ServiceReference = Prisma.ServiceReferenceModel
 /**
+ * Model Permission
+ * 
+ */
+export type Permission = Prisma.PermissionModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
  * Model InboxEvent
  * 
  */

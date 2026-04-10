@@ -33,5 +33,5 @@ export const authApi = createApi({
   }),
 });
 
-export const { useGetUserQuery, useSendOtpMutation, useVerifyOtpMutation } =
+export const { useLazyGetUserQuery, useSendOtpMutation, useVerifyOtpMutation } =
   authApi;

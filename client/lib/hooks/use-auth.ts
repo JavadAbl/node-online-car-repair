@@ -1,36 +1,55 @@
-import { useLayoutEffect } from "react";
-import { useGetUserQuery } from "../features/auth/auth-api";
+import { useEffect, useState } from "react";
+import { useLazyGetUserQuery } from "../features/auth/auth-api";
 import { useAppDispatch } from "./use-state";
 import { authActions } from "../features/auth/auth-slice";
 import { jwtDecode } from "jwt-decode";
 
 export function useAuth() {
   const dis = useAppDispatch();
-  const { data, isLoading } = useGetUserQuery();
+  const [isAuthDone, setIsAuthDone] = useState(false);
+  const [fetchUser] = useLazyGetUserQuery();
 
-  const handleAuth = () => {
-    if (data) {
+  useEffect(() => {
+    const handleAuth = () => {
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
 
-      if (accessToken && refreshToken) {
-        const tokenObject: any = jwtDecode(accessToken);
-        dis(
-          authActions.login({
-            accessToken,
-            refreshToken,
-            tokenObject,
-            user: data,
-            role: tokenObject?.role,
-          }),
-        );
-      } else dis(authActions.logout());
-    }
-  };
+      if (!refreshToken) {
+        setIsAuthDone(true);
+        return;
+      }
 
-  useLayoutEffect(() => {
+      dis(authActions.setRefreshToken({ refreshToken }));
+      if (accessToken) {
+        dis(authActions.setAccessToken({ accessToken }));
+      }
+
+      fetchUser()
+        .then((res) => {
+          if (!res.isError && res.data) {
+            const accessToken = localStorage.getItem("accessToken");
+            const refreshToken = localStorage.getItem("refreshToken");
+
+            if (!accessToken || !refreshToken) return;
+
+            const tokenObject: any = jwtDecode(accessToken);
+
+            dis(
+              authActions.login({
+                accessToken,
+                refreshToken,
+                tokenObject,
+                user: res.data,
+                role: tokenObject?.role,
+              }),
+            );
+          }
+        })
+        .finally(() => setIsAuthDone(true));
+    };
+
     handleAuth();
-  }, []);
+  }, [dis, fetchUser]);
 
-  return { isLoading };
+  return { isAuthDone };
 }

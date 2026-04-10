@@ -47,7 +47,7 @@ async function verifyOtp(payload: VerifyOtpDto): Promise<AuthDto> {
 
   const user = await userService.getOrCreateUserForLogin(mobile);
 
-  const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user.id });
+  const { accessToken, refreshToken } = tokenService.generateTokens({ userId: user.id, role: user.role });
   return { accessToken, refreshToken };
 }
 
@@ -57,6 +57,7 @@ async function refresh(payload: RefreshDto): Promise<AuthDto> {
   const refreshPayload = tokenService.verifyRefreshToken(refreshToken);
   const { accessToken, refreshToken: newRefreshToken } = tokenService.generateTokens({
     userId: refreshPayload.userId,
+    role: refreshPayload.role,
   });
 
   return { accessToken, refreshToken: newRefreshToken };

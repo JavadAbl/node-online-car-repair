@@ -7,8 +7,6 @@ export function useApi<T>(action: () => Promise<ApiResponse<T>>) {
   const [data, setData] = useState<ApiResponse<T> | undefined>();
 
   const handleAction = useCallback(() => {
-    console.log("handleaction");
-
     action()
       .then((res) => {
         setData(res);
