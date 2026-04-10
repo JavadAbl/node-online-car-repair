@@ -29,11 +29,34 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
         // ---------------------------------------------------------
 
         serviceInstance.all(
-          `/${serviceName}/:tail(.*)`,
+          `/${serviceName}/*`,
           { preValidation: [serviceInstance.auth] },
           async (request, reply) => {
             const tail = (request.params as { tail?: string }).tail ?? "";
+            const wildcardValue = request.params["*"];
             const dest = tail ? `/${tail}` : "/";
+            console.log(tail, dest, wildcardValue);
+
+            const jwtPayload = request.user as any;
+
+            return reply.from(wildcardValue, {
+              rewriteRequestHeaders: (req, headers) => ({
+                ...headers,
+                "x-user-id": jwtPayload.userId,
+                "x-user-role": jwtPayload.role,
+                "x-user-permissions": jwtPayload.permissions,
+              }),
+            });
+          },
+        );
+
+        /*     serviceInstance.all(
+          `/${serviceName}/:tail(.*)`,
+          // { preValidation: [serviceInstance.auth] },
+          async (request, reply) => {
+            const tail = (request.params as { tail?: string }).tail ?? "";
+            const dest = tail ? `/${tail}` : "/";
+            console.log(tail, dest);
 
             const jwtPayload = request.user as any;
 
@@ -47,14 +70,14 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
             });
           },
         );
-
-        serviceInstance.all(
+ */
+        /*  serviceInstance.all(
           `/${serviceName}`,
           { preValidation: [serviceInstance.auth] },
           async (request, reply) => {
             reply.redirect(`/${serviceName}/`);
           },
-        );
+        ); */
 
         //Public routes
         if (serviceName === "auth-api") {

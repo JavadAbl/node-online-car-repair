@@ -18,45 +18,54 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Separator } from "@/components/ui/separator";
-import { sendOtpAction } from "@/lib/features/auth/actions/send-otp.action";
-import { verifyOtpAction } from "@/lib/features/auth/actions/verify-otp.action";
 import { toast } from "sonner";
-import { authAction } from "@/lib/features/auth/actions/auth.action";
 import { useRouter } from "next/navigation";
+import {
+  useGetUserQuery,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+} from "@/lib/features/auth/auth-api";
+import { useAppDispatch } from "@/lib/hooks/use-state";
+import { authActions } from "@/lib/features/auth/auth-slice";
 
 export default function AuthPage() {
+  const dis = useAppDispatch();
   const router = useRouter();
   const [step, setStep] = useState<"mobile" | "otp">("mobile");
   const [mobileNumber, setMobileNumber] = useState("");
   const [otp, setOtp] = useState("");
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  const [mutateSendOtp] = useSendOtpMutation();
+  const [mutateVerifyOtp] = useVerifyOtpMutation();
+  const { data: userRes, isLoading: isLoadingGetUser } = useGetUserQuery();
 
   useLayoutEffect(() => {
-    authAction(true)
-      .then((res) => {
-        if (res.isAuth) router.replace("/");
-      })
-      .finally(() => setIsAuthLoading(false));
-  }, []);
+    if (userRes) router.replace("/");
+  }, [router, userRes]);
 
   const handleSendOtp = async () => {
-    const res = await sendOtpAction({ mobile: mobileNumber });
-    if (!res.success) {
-      toast.error(res.error);
+    const res = await mutateSendOtp({ mobile: mobileNumber });
+    if (res.error) {
       return;
     }
     setStep("otp");
   };
 
   const handleVerifyOtp = async () => {
-    const res = await verifyOtpAction({ mobile: mobileNumber, otp });
-    if (!res.success) {
-      toast.error(res.error);
-      return;
-    }
+    const res = await mutateVerifyOtp({ mobile: mobileNumber, otp });
+    if (!res.error) {
+      dis(
+        authActions.setTokens({
+          accessToken: res.data.accessToken,
+          refreshToken: res.data.refreshToken,
+        }),
+      );
+      router.replace("/");
+      //   window.location.replace("/");
+    } else toast.error(res.error?.data?.message);
   };
 
-  if (isAuthLoading) return null;
+  if (isLoadingGetUser) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

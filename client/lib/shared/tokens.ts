@@ -27,3 +27,9 @@ export const setTokens = async (accessToken: string, refreshToken: string) => {
     maxAge: 60 * 60 * 24 * 7, // Example: 7 days
   });
 };
+
+export const clearTokens = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete("accessToken");
+  cookieStore.delete("refreshToken");
+};

@@ -43,7 +43,7 @@ const defaultValues: CreateVehicleDto = {
   vin: "",
   make: "",
   model: "",
-  year: null,
+  year: null as unknown as number,
   trim: null,
   status: null,
 

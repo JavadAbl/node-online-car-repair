@@ -1,14 +1,28 @@
-import { VehicleRepository } from "../infrastructure/database/Repository/vehicle.repository.js";
+import { customerRep } from "../infrastructure/database/Repository/customer.repository.js";
+import { vehicleRep, VehicleRepository } from "../infrastructure/database/Repository/vehicle.repository.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
+import { VehicleDto } from "../schemas/vehicle/reply/vehicle.schema.js";
 import { CreateVehicle } from "../schemas/vehicle/request/create-vehicle.schema.js";
 import { UpdateVehicle } from "../schemas/vehicle/request/update-vehicle.schema.js";
 import { buildFindManyArgs } from "../utils/prisma.utils.js";
 
-const vehicleRep = new VehicleRepository();
-
 function getMany(query: GetManyQuery<"Vehicle">) {
   const predicate = buildFindManyArgs(query, { searchableFields: ["vin", "make", "model", "year"] });
   return vehicleRep.findMany(predicate);
+}
+
+async function getManyByCustomerId(
+  customerId: number,
+  query: GetManyQuery<"Vehicle">,
+): Promise<VehicleDto[]> {
+  console.log("hit");
+
+  await customerRep.findAndCheckExistsBy({ where: { id: customerId } }, "id", customerId);
+  const predicate = buildFindManyArgs(query, { searchableFields: ["vin", "make", "model", "year"] });
+  return vehicleRep.findMany({
+    ...predicate,
+    where: { ...predicate.where, customerId },
+  }) as unknown as VehicleDto[];
 }
 
 function getById(id: number) {
@@ -31,4 +45,4 @@ async function deleteById(id: number) {
   await vehicleRep.remove({ where: { id } });
 }
 
-export const vehicleService = { getMany, getById, create, update, deleteById };
+export const vehicleService = { getMany, getById, create, update, deleteById, getManyByCustomerId };

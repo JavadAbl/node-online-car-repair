@@ -3,6 +3,9 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
+import { Provider } from "react-redux";
+import { store } from "@/lib/shared/store";
+import { Providers } from "@/components/shared/providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -31,15 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute={"class"}
-          enableSystem
-          defaultTheme="light"
-          disableTransitionOnChange
-        >
-          <Toaster />
-          {children}
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

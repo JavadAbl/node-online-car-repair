@@ -5,7 +5,6 @@ export async function GET() {
   try {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refreshToken")?.value;
-    console.log(refreshToken);
 
     return NextResponse.json({});
   } catch (error: any) {

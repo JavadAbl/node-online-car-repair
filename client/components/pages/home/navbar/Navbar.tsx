@@ -3,30 +3,33 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { Wrench, Menu, Phone } from "lucide-react";
+import {
+  Wrench,
+  Menu,
+  Phone,
+  CarIcon,
+  ToolboxIcon,
+  LogOutIcon,
+} from "lucide-react";
 import Link from "next/link";
 import ThemeModeToggle from "./theme-mode-toggle";
-import { useLayoutEffect, useState } from "react";
-import { authAction } from "@/lib/features/auth/actions/auth.action";
-import { UserDto } from "@/lib/features/auth/auth.type";
-import { toast } from "sonner";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
+import { authActions } from "@/lib/features/auth/auth-slice";
+import { useRouter } from "next/navigation";
+import { useLayoutEffect } from "react";
 
 export function Navbar() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<UserDto>();
-  const [isAuth, setIsAuth] = useState(false);
+  const dis = useAppDispatch();
+  const { isAuth, user } = useAppSelector((s) => s.auth);
+  const { isLoading } = useAuth();
+  const router = useRouter();
+  console.log(isAuth);
 
-  useLayoutEffect(() => {
-    authAction(true)
-      .then((res) => {
-        if (res.isAuth) {
-          setUser(res.user);
-          setIsAuth(true);
-        }
-        if (res.error) toast.error(res.error);
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
+  const handleLogout = async () => {
+    dis(authActions.logout());
+    router.replace("/");
+  };
 
   if (isLoading) return null;
 
@@ -86,12 +89,32 @@ export function Navbar() {
             )}
 
             {isAuth && (
-              <Button asChild>
-                <Link href="/services">New Service</Link>
-              </Button>
+              <>
+                <Button asChild>
+                  <Link href="/vehicles">
+                    <span>My Vehicles</span>
+                    <CarIcon />
+                  </Link>
+                </Button>
+
+                <Button asChild>
+                  <Link href="/services">
+                    <span> New Service </span>
+                    <ToolboxIcon />
+                  </Link>
+                </Button>
+              </>
             )}
 
             <ThemeModeToggle />
+
+            {isAuth && (
+              <LogOutIcon
+                className="h-[1.2rem] w-[1.2rem] cursor-pointer"
+                xlinkTitle="logout"
+                onClick={handleLogout}
+              />
+            )}
           </div>
 
           {/* Mobile Menu */}

@@ -5,3 +5,5 @@ export class VehicleRepository extends Repository<"vehicle"> {
     super("vehicle");
   }
 }
+
+export const vehicleRep = new VehicleRepository();

@@ -5,3 +5,5 @@ export class CustomerRepository extends Repository<"customerReference"> {
     super("customerReference");
   }
 }
+
+export const customerRep = new CustomerRepository();

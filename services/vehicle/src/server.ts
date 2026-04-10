@@ -9,9 +9,10 @@ import { testRoutes } from "./routes/test.route.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { authPlugin } from "./plugins/auth.plugin.js";
+import { userContextPlugin } from "./plugins/user-context.plugin.js";
 
 export const app = fastify({
-  logger: true,
+  logger: false,
   http2: true,
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
@@ -43,6 +44,7 @@ export async function startHttpServer() {
   }
 
   app.register(authPlugin);
+  app.register(userContextPlugin);
 
   app.register(testRoutes, { prefix: "/Test" });
   app.register(vehicleRoutes, { prefix: "/Vehicles" });

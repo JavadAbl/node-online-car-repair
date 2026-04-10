@@ -7,4 +7,4 @@ export const SendOtpSchema = z.object({
     .regex(/^[0-9+\-\s()]{10,}$/, "Invalid mobile number format"),
 });
 
-export type SendOtpRequest = z.infer<typeof SendOtpSchema>;
+export type SendOtpDto = z.infer<typeof SendOtpSchema>;

@@ -9,4 +9,4 @@ export const VerifyOtpSchema = z.object({
   otp: z.string().nonempty({ error: "Otp number is required" }),
 });
 
-export type VerifyOtpRequest = z.infer<typeof VerifyOtpSchema>;
+export type VerifyOtpDto = z.infer<typeof VerifyOtpSchema>;

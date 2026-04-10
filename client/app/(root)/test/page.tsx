@@ -1,5 +1,4 @@
-import React from "react";
-
+"use client";
 export default function page() {
-  return <div className={clsx("flex")}>page</div>;
+  return <div>page</div>;
 }

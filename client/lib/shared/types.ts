@@ -1,6 +1,5 @@
 export type ActionState = {
   data?: any;
-  success: boolean;
+  isSuccess: boolean;
   error?: string;
-  fieldErrors?: Record<string, string[]>;
 };

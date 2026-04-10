@@ -27,6 +27,14 @@ export const vehicleRoutes: FastifyPluginAsync = async (app) => {
     (request, reply) => vehicleService.getMany(request.query) as unknown as VehicleDto[],
   );
 
+  // Get user vehicles by context----------------------------------------------
+  app.get<GetVehiclesRouteType>(
+    "/CustomerVehicles",
+    { schema: GetVehiclesSchema },
+    (request, reply) =>
+      vehicleService.getManyByCustomerId(request.user.id, request.query) as unknown as VehicleDto[],
+  );
+
   // Get vehicle by id---------------------------------------------
   app.get<GetVehicleByIdRouteType>(
     "/:id",

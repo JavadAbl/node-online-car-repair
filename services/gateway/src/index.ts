@@ -8,9 +8,10 @@ import { serviceProxyPlugin } from "./routes.js";
 import { fastifyJwt } from "@fastify/jwt";
 import { readFileSync } from "fs";
 import { join } from "path";
+import cors from "@fastify/cors";
 
 export const app = fastify({
-  logger: true,
+  logger: false,
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
@@ -38,6 +39,8 @@ async function startHttpServer() {
 }
 
 async function setupFastifyPlugins() {
+  await app.register(cors, { origin: "*" });
+
   app.register(fastifyJwt, { secret: "your-secret-key-for-hashing" });
 
   app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {

@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 
 declare module "fastify" {
   interface FastifyRequest {
-    user?: UserContext;
+    user: UserContext;
   }
 
   interface FastifyInstance {
@@ -19,6 +19,6 @@ declare module "fastify" {
 }
 
 export interface UserContext {
-  id?: string;
-  role?: string;
+  id: number;
+  role: string;
 }

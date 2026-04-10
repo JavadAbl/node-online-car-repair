@@ -14,8 +14,7 @@ export const createVehicleSchema = z.object({
   year: z
     .number()
     .min(1900, "Year must be valid")
-    .max(new Date().getFullYear() + 1, "Year cannot be in the future")
-    .nullable(),
+    .max(new Date().getFullYear() + 1, "Year cannot be in the future"),
 
   trim: z.string().nullable(),
 
