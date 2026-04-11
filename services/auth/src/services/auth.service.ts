@@ -67,11 +67,15 @@ async function syncPermission(payload: PermissionsSyncEvent): Promise<void> {
   // Use a transaction to ensure data integrity
   await permissionRepository.prisma.$transaction(async (tx) => {
     // 1. Extract the names of the incoming permissions
-    const incomingNames = payload.map((p) => p.name);
+    let serviceName;
+    const incomingNames = payload.map((p) => {
+      if (p.type === "Service") serviceName = p.name;
+      return p.name;
+    });
 
     // 2. Delete permissions that are NOT in the incoming array
     // This handles the requirement: "if there is extra permission that doesnt exists in array should be removed"
-    await tx.permission.deleteMany({ where: { name: { notIn: incomingNames } } });
+    await tx.permission.deleteMany({ where: { name: { notIn: incomingNames, contains: serviceName } } });
 
     // 3. Upsert (Update or Insert) the incoming permissions
     // This handles the requirement: "new permissions should be inserted"

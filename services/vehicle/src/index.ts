@@ -1,3 +1,4 @@
+import { authService } from "./infrastructure/auth/auth.service.js";
 import { validateConfig } from "./infrastructure/config.js";
 import { startDatabase } from "./infrastructure/database/prisma-provider.js";
 import { startCronClient } from "./infrastructure/node-cron/cron.provider.js";
@@ -12,6 +13,7 @@ async function run() {
   await startRmq();
   startQueues();
   startCronClient();
+  authService.setupPermissions();
   try {
   } catch (error) {
     console.error(error);

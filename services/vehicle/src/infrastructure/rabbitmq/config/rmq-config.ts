@@ -22,4 +22,4 @@ export const RMQ_Q_AUTH_ROLE_PERMISSION_DELETE = `vehicle.api-role.permission.de
 export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_DELETE = "auth.api-role.permission.delete";
 
 //Publish
-export const RMQ_P_RK_PERMISSIONS = "vehicle.api-permission.sync";
+export const RMQ_P_RK_PERMISSIONS = "auth.api-permission.sync";

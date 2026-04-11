@@ -27,7 +27,7 @@ export class RabbitMQPublisher {
   async publishNoLog<T>(routingKey: string, payload: T) {
     const messageId = randomUUID();
 
-    await this.channel.publish(RMQ_EXCHANGE, routingKey, payload, {
+    await this.channel.publish(RMQ_EXCHANGE, routingKey, JSON.stringify(payload), {
       appId: RMQ_APP_ID,
       messageId,
       persistent: true,
