@@ -75,7 +75,7 @@ async function syncPermission(payload: PermissionsSyncEvent): Promise<void> {
 
     // 2. Delete permissions that are NOT in the incoming array
     // This handles the requirement: "if there is extra permission that doesnt exists in array should be removed"
-    await tx.permission.deleteMany({ where: { name: { notIn: incomingNames, contains: serviceName } } });
+    await tx.permission.deleteMany({ where: { name: { notIn: incomingNames, startsWith: serviceName } } });
 
     // 3. Upsert (Update or Insert) the incoming permissions
     // This handles the requirement: "new permissions should be inserted"

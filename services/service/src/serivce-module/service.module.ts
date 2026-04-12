@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ServiceEntityService } from './_module/services/service-entity.service';
-import { ServiceController } from './_module/controllers/service.controller';
-import { ServiceRepository } from './_module/repository/service.repository';
+import { ServiceEntityService } from './services/service-entity.service';
+import { ServiceController } from './controllers/service.controller';
+import { ServiceRepository } from './repository/service.repository';
 
 @Module({
   imports: [],

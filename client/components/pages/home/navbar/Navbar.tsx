@@ -97,6 +97,13 @@ export function Navbar() {
                     <ToolboxIcon />
                   </Link>
                 </Button>
+
+                <Button variant="destructive" asChild>
+                  <Link href="/admin">
+                    <span> Admin Panel </span>
+                    <ToolboxIcon />
+                  </Link>
+                </Button>
               </>
             )}
 

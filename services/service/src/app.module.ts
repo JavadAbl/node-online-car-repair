@@ -6,6 +6,9 @@ import { ServiceModule } from './serivce-module/service.module';
 import { EventBoxModule } from './infrastructure-modules/event-box-module/event-box.module';
 import { RmqModule } from './infrastructure-modules/rmq-module/rmq.module';
 import { PrismaModule } from './infrastructure-modules/prsima-module/prisma.module';
+import { CronModule } from './infrastructure-modules/cron-module/cron.module';
+import { AuthModule } from './infrastructure-modules/auth-module/auth.module';
+import { QueueModule } from './infrastructure-modules/queue-module/queue.module';
 
 @Module({
   imports: [
@@ -21,6 +24,12 @@ import { PrismaModule } from './infrastructure-modules/prsima-module/prisma.modu
 
     RmqModule,
     PrismaModule,
+    EventBoxModule,
+    AuthModule,
+    QueueModule,
+    RmqModule,
+    PrismaModule,
+    CronModule,
     EventBoxModule,
 
     RepairmanModule,
