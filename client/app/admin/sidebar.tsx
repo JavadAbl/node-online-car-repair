@@ -11,7 +11,6 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
 import {
   Collapsible,
   CollapsibleContent,
@@ -27,6 +26,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import clsx from "clsx";
 
 type MenuItem = {
   title: string;
@@ -41,10 +41,10 @@ type MenuGroup = {
 
 const menuData: MenuGroup[] = [
   {
-    title: "Navigation",
+    title: "Service",
     items: [
-      { title: "Home", url: "/", icon: Home },
-      { title: "Profile", url: "/profile", icon: User },
+      { title: "Service", url: "/admin/service", icon: Home },
+      { title: "Repairman", url: "/admin/repairman", icon: User },
     ],
   },
   {
@@ -66,20 +66,20 @@ const menuData: MenuGroup[] = [
 
 export function AdminSidebar() {
   return (
-    <Sidebar className="mt-16">
-      <SidebarHeader className="flex flex-row justify-between">
-        <h2 className="text-lg font-semibold">My App</h2>
-        <SidebarTrigger />
+    <Sidebar className="">
+      <SidebarHeader className="flex flex-row items-center justify-between w-full ">
+        <h2 className="text-lg font-semibold">Admin Dashboard</h2>
+        <SidebarTrigger className="" />
       </SidebarHeader>
 
       <SidebarContent>
         {menuData.map((group, index) => (
-          <SidebarGroup key={group.title || index}>
+          <SidebarGroup className={clsx("py-0")} key={group.title || index}>
             {/* Render Collapsible if title exists */}
             {group.title ? (
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarGroupLabel asChild>
-                  <CollapsibleTrigger className="flex w-full items-center justify-between cursor-pointer">
+                  <CollapsibleTrigger className="flex w-full items-center justify-between cursor-pointer ">
                     <span>{group.title}</span>
                     <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
                   </CollapsibleTrigger>

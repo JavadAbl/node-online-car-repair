@@ -12,7 +12,7 @@ export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [authApi.reducerPath]: authApi.reducer,
-    [vehicleApi.reducerPath]: vehicleApi.reducer,
+    //  [vehicleApi.reducerPath]: vehicleApi.reducer,
 
     auth: authReducer,
   },
@@ -21,7 +21,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
-      .concat(vehicleApi.middleware)
+      //  .concat(vehicleApi.middleware)
       .prepend(authListenerMiddleware.middleware),
 });
 
