@@ -1,5 +1,4 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
-import { Request, Response } from 'express';
 import * as util from 'util';
 import { isDev } from '../config/app.config';
 
@@ -10,7 +9,7 @@ export interface ExceptionResponse {
   stack?: string;
   timestamp: string;
   path: string;
-  correlationId?: string; // Optional for request tracing
+  correlationId?: string;
 }
 
 @Catch()
@@ -19,13 +18,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
 
-    // Determine status and message
+    // Works on BOTH Express & Fastify
+    const response: any = ctx.getResponse();
+    const request: any = ctx.getRequest();
+
     const { status, exceptionResponse } = this.getExceptionDetails(exception);
 
-    // Format the response
     const formattedResponse: ExceptionResponse = {
       statusCode: status,
       message: exceptionResponse.message,
@@ -34,23 +33,26 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: request.url,
     };
 
-    // Add stack trace in development mode
     if (isDev && exception instanceof Error) {
       formattedResponse.stack = exception.stack;
     }
 
-    // Log the exception
     this.logException(exception, request);
 
-    // Send response
-    response.status(status).json(formattedResponse);
+    // Ensure compatibility with both Express and Fastify
+    if (typeof response.json === 'function') {
+      // Express
+      response.status(status).json(formattedResponse);
+    } else {
+      // Fastify
+      response.status(status).send(formattedResponse);
+    }
   }
 
   private getExceptionDetails(exception: unknown): {
     status: number;
     exceptionResponse: { message: string | string[]; error: string };
   } {
-    // Handle HttpException (NestJS HTTP errors)
     if (exception instanceof HttpException) {
       const response = exception.getResponse();
       const status = exception.getStatus();
@@ -62,8 +64,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         };
       }
 
-      // If response is an object (NestJS default HttpException response)
-      const responseObj = response as any;
+      const responseObj = response as Record<string, any>;
+
       return {
         status,
         exceptionResponse: {
@@ -73,7 +75,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       };
     }
 
-    // Handle non-HTTP exceptions (TypeError, RangeError, custom errors, etc.)
     if (exception instanceof Error) {
       return {
         status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -84,14 +85,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       };
     }
 
-    // Handle unknown exceptions
     return {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       exceptionResponse: { message: 'An unexpected error occurred', error: 'Internal Server Error' },
     };
   }
 
-  private logException(exception: unknown, request: Request) {
+  private logException(exception: unknown, request: any) {
     const errorDetails = {
       timestamp: new Date().toISOString(),
       method: request.method,

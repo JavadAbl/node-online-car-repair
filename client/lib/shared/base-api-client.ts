@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import { RootState } from "./store";
 import { authActions } from "../features/auth/auth-slice";
 import { toast } from "sonner";
+import { HttpStatusCode } from "axios";
 
 const BASE_ADDRESS = "https://localhost:3000/";
 
@@ -39,6 +40,11 @@ export const baseApi: BaseQueryFn<
   await mutex.waitForUnlock();
 
   let result = await rawBaseQuery(args, api, extraOptions);
+
+  if (!result.error) {
+    if (result.meta?.response?.status === HttpStatusCode.Created)
+      toast.success("Operation successful");
+  }
 
   if (result.error) {
     const err = result.error;

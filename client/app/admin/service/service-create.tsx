@@ -1,8 +1,6 @@
 "use client";
-
 import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,29 +12,34 @@ import {
 import { Input } from "@/components/ui/input";
 import NumberInput from "@/components/shared/inputs/number-input";
 import { FormMessageFixed } from "@/components/shared/inputs/form-message-fixed";
+import {
+  ServiceCreateDto,
+  ServiceCreateSchema,
+} from "@/lib/features/service/schema/requests/service-create-schema";
+import { useServiceCreateMutation } from "@/lib/features/service/service-api";
+import { toast } from "sonner";
 
-const ServiceCreateSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  // Use .nanToUndefined or preprocess if you want empty input to be valid,
-  // otherwise standard z.number() works for validation.
-  price: z.number("Price is required").min(0, "Price must be positive"),
-});
-
-export type ServiceCreateDto = z.infer<typeof ServiceCreateSchema>;
-
+interface Props {
+  onClose: () => any;
+}
 const defaultValues: ServiceCreateDto = {
   name: "",
   price: NaN,
 };
 
-export default function ServiceCreateForm() {
+export default function ServiceCreateForm({ onClose }: Props) {
   const form = useForm<ServiceCreateDto>({
     resolver: zodResolver(ServiceCreateSchema) as Resolver<ServiceCreateDto>,
     defaultValues,
   });
 
-  const handleSubmit = (data: ServiceCreateDto) => {
+  const [mutateServiceCreate, { isLoading: isLoadingServiceCreate }] =
+    useServiceCreateMutation();
+
+  const handleSubmit = async (data: ServiceCreateDto) => {
     console.log(data);
+    const res = await mutateServiceCreate(data);
+    if (!res.error) onClose();
   };
 
   return (

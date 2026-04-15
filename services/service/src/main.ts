@@ -7,9 +7,22 @@ import { AppConfig, ConfigType } from './common/config/config.type';
 import { AuthService } from './infrastructure-modules/auth-module/auth.service';
 import { RepairmanController } from './repairman-module/contollers/repairman.controller';
 import { ServiceController } from './serivce-module/controllers/service.controller';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    http2: true,
+    https: {
+      key: readFileSync(join(process.cwd(), 'localhost-private.key')),
+      cert: readFileSync(join(process.cwd(), 'localhost-cert.pem')),
+      allowHTTP1: true, // Optional: fall back to HTTP/1.1
+    },
+  };
+
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(httpsOptions));
+
   const configService = app.get<ConfigService<ConfigType>>(ConfigService);
 
   const authService = app.get<AuthService>(AuthService);

@@ -1,5 +1,6 @@
-import React from "react";
+"use server";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  return <></>;
+export default async function Page() {
+  redirect("/admin/service");
 }

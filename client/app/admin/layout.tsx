@@ -1,17 +1,13 @@
 import { AdminSidebar } from "@/app/admin/sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import clsx from "clsx";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import SidebarEdgeTab from "./sidebar-edge-tab";
 
-export default function Layout({ children }: any) {
+export default function LayoutAdmin({ children }: any) {
   return (
     <SidebarProvider>
       <AdminSidebar />
-
-      <div className="flex flex-col grow shrink">
-        <SidebarTrigger className={clsx("md:hidden")} />
-
-        {children}
-      </div>
+      <SidebarEdgeTab />
+      <div className="flex flex-col grow shrink">{children}</div>
     </SidebarProvider>
   );
 }

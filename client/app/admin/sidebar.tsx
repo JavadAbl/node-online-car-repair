@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -24,6 +25,7 @@ import {
   Users,
   Shield,
   ChevronDown,
+  ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -123,7 +125,18 @@ export function AdminSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter>
+      <SidebarFooter className="flex flex-col gap-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/">
+                <ArrowLeft className="w-4 h-4" />
+                <span>Return to App</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+
         <p className="text-sm text-muted-foreground">© 2026 My App</p>
       </SidebarFooter>
     </Sidebar>

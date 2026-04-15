@@ -1,5 +1,4 @@
 "use client";
-
 import ServicesGrid from "./services-grid";
 import { ContentCard } from "@/components/shared/cards/content-card";
 
