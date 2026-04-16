@@ -12,7 +12,7 @@ import {
   LogOutIcon,
 } from "lucide-react";
 import Link from "next/link";
-import ThemeModeToggle from "./theme-mode-toggle";
+import ThemeModeToggle from "../../components/shared/utils/theme-mode-toggle";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
 import { authActions } from "@/lib/features/auth/auth-slice";
 import { useRouter } from "next/navigation";
@@ -85,16 +85,9 @@ export function Navbar() {
             {isAuth && (
               <>
                 <Button asChild>
-                  <Link href="/vehicles">
-                    <span>My Vehicles</span>
+                  <Link href="/customer-panel">
+                    <span>Customer Panel</span>
                     <CarIcon />
-                  </Link>
-                </Button>
-
-                <Button asChild>
-                  <Link href="/services">
-                    <span> New Service </span>
-                    <ToolboxIcon />
                   </Link>
                 </Button>
 

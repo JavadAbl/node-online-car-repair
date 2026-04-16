@@ -18,7 +18,7 @@ const NumberInput = ({
   // 1. Format the value for Display (e.g., 1000000 -> "1,000,000")
   // We handle the 'NaN' case (initial state) by showing an empty string
   const displayValue =
-    value && !Number.isNaN(value) ? value.toLocaleString() : "";
+    value != null && !Number.isNaN(value) ? value.toLocaleString() : "";
 
   // 2. Handle Change: Parse string -> Number -> Pass to RHF
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

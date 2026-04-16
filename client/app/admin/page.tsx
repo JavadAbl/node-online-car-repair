@@ -2,5 +2,5 @@
 import { redirect } from "next/navigation";
 
 export default async function Page() {
-  redirect("/admin/service");
+  redirect("/admin/service/service-entity");
 }

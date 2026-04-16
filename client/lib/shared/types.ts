@@ -1,5 +1,7 @@
-export type ActionState = {
-  data?: any;
-  isSuccess: boolean;
-  error?: string;
+export type GetManyQuery = {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  search?: string;
 };

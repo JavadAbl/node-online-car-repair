@@ -1,12 +1,12 @@
-import { Contact } from "../../components/pages/home/Contact";
-import { Footer } from "../../components/pages/home/Footer";
-import { Hero } from "../../components/pages/home/Hero";
-import { HowItWorks } from "../../components/pages/home/HowItWorks";
-import { Services } from "../../components/pages/home/Services";
-import { Testimonials } from "../../components/pages/home/Testimonials";
-import { WhyChooseUs } from "../../components/pages/home/WhyChooseUs";
+import { Contact } from "./Contact";
+import { Footer } from "./Footer";
+import { Hero } from "./Hero";
+import { HowItWorks } from "./HowItWorks";
+import { Services } from "./Services";
+import { Testimonials } from "./Testimonials";
+import { WhyChooseUs } from "./WhyChooseUs";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <Hero />

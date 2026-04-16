@@ -1,4 +1,4 @@
-import { AdminSidebar } from "@/app/admin/sidebar";
+import { AdminSidebar } from "@/app/admin/admin-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SidebarEdgeTab from "./sidebar-edge-tab";
 

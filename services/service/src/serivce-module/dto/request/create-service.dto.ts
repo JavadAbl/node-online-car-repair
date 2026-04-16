@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, Min } from 'class-validator';
 
 export class CreateServiceDto {
   @IsString()
@@ -6,6 +6,6 @@ export class CreateServiceDto {
   @MaxLength(100)
   name: string;
 
-  @IsPositive()
+  @Min(0)
   price: number;
 }

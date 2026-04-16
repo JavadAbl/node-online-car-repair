@@ -40,9 +40,20 @@ export const baseApi: BaseQueryFn<
   await mutex.waitForUnlock();
 
   let result = await rawBaseQuery(args, api, extraOptions);
+  const meta = result.meta;
 
   if (!result.error) {
-    if (result.meta?.response?.status === HttpStatusCode.Created)
+    if (
+      // POST with Created (201)
+      (meta?.request.method === "POST" &&
+        meta?.response?.status === HttpStatusCode.Created) ||
+      // PUT or PATCH with OK (200)
+      ((meta?.request.method === "PUT" || meta?.request.method === "PATCH") &&
+        meta?.response?.status === HttpStatusCode.Ok) ||
+      // DELETE with No Content (204)
+      (meta?.request.method === "DELETE" &&
+        meta?.response?.status === HttpStatusCode.NoContent)
+    )
       toast.success("Operation successful");
   }
 

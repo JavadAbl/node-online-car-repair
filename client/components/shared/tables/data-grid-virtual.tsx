@@ -27,9 +27,13 @@ import * as XLSX from "xlsx";
 import React, { useImperativeHandle, useRef } from "react";
 
 export default function DataGrid({ data, columns, ref }) {
+  // Safe defaults
+  const safeData = Array.isArray(data) ? data : [];
+  const safeColumns = Array.isArray(columns) ? columns : [];
+
   const table = useReactTable({
-    data,
-    columns,
+    data: safeData,
+    columns: safeColumns,
     state: {},
 
     getCoreRowModel: getCoreRowModel(),
@@ -40,7 +44,7 @@ export default function DataGrid({ data, columns, ref }) {
 
   const parentRef = useRef(null);
 
-  // Virtualizer for big data sets (10k+ rows)
+  // Virtualizer safe count
   const rowVirtualizer = useVirtualizer({
     count: table.getRowModel().rows.length,
     getScrollElement: () => parentRef.current,
@@ -50,22 +54,24 @@ export default function DataGrid({ data, columns, ref }) {
 
   // Export CSV
   const exportCSV = () => {
-    const csv = XLSX.utils.json_to_sheet(
-      table.getFilteredRowModel().rows.map((r) => r.original),
-    );
+    const rows = table.getFilteredRowModel().rows.map((r) => r.original);
+
+    const csv = XLSX.utils.json_to_sheet(rows ?? []);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, csv, "Data");
+
     const blob = XLSX.write(wb, { bookType: "csv", type: "array" });
     saveAs(new Blob([blob], { type: "text/csv" }), "data.csv");
   };
 
   // Export Excel
   const exportExcel = () => {
-    const sheet = XLSX.utils.json_to_sheet(
-      table.getFilteredRowModel().rows.map((r) => r.original),
-    );
+    const rows = table.getFilteredRowModel().rows.map((r) => r.original);
+
+    const sheet = XLSX.utils.json_to_sheet(rows ?? []);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, sheet, "Data");
+
     XLSX.writeFile(wb, "data.xlsx");
   };
 
@@ -74,13 +80,11 @@ export default function DataGrid({ data, columns, ref }) {
     exportExcel,
   }));
 
+  const rowItems = rowVirtualizer.getVirtualItems();
+
   return (
     <div className="space-y-4">
-      {/* Table with filters + virtualization */}
-      <div
-        ref={parentRef}
-        className=" overflow-auto border rounded-md relative"
-      >
+      <div ref={parentRef} className="overflow-auto border rounded-md relative">
         <Table className="w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -92,7 +96,7 @@ export default function DataGrid({ data, columns, ref }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
+                            header.column.columnDef?.header,
                             header.getContext(),
                           )}
                     </TableHead>
@@ -105,13 +109,13 @@ export default function DataGrid({ data, columns, ref }) {
                     <TableHead key={header.id}>
                       {header.column.getCanFilter() ? (
                         <Input
-                          value={
-                            (header.column.getFilterValue() ?? "") as string
-                          }
+                          value={(
+                            header.column.getFilterValue() ?? ""
+                          ).toString()}
                           onChange={(e) =>
                             header.column.setFilterValue(e.target.value)
                           }
-                          placeholder={`Filter ${header.column.columnDef.header}`}
+                          placeholder={`Filter ${header.column.columnDef?.header ?? ""}`}
                           className="h-8"
                         />
                       ) : null}
@@ -123,27 +127,35 @@ export default function DataGrid({ data, columns, ref }) {
           </TableHeader>
 
           <TableBody>
-            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-              const row = table.getRowModel().rows[virtualRow.index];
+            {rowItems.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={safeColumns.length} className="text-center">
+                  No data available
+                </TableCell>
+              </TableRow>
+            ) : (
+              rowItems.map((virtualRow) => {
+                const row = table.getRowModel().rows[virtualRow.index];
 
-              return (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+                return (
+                  <TableRow key={row?.id ?? virtualRow.index}>
+                    {row?.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef?.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between py-3">
+        <div className="flex items-center justify-between p-3">
           <Button
             variant="outline"
             size="sm"

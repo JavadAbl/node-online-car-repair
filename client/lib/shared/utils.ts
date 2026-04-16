@@ -37,15 +37,7 @@ export type RemoveNullValues<T> = {
   [K in keyof T]: Exclude<T[K], null>;
 };
 
-export function extractErrorMessage(error: any): string {
-  if (error instanceof AxiosError)
-    if (typeof error.response?.data?.message === "string")
-      return error.response?.data?.message;
 
-  if (error.message) return error.message;
-
-  return "An unknown error happened";
-}
 
 export function persianDigitsToEnglish(str: string) {
   const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
@@ -54,4 +46,13 @@ export function persianDigitsToEnglish(str: string) {
   return str.replace(/۰|۱|۲|۳|۴|۵|۶|۷|۸|۹/g, (match) => {
     return englishDigits[persianDigits.indexOf(match)];
   });
+}
+
+export function enumToSelectOptions<T extends string>(
+  enumObj: Record<string, string>,
+): { label: string; value: string }[] {
+  return Object.values(enumObj).map((value) => ({
+    label: value,
+    value: value,
+  }));
 }

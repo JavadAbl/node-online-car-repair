@@ -1,7 +1,6 @@
 "use client";
 import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,37 +15,76 @@ import {
   ServiceCreateDto,
   ServiceCreateSchema,
 } from "@/lib/features/service/schema/requests/service-create-schema";
-import { useServiceCreateMutation } from "@/lib/features/service/service-api";
-import { toast } from "sonner";
+import {
+  useGetServiceByIdQuery,
+  useServiceCreateMutation,
+  useServiceUpdateMutation,
+} from "@/lib/features/service/service-api";
+import { LoadingButton } from "@/components/shared/buttons/loading-button";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useEffect } from "react";
 
 interface Props {
   onClose: () => any;
+  mode: "create" | "update";
+  id?: number;
 }
 const defaultValues: ServiceCreateDto = {
   name: "",
   price: NaN,
 };
 
-export default function ServiceCreateForm({ onClose }: Props) {
+export default function ServiceMutate({ mode, id, onClose }: Props) {
+  //Hooks-----------------------------------------------------
   const form = useForm<ServiceCreateDto>({
     resolver: zodResolver(ServiceCreateSchema) as Resolver<ServiceCreateDto>,
     defaultValues,
   });
+  const { setValue } = form;
 
+  //Data Hooks--------------------------------------------------
   const [mutateServiceCreate, { isLoading: isLoadingServiceCreate }] =
     useServiceCreateMutation();
 
+  const [mutateServiceUpdate, { isLoading: isLoadingServiceUpdate }] =
+    useServiceUpdateMutation();
+
+  const { data: serviceRes } = useGetServiceByIdQuery(id ?? skipToken);
+  const service = serviceRes;
+
+  useEffect(() => {
+    if (mode === "update" && service) {
+      form.reset({
+        name: service.name,
+        price: service.price,
+      });
+    }
+  }, [service, mode, form]);
+
+  //Handlers----------------------------------------------------
   const handleSubmit = async (data: ServiceCreateDto) => {
-    console.log(data);
-    const res = await mutateServiceCreate(data);
-    if (!res.error) onClose();
+    let res: { error?: any };
+
+    switch (mode) {
+      case "create":
+        res = await mutateServiceCreate(data);
+        break;
+
+      case "update":
+        res = await mutateServiceUpdate({ body: data, id: id! });
+        break;
+    }
+    if (!res?.error) onClose();
   };
 
+  if (!mode || (mode === "update" && !id)) return null;
+
+  //Component----------------------------------------------------
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6 w-full max-w-md"
+        className="space-y-1 w-full max-w-md"
       >
         {/* Name */}
         <FormField
@@ -78,9 +116,13 @@ export default function ServiceCreateForm({ onClose }: Props) {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Create Service
-        </Button>
+        <LoadingButton
+          type="submit"
+          className="w-full"
+          isLoading={isLoadingServiceCreate || isLoadingServiceUpdate}
+        >
+          {mode === "create" ? "Create Service" : "Update Service"}
+        </LoadingButton>
       </form>
     </Form>
   );

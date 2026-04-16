@@ -5,8 +5,6 @@ import axios, {
 } from "axios";
 import { Agent } from "https";
 import { getTokens, setTokens } from "@/lib/shared/tokens";
-import { AuthDto } from "../features/auth/auth.type";
-import { extractErrorMessage } from "./utils";
 
 // 1. Define the standard response shape (like RTK Query)
 export type ApiResponse<T> = {
@@ -119,3 +117,13 @@ class BaseHttpService {
 
 // Export a singleton instance of the wrapper (Safe because wrapper creates internal client on demand)
 export const httpService = new BaseHttpService();
+
+function extractErrorMessage(error: any): string {
+  if (error instanceof AxiosError)
+    if (typeof error.response?.data?.message === "string")
+      return error.response?.data?.message;
+
+  if (error.message) return error.message;
+
+  return "An unknown error happened";
+}

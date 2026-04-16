@@ -32,8 +32,8 @@ import {
   CreateVehicleDto,
   createVehicleSchema,
 } from "@/lib/features/vehicle/schema/create-vehicle-schema";
-import { FormInput } from "@/components/shared/form-input";
-import { FormTextarea } from "@/components/shared/form-textarea";
+import { FormInput } from "@/components/shared/inputs/form-input";
+import { FormTextarea } from "@/components/shared/inputs/form-textarea";
 import { createVehicleAction } from "@/lib/features/vehicle/actions/create-vehicle-action";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CheckCircle2 } from "lucide-react";

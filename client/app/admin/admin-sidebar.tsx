@@ -45,8 +45,8 @@ const menuData: MenuGroup[] = [
   {
     title: "Service",
     items: [
-      { title: "Service", url: "/admin/service", icon: Home },
-      { title: "Repairman", url: "/admin/repairman", icon: User },
+      { title: "Service", url: "/admin/service/service-entity", icon: Home },
+      { title: "Repairman", url: "/admin/service/repairman", icon: User },
     ],
   },
   {
