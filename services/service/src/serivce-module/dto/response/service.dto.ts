@@ -9,5 +9,11 @@ export class ServiceDto {
   name: string;
 
   @Expose()
+  description: string;
+
+  @Expose()
   price: number;
+
+  @Expose()
+  discountPercent: number;
 }

@@ -10,4 +10,6 @@ export interface RepairmanDto {
   employeeNumber: string;
 
   workShift: WorkShift;
+
+  image: string;
 }

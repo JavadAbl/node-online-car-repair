@@ -1,13 +1,13 @@
 "use client";
+import { ContainerCard } from "@/components/shared/cards/container-card";
 import ServicesGrid from "./services-grid";
-import { ContentCard } from "@/components/shared/cards/content-card";
 
 export default function ServiceEntity() {
   return (
     <>
-      <ContentCard className=" w-full">
+      <ContainerCard className=" w-full">
         <ServicesGrid />
-      </ContentCard>
+      </ContainerCard>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { Navbar } from "@/app/(root)/navbar";
+import Auth from "@/components/shared/utils/auth";
 
 export default function RootLayout({
   children,
@@ -7,7 +8,9 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <Navbar />
+      <Auth redirect={false}>
+        <Navbar />
+      </Auth>
       {children}
     </>
   );

@@ -20,4 +20,8 @@ export class CreateRepairmanDto {
   @IsEnum(WorkShift)
   @IsNotEmpty()
   workShift: WorkShift;
+
+  @IsString()
+  @IsNotEmpty()
+  image: string;
 }

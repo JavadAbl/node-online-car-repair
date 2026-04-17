@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import { useLazyGetUserQuery } from "../features/auth/auth-api";
-import { useAppDispatch } from "./use-state";
+import { useAppDispatch, useAppSelector } from "./use-state";
 import { authActions } from "../features/auth/auth-slice";
 import { jwtDecode } from "jwt-decode";
 
 export function useAuth() {
   const dis = useAppDispatch();
+  const isAuth = useAppSelector((s) => s.auth.isAuth);
   const [isAuthDone, setIsAuthDone] = useState(false);
   const [fetchUser] = useLazyGetUserQuery();
 
   useEffect(() => {
     const handleAuth = () => {
+      if (isAuth) {
+        setIsAuthDone(true);
+        return;
+      }
+
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
 

@@ -17,4 +17,10 @@ export class RepairmanDto {
 
   @Expose()
   workShift: WorkShift;
+
+  @Expose()
+  image: string;
+
+  @Expose()
+  rating: number;
 }

@@ -20,15 +20,19 @@ model Repairman {
   firstName      String
   lastName       String
   workShift      WorkShift
+  image          String
+  rating         Float     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Service {
-  id    Int    @id() @default(autoincrement())
-  name  String @unique()
-  price Int
+  id              Int    @id() @default(autoincrement())
+  name            String @unique()
+  description     String
+  price           Int
+  discountPercent Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

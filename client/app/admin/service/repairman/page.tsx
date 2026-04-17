@@ -1,13 +1,13 @@
 "use client";
-import { ContentCard } from "@/components/shared/cards/content-card";
+import { ContainerCard } from "@/components/shared/cards/container-card";
 import RepairmansGrid from "./repairmans-grid";
 
 export default function Repairman() {
   return (
     <>
-      <ContentCard className=" w-full">
+      <ContainerCard className=" w-full">
         <RepairmansGrid />
-      </ContentCard>
+      </ContainerCard>
     </>
   );
 }

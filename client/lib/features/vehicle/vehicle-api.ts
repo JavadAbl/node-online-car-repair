@@ -1,18 +1,124 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "@/lib/shared/base-api-client";
-import { VehicleDto } from "./vehicle-types";
+import { VehicleDto } from "./schema/responses/vehicle.dto";
+import { GetManyQuery } from "@/lib/shared/types";
+import {
+  getInvalidatesTags,
+  getProvidesTags,
+  getUpdateInvalidatesTags,
+} from "@/lib/shared/rtk-tag-helpers";
+import { VehicleCreateDto } from "./schema/requests/vehicle-create.schema";
+import { VehicleServiceCreateDto } from "./schema/requests/vehicle-service-create.schema";
+import { VehicleServiceDto } from "./schema/responses/vehicle-service.dto";
+
+const SERVICE_DOMAIN = "Vehicle-Api";
 
 export const vehicleApi = createApi({
   reducerPath: "vehicleApi",
   baseQuery: baseApi,
-  //  tagTypes: ["auth"],
+  tagTypes: ["vehicles", "vehicle-services"],
   endpoints: (builder) => ({
-    getCustomerVehicles: builder.query<VehicleDto[], void>({
-      query: () => ({
-        url: "vehicle-api/Vehicles/CustomerVehicles",
+    //Vehicle-----------------------------------------------------
+    GetCustomerVehicles: builder.query<VehicleDto[], GetManyQuery | void>({
+      query: (params) => ({
+        url: `${SERVICE_DOMAIN}/Vehicles/CustomerVehicles`,
+        params: params ?? undefined,
       }),
+      providesTags: (result) => getProvidesTags("vehicles", result),
+    }),
+
+    GetVehicleById: builder.query<VehicleDto, number>({
+      query: (id) => ({
+        url: `${SERVICE_DOMAIN}/Vehicles/${id}`,
+      }),
+      providesTags: (result) => getProvidesTags("vehicles", result),
+    }),
+
+    VehicleCreate: builder.mutation<VehicleDto, VehicleCreateDto>({
+      query: (body) => ({
+        url: `${SERVICE_DOMAIN}/Vehicles`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, error) =>
+        getInvalidatesTags("vehicles", result, true, error),
+    }),
+
+    VehicleUpdate: builder.mutation<
+      VehicleDto,
+      { id: number; body: Partial<VehicleCreateDto> }
+    >({
+      query: ({ id, body }) => ({
+        url: `${SERVICE_DOMAIN}/Vehicles/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) =>
+        getUpdateInvalidatesTags("vehicles", id, false, error),
+    }),
+
+    //Vehicle-----------------------------------------------------
+    GetCustomerVehicleServices: builder.query<
+      VehicleServiceDto[],
+      GetManyQuery | void
+    >({
+      query: (params) => ({
+        url: `${SERVICE_DOMAIN}/VehicleService/CustomerVehiclesServices`,
+        params: params ?? undefined,
+      }),
+      providesTags: (result) => getProvidesTags("vehicle-services", result),
+    }),
+
+    GetVehicleServiceById: builder.query<VehicleServiceDto, number>({
+      query: (id) => ({
+        url: `${SERVICE_DOMAIN}/VehicleService/${id}`,
+      }),
+      providesTags: (result) => getProvidesTags("vehicle-services", result),
+    }),
+
+    GetVehicleServiceByVehicleId: builder.query<VehicleServiceDto[], number>({
+      query: (id) => ({
+        url: `${SERVICE_DOMAIN}/Vehicle/VehicleServices/${id}`,
+      }),
+      providesTags: (result) => getProvidesTags("vehicle-services", result),
+    }),
+
+    VehicleServiceCreate: builder.mutation<
+      VehicleServiceDto,
+      VehicleServiceCreateDto
+    >({
+      query: (body) => ({
+        url: `${SERVICE_DOMAIN}/VehicleService`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, error) =>
+        getInvalidatesTags("vehicle-services", result, true, error),
+    }),
+
+    VehicleServiceUpdate: builder.mutation<
+      VehicleServiceDto,
+      { id: number; body: Partial<VehicleServiceCreateDto> }
+    >({
+      query: ({ id, body }) => ({
+        url: `${SERVICE_DOMAIN}/VehicleService/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) =>
+        getUpdateInvalidatesTags("vehicle-services", id, false, error),
     }),
   }),
 });
 
-export const { useGetCustomerVehiclesQuery } = vehicleApi;
+export const {
+  useGetCustomerVehiclesQuery,
+  useGetVehicleByIdQuery,
+  useVehicleCreateMutation,
+  useVehicleUpdateMutation,
+  useGetVehicleServiceByIdQuery,
+  useGetVehicleServiceByVehicleIdQuery,
+  useGetCustomerVehicleServicesQuery,
+  useVehicleServiceCreateMutation,
+  useVehicleServiceUpdateMutation,
+} = vehicleApi;

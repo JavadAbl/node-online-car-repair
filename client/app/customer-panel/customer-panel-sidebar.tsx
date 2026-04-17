@@ -13,13 +13,11 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-
 import {
   Home,
   User,
@@ -30,10 +28,13 @@ import {
   ChevronDown,
   LogOut,
   ArrowLeft,
+  CarIcon,
+  ToolboxIcon,
 } from "lucide-react";
-
 import Link from "next/link";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/shared/utils";
 
 type MenuItem = {
   title: string;
@@ -50,29 +51,41 @@ const customerMenu: MenuGroup[] = [
   {
     title: "Dashboard",
     items: [
-      { title: "Overview", url: "/customer", icon: Home },
-      { title: "Profile", url: "/customer/profile", icon: User },
+      { title: "Overview", url: "/customer-panel", icon: Home },
+      { title: "Profile", url: "/customer-panel/profile", icon: User },
     ],
   },
   {
-    title: "Orders & Services",
+    title: "Vehicles & Services",
     items: [
-      { title: "My Orders", url: "/customer/orders", icon: ShoppingBag },
-      { title: "Saved Items", url: "/customer/saved", icon: Heart },
+      { title: "My Vehicles", url: "/customer-panel/vehicles", icon: CarIcon },
+      {
+        title: "My Vehicle Services",
+        url: "/customer-panel/services",
+        icon: ToolboxIcon,
+      },
     ],
   },
   {
     title: "Support",
     items: [
-      { title: "Messages", url: "/customer/messages", icon: MessageCircle },
+      {
+        title: "Messages",
+        url: "/customer-panel/messages",
+        icon: MessageCircle,
+      },
     ],
   },
   {
-    items: [{ title: "Settings", url: "/customer/settings", icon: Settings }],
+    items: [
+      { title: "Settings", url: "/customer-panel/settings", icon: Settings },
+    ],
   },
 ];
 
 export default function CustomerSidebar() {
+  const pathname = usePathname();
+
   return (
     <Sidebar className="bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
       {/* Header */}
@@ -107,9 +120,11 @@ export default function CustomerSidebar() {
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton
                             asChild
-                            className={clsx(
+                            className={cn(
                               "rounded-md",
                               "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                              pathname.toLowerCase() === item.url &&
+                                "bg-sidebar-accent text-sidebar-accent-foreground", // active
                             )}
                           >
                             <Link

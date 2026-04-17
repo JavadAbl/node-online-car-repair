@@ -1,6 +1,5 @@
-"use server";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function Page() {
-  redirect("/admin/service/service-entity");
+export default function AdminPage() {
+  return null;
 }

@@ -7,6 +7,7 @@ import {
 } from "../features/auth/auth-slice";
 import { serviceApi } from "../features/service/service-api";
 import { serviceReducer } from "../features/service/service-slice";
+import { vehicleApi } from "../features/vehicle/vehicle-api";
 
 // Configure the Redux store
 export const store = configureStore({
@@ -14,7 +15,7 @@ export const store = configureStore({
     // Add the generated reducer as a specific top-level slice
     [authApi.reducerPath]: authApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
-    //  [vehicleApi.reducerPath]: vehicleApi.reducer,
+    [vehicleApi.reducerPath]: vehicleApi.reducer,
 
     auth: authReducer,
     service: serviceReducer,
@@ -25,7 +26,7 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(authApi.middleware)
       .concat(serviceApi.middleware)
-      //  .concat(vehicleApi.middleware)
+      .concat(vehicleApi.middleware)
       .prepend(authListenerMiddleware.middleware),
 });
 
