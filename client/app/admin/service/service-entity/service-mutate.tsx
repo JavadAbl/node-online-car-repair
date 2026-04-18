@@ -32,6 +32,8 @@ interface Props {
 const defaultValues: ServiceCreateDto = {
   name: "",
   price: NaN,
+  discountPercent: 0,
+  description: "",
 };
 
 export default function ServiceMutate({ mode, id, onClose }: Props) {
@@ -40,7 +42,6 @@ export default function ServiceMutate({ mode, id, onClose }: Props) {
     resolver: zodResolver(ServiceCreateSchema) as Resolver<ServiceCreateDto>,
     defaultValues,
   });
-  const { setValue } = form;
 
   //Data Hooks--------------------------------------------------
   const [mutateServiceCreate, { isLoading: isLoadingServiceCreate }] =
@@ -54,10 +55,7 @@ export default function ServiceMutate({ mode, id, onClose }: Props) {
 
   useEffect(() => {
     if (mode === "update" && service) {
-      form.reset({
-        name: service.name,
-        price: service.price,
-      });
+      form.reset(service);
     }
   }, [service, mode, form]);
 
@@ -94,7 +92,22 @@ export default function ServiceMutate({ mode, id, onClose }: Props) {
             <FormItem>
               <FormLabel>Service Name</FormLabel>
               <FormControl>
-                <Input placeholder="Example: Web Design" {...field} />
+                <Input {...field} />
+              </FormControl>
+              <FormMessageFixed />
+            </FormItem>
+          )}
+        />
+
+        {/* description */}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} />
               </FormControl>
               <FormMessageFixed />
             </FormItem>
@@ -108,6 +121,21 @@ export default function ServiceMutate({ mode, id, onClose }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Price</FormLabel>
+              <FormControl>
+                <NumberInput field={field} />
+              </FormControl>
+              <FormMessageFixed />
+            </FormItem>
+          )}
+        />
+
+        {/* discountPercent */}
+        <FormField
+          control={form.control}
+          name="discountPercent"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Discount Percent</FormLabel>
               <FormControl>
                 <NumberInput field={field} />
               </FormControl>

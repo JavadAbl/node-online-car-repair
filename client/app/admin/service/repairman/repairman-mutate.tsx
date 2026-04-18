@@ -97,6 +97,21 @@ export default function RepairmanMutate({ mode, id, onClose }: Props) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col w-full max-w-md"
       >
+        {/* employeeNumber */}
+        <FormField
+          control={form.control}
+          name="employeeNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>employeeNumber</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessageFixed />
+            </FormItem>
+          )}
+        />
+
         {/* First Name */}
         <FormField
           control={form.control}
@@ -105,7 +120,7 @@ export default function RepairmanMutate({ mode, id, onClose }: Props) {
             <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder="Example: John" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessageFixed />
             </FormItem>
@@ -120,7 +135,7 @@ export default function RepairmanMutate({ mode, id, onClose }: Props) {
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Example: Doe" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessageFixed />
             </FormItem>

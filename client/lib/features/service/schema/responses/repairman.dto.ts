@@ -11,5 +11,7 @@ export interface RepairmanDto {
 
   workShift: WorkShift;
 
-  image: string;
+  image?: string;
+
+  rating: number;
 }

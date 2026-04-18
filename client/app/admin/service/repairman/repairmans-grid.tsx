@@ -2,7 +2,7 @@ import FormSheet from "@/components/shared/sheets/form-sheet";
 import DataGridVirtual from "@/components/shared/tables/data-grid-virtual";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRef, useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { ImageIcon, Pencil, Trash2 } from "lucide-react";
 import { Download, FileSpreadsheet, Plus } from "lucide-react";
 import { IconButtonWithTooltip } from "@/components/shared/buttons/icon-button-tooltip";
 import ActionsDropDown from "@/components/shared/dropdowns/actions-drop-down";
@@ -13,6 +13,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
 import RepairmanMutate from "./repairman-mutate";
+import Image from "next/image";
+import { RepairmanSetImageDialog } from "./rapairman-set-image";
 
 export default function RepairmansGrid() {
   //Hooks-------------------------------------------------
@@ -21,6 +23,7 @@ export default function RepairmansGrid() {
   );
   const [isShowCreate, setIsShowCreate] = useState(false);
   const [isShowUpdate, setIsShowUpdate] = useState(false);
+  const [isShowSetImage, setIsShowSetImage] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RepairmanDto | null>(null);
 
   //Data Hooks-------------------------------------------------
@@ -33,6 +36,25 @@ export default function RepairmansGrid() {
 
   //Col Defs-------------------------------------------
   const columns: ColumnDef<RepairmanDto>[] = [
+    {
+      accessorKey: "image",
+      header: "Image",
+      cell: ({ row }) => {
+        const url = row.original.image;
+        return (
+          <div className="relative h-10 w-10">
+            <Image
+              src={url ?? "/images/avatar.png"}
+              alt="Repairman"
+              fill // makes the image fill the parent div
+              sizes="40px" // tell browser the rendered size
+              className="object-cover rounded-full"
+            />
+          </div>
+        );
+      },
+    },
+
     {
       accessorKey: "repairman",
       header: "Repairman",
@@ -53,6 +75,12 @@ export default function RepairmansGrid() {
       header: "WorkShift",
       enableColumnFilter: true,
     },
+
+    {
+      accessorKey: "rating",
+      header: "Rating",
+      enableColumnFilter: true,
+    },
     {
       id: "actions",
       header: "actions",
@@ -66,6 +94,14 @@ export default function RepairmansGrid() {
               onClick: (service) => {
                 setSelectedItem(service);
                 setIsShowUpdate(true);
+              },
+            },
+            {
+              label: "Set Image",
+              icon: <ImageIcon className="h-4 w-4" />,
+              onClick: (service) => {
+                setSelectedItem(service);
+                setIsShowSetImage(true);
               },
             },
             {
@@ -159,6 +195,12 @@ export default function RepairmansGrid() {
           }}
         />
       </FormSheet>
+
+      <RepairmanSetImageDialog
+        isShow={isShowSetImage}
+        setIsShow={setIsShowSetImage}
+        repairman={selectedItem}
+      />
     </>
   );
 }

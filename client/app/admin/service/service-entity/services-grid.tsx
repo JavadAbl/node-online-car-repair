@@ -42,6 +42,11 @@ export default function ServicesGrid() {
       enableColumnFilter: true,
     },
     {
+      accessorKey: "description",
+      header: "Description",
+      enableColumnFilter: true,
+    },
+    {
       accessorKey: "price",
       header: "Price",
       enableColumnFilter: true,
@@ -50,6 +55,13 @@ export default function ServicesGrid() {
         return value?.toLocaleString?.() ?? value;
       },
     },
+
+    {
+      accessorKey: "discountPercent",
+      header: "Discount Percent",
+      enableColumnFilter: true,
+    },
+
     {
       id: "actions",
       header: "actions",

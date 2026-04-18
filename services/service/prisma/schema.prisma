@@ -20,7 +20,7 @@ model Repairman {
   firstName      String
   lastName       String
   workShift      WorkShift
-  image          String
+  image          String?
   rating         Float     @default(0)
 
   createdAt DateTime @default(now())
