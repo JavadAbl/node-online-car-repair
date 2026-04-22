@@ -10,6 +10,8 @@ import { ServiceController } from './serivce-module/controllers/service.controll
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyStatic from '@fastify/static';
 
 async function bootstrap() {
   const httpsOptions = {
@@ -30,6 +32,25 @@ async function bootstrap() {
   authService.addControllerPermissions(RepairmanController);
   authService.addControllerPermissions(ServiceController);
   await authService.setupPermissions();
+
+  await app
+    .getHttpAdapter()
+    .getInstance()
+    //@ts-ignore
+    .register(fastifyMultipart, {
+      //   attachFieldsToBody: true,
+      limits: {
+        fileSize: 1024 * 512, // 512KB
+      },
+    });
+
+  // Serve /uploads as /Service-Api/uploads/
+  //@ts-ignore
+  await app.register(fastifyStatic, {
+    root: join(process.cwd(), 'uploads'),
+    prefix: '/uploads/',
+    decorateReply: false,
+  });
 
   app.useGlobalFilters(new AllExceptionsFilter());
 

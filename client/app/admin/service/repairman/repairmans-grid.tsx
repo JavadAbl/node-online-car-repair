@@ -43,12 +43,13 @@ export default function RepairmansGrid() {
         const url = row.original.image;
         return (
           <div className="relative h-10 w-10">
-            <Image
+            <img
               src={url ?? "/images/avatar.png"}
+              //   src="https://localhost:3025/uploads/image_7_2026-04-22T21-42-55.jpeg"
               alt="Repairman"
               fill // makes the image fill the parent div
               sizes="40px" // tell browser the rendered size
-              className="object-cover rounded-full"
+              className="object-cover rounded-full size-10"
             />
           </div>
         );

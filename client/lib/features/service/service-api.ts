@@ -8,6 +8,7 @@ import {
   getInvalidatesTags,
   getDeleteInvalidatesTags,
   getUpdateInvalidatesTags,
+  getInvalidatesTagsById,
 } from "@/lib/shared/rtk-tag-helpers";
 import { RepairmanDto } from "./schema/responses/repairman.dto";
 import { RepairmanCreateDto } from "./schema/requests/repairman-create-schema";
@@ -70,7 +71,7 @@ export const serviceApi = createApi({
     //Repairman-----------------------------------------------------
     GetRepairmans: builder.query<RepairmanDto[], GetManyQuery | void>({
       query: (params) => ({
-        url: `${SERVICE_DOMAIN}/Repairman`,
+        url: `${SERVICE_DOMAIN}/Repairmans`,
         params: params ?? undefined,
       }),
       providesTags: (result) => getProvidesTags("repairmans", result),
@@ -78,14 +79,14 @@ export const serviceApi = createApi({
 
     GetRepairmanById: builder.query<RepairmanDto, number>({
       query: (id) => ({
-        url: `${SERVICE_DOMAIN}/Repairman/${id}`,
+        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
       }),
       providesTags: (result) => getProvidesTags("repairmans", result),
     }),
 
     RepairmanCreate: builder.mutation<RepairmanDto, RepairmanCreateDto>({
       query: (body) => ({
-        url: `${SERVICE_DOMAIN}/Repairman`,
+        url: `${SERVICE_DOMAIN}/Repairmans`,
         method: "POST",
         body,
       }),
@@ -93,12 +94,25 @@ export const serviceApi = createApi({
         getInvalidatesTags("repairmans", result, true, error),
     }),
 
+    RepairmanSetImage: builder.mutation<void, { id: number; body: FormData }>({
+      query: ({ id, body }) => ({
+        url: `${SERVICE_DOMAIN}/Repairmans/${id}/SetImage`,
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) =>
+        getInvalidatesTagsById("repairmans", id, true, error),
+    }),
+
     RepairmanUpdate: builder.mutation<
       RepairmanDto,
       { id: number; body: Partial<RepairmanCreateDto> }
     >({
       query: ({ id, body }) => ({
-        url: `${SERVICE_DOMAIN}/Repairman/${id}`,
+        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
         method: "PUT",
         body,
       }),
@@ -108,7 +122,7 @@ export const serviceApi = createApi({
 
     RepairmanDelete: builder.mutation<void, number>({
       query: (id) => ({
-        url: `${SERVICE_DOMAIN}/Repairman/${id}`,
+        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) =>
@@ -128,4 +142,5 @@ export const {
   useRepairmanCreateMutation,
   useRepairmanUpdateMutation,
   useRepairmanDeleteMutation,
+  useRepairmanSetImageMutation,
 } = serviceApi;

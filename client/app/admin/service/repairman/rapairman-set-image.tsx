@@ -16,9 +16,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
+import { useRepairmanSetImageMutation } from "@/lib/features/service/service-api";
+import { LoadingButton } from "@/components/shared/buttons/loading-button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { FormMessageFixed } from "@/components/shared/inputs/form-message-fixed";
 
 const schema = z.object({
-  image: z.instanceof(File).optional(),
+  image: z.instanceof(File),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -39,8 +49,9 @@ export function RepairmanSetImageDialog({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+  const { handleSubmit } = form;
 
-  const { register, handleSubmit } = form;
+  const [mutate, { isLoading }] = useRepairmanSetImageMutation();
 
   useEffect(() => {
     if (isShow) {
@@ -49,7 +60,7 @@ export function RepairmanSetImageDialog({
         form.reset();
       });
     }
-  }, [isShow, repairman]);
+  }, [form, isShow, repairman]);
 
   if (!repairman) return null;
 
@@ -60,16 +71,10 @@ export function RepairmanSetImageDialog({
 
     const formData = new FormData();
     formData.append("image", data.image);
-    formData.append("repairmanId", repairmanId.toString());
+    console.log(data.image instanceof File);
 
-    const res = await fetch("/api/repairman/upload-image", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (res.ok) {
-      setIsShow(false);
-    }
+    await mutate({ body: formData, id: repairmanId });
+    // await fetch(`https://localhost:3024/Repairmans/7/SetImage`)
   };
 
   return (
@@ -96,39 +101,50 @@ export function RepairmanSetImageDialog({
             <span className="font-semibold">Employee Number: </span>
             {employeeNumber}
           </p>
-          <p>
-            <span className="font-semibold">ID: </span>
-            {repairmanId}
-          </p>
         </div>
 
         {/* Upload Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Input
-            type="file"
-            accept="image/*"
-            {...register("image", {
-              onChange: (e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setPreview(URL.createObjectURL(file));
-                }
-              },
-            })}
-          />
-
-          {preview && (
-            <img
-              src={preview}
-              className="w-32 h-32 object-cover rounded border"
-              alt="Preview"
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          field.onChange(file);
+                          setPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessageFixed />
+                </FormItem>
+              )}
             />
-          )}
 
-          <DialogFooter>
-            <Button type="submit">Save changes</Button>
-          </DialogFooter>
-        </form>
+            {preview && (
+              <img
+                src={preview}
+                className="w-32 h-32 object-cover rounded border"
+                alt="Preview"
+              />
+            )}
+
+            <DialogFooter>
+              <LoadingButton isLoading={isLoading} type="submit">
+                Save changes
+              </LoadingButton>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

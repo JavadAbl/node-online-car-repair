@@ -32,10 +32,7 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
           `/${serviceName}/*`,
           { preValidation: [serviceInstance.auth] },
           async (request, reply) => {
-            const tail = (request.params as { tail?: string }).tail ?? "";
             const wildcardValue = request.params["*"];
-            const dest = tail ? `/${tail}` : "/";
-            console.log(tail, dest, wildcardValue);
 
             const jwtPayload = request.user as any;
 

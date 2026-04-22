@@ -49,4 +49,8 @@ export class RepairmanService {
     await this.repairmanRep.findAndCheckExistsBy({ where: { id } }, 'id', id);
     await this.repairmanRep.remove({ where: { id } });
   }
+
+  async setRepairmanImageSrc(id: number, src: string) {
+    await this.repairmanRep.update({ where: { id }, data: { image: src } });
+  }
 }

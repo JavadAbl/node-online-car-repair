@@ -41,6 +41,10 @@ async function startHttpServer() {
 async function setupFastifyPlugins() {
   await app.register(cors, { origin: "*", methods: "*" });
 
+  app.addContentTypeParser("multipart/form-data", (request, payload, done) => {
+    done(null, payload);
+  });
+
   app.register(fastifyJwt, { secret: "your-secret-key-for-hashing" });
 
   app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {

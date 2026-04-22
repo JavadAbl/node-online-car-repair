@@ -40,5 +40,4 @@ export const configValidationSchema = Joi.object({
   REDIS_PASSWORD: Joi.string().required(),
 });
 
-export const env = process.env.NODE_ENV;
-export const isDev = env === nodeEnvs.Development;
+export const isDev = config().NODE_ENV === (nodeEnvs.Development as any);

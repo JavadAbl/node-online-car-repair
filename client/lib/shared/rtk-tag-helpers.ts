@@ -27,6 +27,19 @@ export const getInvalidatesTags = <
   return tags;
 };
 
+export const getInvalidatesTagsById = <T extends string>(
+  type: T,
+  id: string | number,
+  includeList: boolean = false,
+  error?: unknown,
+): { type: T; id: string | number }[] => {
+  // Check error INSIDE the helper
+  if (error) return [];
+  const tags = [{ type, id }];
+  if (includeList) tags.push({ type, id: "LIST" });
+  return tags;
+};
+
 // Reusable UPDATE helper - id comes from arguments, not result
 export const getUpdateInvalidatesTags = <T extends string>(
   type: T,
