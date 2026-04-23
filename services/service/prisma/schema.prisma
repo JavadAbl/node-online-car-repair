@@ -22,6 +22,7 @@ model Repairman {
   workShift      WorkShift
   image          String?
   rating         Float     @default(0)
+  profession     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -39,7 +40,9 @@ model Service {
 }
 
 enum WorkShift {
-  Day
+  Morning
+  Afternoon
+  Evening
   Night
 }
 

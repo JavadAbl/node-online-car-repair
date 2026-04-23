@@ -12,7 +12,15 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Background_Gradient } from "@/lib/shared/styles-classes";
+import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
+import { useGetRepairmansQuery } from "@/lib/features/service/service-api";
+import { WorkShift } from "@/lib/features/service/service-enums";
+import { useAppSelector } from "@/lib/hooks/use-state";
+import { getAuthorizedImage } from "@/lib/shared/base-api-client";
+import {
+  Background_Gradient,
+  REPAINRMAN_IMAGE_PLACEHOLDER,
+} from "@/lib/shared/styles-classes";
 import { cn } from "@/lib/shared/utils";
 import {
   Wrench,
@@ -29,7 +37,7 @@ import {
   ChevronRight,
   DollarSign,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Types
 type FUEL_TYPES =
@@ -40,7 +48,6 @@ type FUEL_TYPES =
   | "plugin_hybrid";
 type TRANSMISSION_TYPES = "manual" | "automatic" | "cvt" | "dct";
 type VEHICLE_STATUS = "active" | "in_service" | "completed" | "pending";
-type WorkShift = "morning" | "afternoon" | "evening" | "night";
 
 interface ServiceDto {
   id: number;
@@ -82,17 +89,6 @@ interface VehicleDto {
   status: VEHICLE_STATUS;
   createdAt: string;
   updatedAt: string | null;
-}
-
-interface RepairmanDto {
-  id: number;
-  firstName: string;
-  lastName: string;
-  profession: string;
-  employeeNumber: string;
-  workShift: WorkShift;
-  image: string;
-  rating: number;
 }
 
 // Mock Data
@@ -277,13 +273,13 @@ const RatingStars = ({ rating }: { rating: number }) => {
 
 const WorkShiftBadge = ({ shift }: { shift: WorkShift }) => {
   const shiftConfig = {
-    morning: { label: "Morning", className: "bg-orange-100 text-orange-700" },
-    afternoon: {
+    Morning: { label: "Morning", className: "bg-orange-100 text-orange-700" },
+    Afternoon: {
       label: "Afternoon",
       className: "bg-yellow-100 text-yellow-700",
     },
-    evening: { label: "Evening", className: "bg-purple-100 text-purple-700" },
-    night: { label: "Night", className: "bg-indigo-100 text-indigo-700" },
+    Evening: { label: "Evening", className: "bg-purple-100 text-purple-700" },
+    Night: { label: "Night", className: "bg-indigo-100 text-indigo-700" },
   };
 
   const config = shiftConfig[shift];
@@ -297,25 +293,35 @@ const WorkShiftBadge = ({ shift }: { shift: WorkShift }) => {
 
 // Main Dashboard Component
 export default function CustomerOverviewPage() {
-  // Sort repairmen by rating and profession
-  const topRepairmenByProfession = useMemo(() => {
-    const grouped = mockRepairmen.reduce(
-      (acc, repairman) => {
-        if (!acc[repairman.profession]) {
-          acc[repairman.profession] = [];
-        }
-        acc[repairman.profession].push(repairman);
-        return acc;
-      },
-      {} as Record<string, RepairmanDto[]>,
-    );
+  // Hooks----------------------------------------------------
+  const accessToken = useAppSelector((s) => s.auth.accessToken);
+  const [repairmansAvatars, setRepairmansAvatars] = useState<
+    Record<string, string | null>
+  >({});
 
-    // Get top rated from each profession
-    return Object.values(grouped)
-      .map((group) => group.sort((a, b) => b.rating - a.rating)[0])
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 5);
-  }, []);
+  //Data Hooks----------------------------------------------------
+  const { data: repairmans } = useGetRepairmansQuery({
+    pageSize: 5,
+    sortBy: "rating",
+    sortOrder: "desc",
+  });
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      const urls: Record<string, string | null> = {};
+      for (const repairman of repairmans || []) {
+        urls[repairman.id] = await getAuthorizedImage(
+          repairman.image,
+          accessToken!,
+        );
+      }
+      setRepairmansAvatars(urls);
+    };
+
+    if (repairmans?.length && accessToken) {
+      fetchAvatars();
+    }
+  }, [repairmans, accessToken]);
 
   return (
     <div className={cn("min-h-screen bg-background", Background_Gradient)}>
@@ -600,21 +606,23 @@ export default function CustomerOverviewPage() {
                   </div>
                 </div>
               </CardHeader>
+
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  {topRepairmenByProfession.map((repairman) => (
+                  {repairmans?.map((repairman) => (
                     <div
-                      key={repairman.id}
+                      key={`repairman_${repairman.id}`}
                       className="group relative rounded-lg border p-4 transition-all hover:border-blue-200 hover:shadow-md"
                     >
                       <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12 border-2 border-white shadow">
-                          <AvatarImage src={repairman.image} />
-                          <AvatarFallback>
-                            {repairman.firstName[0]}
-                            {repairman.lastName[0]}
-                          </AvatarFallback>
-                        </Avatar>
+                        <img
+                          src={
+                            repairmansAvatars[repairman.id] ??
+                            REPAINRMAN_IMAGE_PLACEHOLDER
+                          }
+                          className="h-12 w-12 border-2 rounded-full border-white shadow"
+                        />
+
                         <div className="flex-1">
                           <div className="flex items-start justify-between">
                             <div>
@@ -625,6 +633,7 @@ export default function CustomerOverviewPage() {
                                 {repairman.profession}
                               </p>
                             </div>
+
                             <div className="absolute right-4 top-4 opacity-0 transition-opacity group-hover:opacity-100">
                               <Button
                                 variant="ghost"
@@ -635,6 +644,7 @@ export default function CustomerOverviewPage() {
                               </Button>
                             </div>
                           </div>
+
                           <div className="mt-2 space-y-1">
                             <RatingStars rating={repairman.rating} />
                             <div className="flex items-center gap-2">

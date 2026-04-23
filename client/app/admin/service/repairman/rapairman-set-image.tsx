@@ -73,8 +73,8 @@ export function RepairmanSetImageDialog({
     formData.append("image", data.image);
     console.log(data.image instanceof File);
 
-    await mutate({ body: formData, id: repairmanId });
-    // await fetch(`https://localhost:3024/Repairmans/7/SetImage`)
+    const res = await mutate({ body: formData, id: repairmanId });
+    if (!res.error) setIsShow(false);
   };
 
   return (

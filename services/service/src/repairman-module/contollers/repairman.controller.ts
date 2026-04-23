@@ -29,13 +29,11 @@ export class RepairmanController {
   constructor(private readonly repairmanService: RepairmanService) {}
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   getManyRepairman(@Query() query: GetManyQuery): Promise<RepairmanDto[]> {
     return this.repairmanService.findMany(query as GetManyQueryType<'Repairman'>);
   }
 
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
   getById(@Param('id', ParseIntPipe) id: number): Promise<RepairmanDto> {
     return this.repairmanService.getById(id);
   }
@@ -47,7 +45,6 @@ export class RepairmanController {
   }
 
   @Put(':id')
-  @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRepairmanDto: UpdateRepairmanDto,
@@ -64,8 +61,6 @@ export class RepairmanController {
   @Post(':id/SetImage')
   @HttpCode(HttpStatus.CREATED)
   async setImage(@Param('id', ParseIntPipe) id: number, @Req() req: FastifyRequest): Promise<void> {
-    console.log(12312312);
-
     const data = await req.file();
 
     if (!data) {
@@ -84,10 +79,11 @@ export class RepairmanController {
     await mkdir(uploadDir, { recursive: true });
 
     // Generate filename: image_<id>_<YYYY-MM-DD_HH-mm-ss>.ext
-    const now = new Date();
-    const timestamp = now.toISOString().replace(/[:]/g, '-').replace(/\..+/, ''); // "2026-04-21T14-25-30"
+    // const now = new Date();
+    // const timestamp = now.toISOString().replace(/[:]/g, '-').replace(/\..+/, ''); // "2026-04-21T14-25-30"
 
-    const safeFilename = `image_${id}_${timestamp}${ext}`;
+    const safeFilename = `repairman_${id}${ext}`;
+    // const safeFilename = `image_${id}_${timestamp}${ext}`;
     const filePath = path.join(uploadDir, safeFilename);
 
     await pipeline(data.file, createWriteStream(filePath));

@@ -17,6 +17,11 @@ export class CreateRepairmanDto {
   @MaxLength(100)
   lastName: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  profession: string;
+
   @IsEnum(WorkShift)
   @IsNotEmpty()
   workShift: WorkShift;

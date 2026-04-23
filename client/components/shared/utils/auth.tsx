@@ -18,7 +18,7 @@ export default function Auth({
 
   useEffect(() => {
     if (isAuthDone && !isAuth && redirect) {
-      router.replace("/");
+      router.replace("/login");
     }
   }, [isAuthDone, isAuth, redirect, router]);
 

@@ -16,6 +16,9 @@ export class RepairmanDto {
   employeeNumber: string;
 
   @Expose()
+  profession: string;
+
+  @Expose()
   workShift: WorkShift;
 
   @Expose()

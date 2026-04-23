@@ -1,4 +1,6 @@
 export enum WorkShift {
-  Day = "Day",
+  Morning = "Morning",
+  Afternoon = "Afternoon",
+  Evening = "Evening",
   Night = "Night",
 }

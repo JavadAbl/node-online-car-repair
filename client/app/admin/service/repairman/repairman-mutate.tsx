@@ -41,6 +41,7 @@ const defaultValues: RepairmanCreateDto = {
   firstName: "",
   lastName: "",
   employeeNumber: "",
+  profession: "",
   //@ts-expect-error null
   workShift: null,
 };
@@ -134,6 +135,21 @@ export default function RepairmanMutate({ mode, id, onClose }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessageFixed />
+            </FormItem>
+          )}
+        />
+
+        {/* profession */}
+        <FormField
+          control={form.control}
+          name="profession"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Profession</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

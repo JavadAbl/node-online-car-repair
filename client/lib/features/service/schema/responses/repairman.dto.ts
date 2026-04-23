@@ -14,4 +14,6 @@ export interface RepairmanDto {
   image?: string;
 
   rating: number;
+
+  profession: string;
 }

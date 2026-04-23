@@ -5,7 +5,6 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 import { Mutex } from "async-mutex";
-import { jwtDecode } from "jwt-decode";
 import { RootState } from "./store";
 import { authActions } from "../features/auth/auth-slice";
 import { toast } from "sonner";
@@ -155,4 +154,22 @@ export const baseApi: BaseQueryFn<
   return result;
 };
 
-fetch(``, {});
+export const getAuthorizedImage = async (
+  url: string | null | undefined,
+  accessToken: string,
+) => {
+  if (!url) return null;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    return objectUrl;
+  } catch {
+    return null;
+  }
+};

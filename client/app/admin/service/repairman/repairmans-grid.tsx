@@ -1,7 +1,7 @@
 import FormSheet from "@/components/shared/sheets/form-sheet";
 import DataGridVirtual from "@/components/shared/tables/data-grid-virtual";
 import { ColumnDef } from "@tanstack/react-table";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageIcon, Pencil, Trash2 } from "lucide-react";
 import { Download, FileSpreadsheet, Plus } from "lucide-react";
 import { IconButtonWithTooltip } from "@/components/shared/buttons/icon-button-tooltip";
@@ -13,8 +13,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
 import RepairmanMutate from "./repairman-mutate";
-import Image from "next/image";
 import { RepairmanSetImageDialog } from "./rapairman-set-image";
+import { useAppSelector } from "@/lib/hooks/use-state";
+import { getAuthorizedImage } from "@/lib/shared/base-api-client";
+import { REPAINRMAN_IMAGE_PLACEHOLDER } from "@/lib/shared/styles-classes";
 
 export default function RepairmansGrid() {
   //Hooks-------------------------------------------------
@@ -25,6 +27,7 @@ export default function RepairmansGrid() {
   const [isShowUpdate, setIsShowUpdate] = useState(false);
   const [isShowSetImage, setIsShowSetImage] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RepairmanDto | null>(null);
+  const accessToken = useAppSelector((s) => s.auth.accessToken);
 
   //Data Hooks-------------------------------------------------
   const { data: repairmansRes, isLoading: isLoadingGetRepairmans } =
@@ -39,21 +42,12 @@ export default function RepairmansGrid() {
     {
       accessorKey: "image",
       header: "Image",
-      cell: ({ row }) => {
-        const url = row.original.image;
-        return (
-          <div className="relative h-10 w-10">
-            <img
-              src={url ?? "/images/avatar.png"}
-              //   src="https://localhost:3025/uploads/image_7_2026-04-22T21-42-55.jpeg"
-              alt="Repairman"
-              fill // makes the image fill the parent div
-              sizes="40px" // tell browser the rendered size
-              className="object-cover rounded-full size-10"
-            />
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <RepairmanImageCell
+          url={row.original.image}
+          accessToken={accessToken!}
+        />
+      ),
     },
 
     {
@@ -203,5 +197,42 @@ export default function RepairmansGrid() {
         repairman={selectedItem}
       />
     </>
+  );
+}
+
+function RepairmanImageCell({
+  url,
+  accessToken,
+}: {
+  url?: string;
+  accessToken: string;
+}) {
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!url) return;
+
+    let cancelled = false;
+    getAuthorizedImage(url, accessToken)
+      .then((src) => {
+        if (!cancelled) setImageSrc(src);
+      })
+      .catch(() => {
+        if (!cancelled) setImageSrc(null); // fallback on error
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url, accessToken]);
+
+  return (
+    <div className="relative h-10 w-10">
+      <img
+        src={imageSrc ?? REPAINRMAN_IMAGE_PLACEHOLDER}
+        alt="Repairman"
+        className="object-cover rounded-full size-10"
+      />
+    </div>
   );
 }
