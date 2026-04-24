@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "@/lib/shared/base-api-client";
 import { VehicleDto } from "./schema/responses/vehicle.dto";
-import { GetManyQuery } from "@/lib/shared/types";
+import { GetManyQuery, GetManyReply } from "@/lib/shared/types";
 import {
   getInvalidatesTags,
   getProvidesTags,
@@ -19,7 +19,10 @@ export const vehicleApi = createApi({
   tagTypes: ["vehicles", "vehicle-services"],
   endpoints: (builder) => ({
     //Vehicle-----------------------------------------------------
-    GetCustomerVehicles: builder.query<VehicleDto[], GetManyQuery | void>({
+    GetCustomerVehicles: builder.query<
+      GetManyReply<VehicleDto>,
+      GetManyQuery | void
+    >({
       query: (params) => ({
         url: `${SERVICE_DOMAIN}/Vehicles/CustomerVehicles`,
         params: params ?? undefined,
@@ -57,7 +60,7 @@ export const vehicleApi = createApi({
         getUpdateInvalidatesTags("vehicles", id, false, error),
     }),
 
-    //Vehicle-----------------------------------------------------
+    //VehicleService-----------------------------------------------------
     GetCustomerVehicleServices: builder.query<
       VehicleServiceDto[],
       GetManyQuery | void

@@ -1,5 +1,6 @@
 # compiled output
 uploads
+*.7z
 /dist
 /node_modules
 /build

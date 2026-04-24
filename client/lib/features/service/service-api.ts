@@ -10,15 +10,15 @@ import {
   getUpdateInvalidatesTags,
   getInvalidatesTagsById,
 } from "@/lib/shared/rtk-tag-helpers";
-import { RepairmanDto } from "./schema/responses/repairman.dto";
-import { RepairmanCreateDto } from "./schema/requests/repairman-create-schema";
+import { TechnicianDto } from "./schema/responses/technician.dto";
+import { TechnicianCreateDto } from "./schema/requests/technician-create-schema";
 
 const SERVICE_DOMAIN = "Service-Api";
 
 export const serviceApi = createApi({
   reducerPath: "serviceApi",
   baseQuery: baseApi,
-  tagTypes: ["services", "repairmans"],
+  tagTypes: ["services", "technicians"],
   endpoints: (builder) => ({
     //Service-----------------------------------------------------
     GetServices: builder.query<ServiceDto[], GetManyQuery | void>({
@@ -68,35 +68,35 @@ export const serviceApi = createApi({
         getDeleteInvalidatesTags("services", id, error),
     }),
 
-    //Repairman-----------------------------------------------------
-    GetRepairmans: builder.query<RepairmanDto[], GetManyQuery | void>({
+    //Technician-----------------------------------------------------
+    GetTechnicians: builder.query<TechnicianDto[], GetManyQuery | void>({
       query: (params) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans`,
+        url: `${SERVICE_DOMAIN}/Technicians`,
         params: params ?? undefined,
       }),
-      providesTags: (result) => getProvidesTags("repairmans", result),
+      providesTags: (result) => getProvidesTags("technicians", result),
     }),
 
-    GetRepairmanById: builder.query<RepairmanDto, number>({
+    GetTechnicianById: builder.query<TechnicianDto, number>({
       query: (id) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
+        url: `${SERVICE_DOMAIN}/Technicians/${id}`,
       }),
-      providesTags: (result) => getProvidesTags("repairmans", result),
+      providesTags: (result) => getProvidesTags("technicians", result),
     }),
 
-    RepairmanCreate: builder.mutation<RepairmanDto, RepairmanCreateDto>({
+    TechnicianCreate: builder.mutation<TechnicianDto, TechnicianCreateDto>({
       query: (body) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans`,
+        url: `${SERVICE_DOMAIN}/Technicians`,
         method: "POST",
         body,
       }),
       invalidatesTags: (result, error) =>
-        getInvalidatesTags("repairmans", result, true, error),
+        getInvalidatesTags("technicians", result, true, error),
     }),
 
-    RepairmanSetImage: builder.mutation<void, { id: number; body: FormData }>({
+    TechnicianSetImage: builder.mutation<void, { id: number; body: FormData }>({
       query: ({ id, body }) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans/${id}/SetImage`,
+        url: `${SERVICE_DOMAIN}/Technicians/${id}/SetImage`,
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -104,29 +104,29 @@ export const serviceApi = createApi({
         body,
       }),
       invalidatesTags: (result, error, { id }) =>
-        getInvalidatesTagsById("repairmans", id, true, error),
+        getInvalidatesTagsById("technicians", id, true, error),
     }),
 
-    RepairmanUpdate: builder.mutation<
-      RepairmanDto,
-      { id: number; body: Partial<RepairmanCreateDto> }
+    TechnicianUpdate: builder.mutation<
+      TechnicianDto,
+      { id: number; body: Partial<TechnicianCreateDto> }
     >({
       query: ({ id, body }) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
+        url: `${SERVICE_DOMAIN}/Technicians/${id}`,
         method: "PUT",
         body,
       }),
       invalidatesTags: (result, error, { id }) =>
-        getUpdateInvalidatesTags("repairmans", id, false, error),
+        getUpdateInvalidatesTags("technicians", id, false, error),
     }),
 
-    RepairmanDelete: builder.mutation<void, number>({
+    TechnicianDelete: builder.mutation<void, number>({
       query: (id) => ({
-        url: `${SERVICE_DOMAIN}/Repairmans/${id}`,
+        url: `${SERVICE_DOMAIN}/Technicians/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) =>
-        getDeleteInvalidatesTags("repairmans", id, error),
+        getDeleteInvalidatesTags("technicians", id, error),
     }),
   }),
 });
@@ -137,10 +137,10 @@ export const {
   useServiceCreateMutation,
   useServiceUpdateMutation,
   useServiceDeleteMutation,
-  useGetRepairmanByIdQuery,
-  useGetRepairmansQuery,
-  useRepairmanCreateMutation,
-  useRepairmanUpdateMutation,
-  useRepairmanDeleteMutation,
-  useRepairmanSetImageMutation,
+  useGetTechnicianByIdQuery,
+  useGetTechniciansQuery,
+  useTechnicianCreateMutation,
+  useTechnicianUpdateMutation,
+  useTechnicianDeleteMutation,
+  useTechnicianSetImageMutation,
 } = serviceApi;

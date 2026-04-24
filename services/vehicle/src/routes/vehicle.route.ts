@@ -25,15 +25,14 @@ export const vehicleRoutes: FastifyPluginAsync = async (app) => {
   app.get<GetVehiclesRouteType>(
     "/",
     { schema: GetVehiclesSchema, auth: { permission: VehicleControllerPermissions.GetAllVehicles } },
-    (request, reply) => vehicleService.getMany(request.query) as unknown as VehicleDto[],
+    (request, reply) => vehicleService.getMany(request.query),
   );
 
-  // Get user vehicles by context----------------------------------------------
+  // Get vehicles by context----------------------------------------------
   app.get<GetVehiclesRouteType>(
     "/CustomerVehicles",
     { schema: GetVehiclesSchema, auth: { permission: VehicleControllerPermissions.GetCustomerVehicles } },
-    (request, reply) =>
-      vehicleService.getManyByCustomerId(request.user.id, request.query) as unknown as VehicleDto[],
+    (request, reply) => vehicleService.getManyByCustomerId(request.user.id, request.query),
   );
 
   // Get vehicle by id---------------------------------------------
@@ -47,7 +46,7 @@ export const vehicleRoutes: FastifyPluginAsync = async (app) => {
   app.post<CreateVehicleRouteType>(
     "/",
     { schema: CreateVehicleSchema, auth: { permission: VehicleControllerPermissions.CreateVehicle } },
-    (request, reply) => vehicleService.create(request.body) as unknown as VehicleDto,
+    (request, reply) => vehicleService.create(request.user.id, request.body) as unknown as VehicleDto,
   );
 
   // Update vehicle ------------------------------------------------

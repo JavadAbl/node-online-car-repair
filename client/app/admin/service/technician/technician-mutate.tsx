@@ -13,13 +13,9 @@ import { LoadingButton } from "@/components/shared/buttons/loading-button";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useEffect } from "react";
 import {
-  RepairmanCreateDto,
-  RepairmanCreateSchema,
-} from "@/lib/features/service/schema/requests/repairman-create-schema";
-import {
-  useGetRepairmanByIdQuery,
-  useRepairmanCreateMutation,
-  useRepairmanUpdateMutation,
+  useGetTechnicianByIdQuery,
+  useTechnicianCreateMutation,
+  useTechnicianUpdateMutation,
 } from "@/lib/features/service/service-api";
 import { FormMessageFixed } from "@/components/shared/inputs/form-message-fixed";
 import {
@@ -31,13 +27,17 @@ import {
 } from "@/components/ui/select";
 import { enumToSelectOptions } from "@/lib/shared/utils";
 import { WorkShift } from "@/lib/features/service/service-enums";
+import {
+  TechnicianCreateDto,
+  TechnicianCreateSchema,
+} from "@/lib/features/service/schema/requests/technician-create-schema";
 
 interface Props {
   onClose: () => any;
   mode: "create" | "update";
   id?: number;
 }
-const defaultValues: RepairmanCreateDto = {
+const defaultValues: TechnicianCreateDto = {
   firstName: "",
   lastName: "",
   employeeNumber: "",
@@ -46,44 +46,44 @@ const defaultValues: RepairmanCreateDto = {
   workShift: null,
 };
 
-export default function RepairmanMutate({ mode, id, onClose }: Props) {
+export default function TechnicianMutate({ mode, id, onClose }: Props) {
   //Hooks-----------------------------------------------------
-  const form = useForm<RepairmanCreateDto>({
+  const form = useForm<TechnicianCreateDto>({
     resolver: zodResolver(
-      RepairmanCreateSchema,
-    ) as Resolver<RepairmanCreateDto>,
+      TechnicianCreateSchema,
+    ) as Resolver<TechnicianCreateDto>,
     defaultValues,
   });
 
   //Data Hooks--------------------------------------------------
-  const [mutateRepairmanCreate, { isLoading: isLoadingRepairmanCreate }] =
-    useRepairmanCreateMutation();
+  const [mutateTechnicianCreate, { isLoading: isLoadingTechnicianCreate }] =
+    useTechnicianCreateMutation();
 
-  const [mutateRepairmanUpdate, { isLoading: isLoadingRepairmanUpdate }] =
-    useRepairmanUpdateMutation();
+  const [mutateTechnicianUpdate, { isLoading: isLoadingTechnicianUpdate }] =
+    useTechnicianUpdateMutation();
 
-  const { data: serviceRes } = useGetRepairmanByIdQuery(id ?? skipToken);
-  const repairman = serviceRes;
+  const { data: serviceRes } = useGetTechnicianByIdQuery(id ?? skipToken);
+  const technician = serviceRes;
 
   useEffect(() => {
-    console.log(repairman);
+    console.log(technician);
 
-    if (mode === "update" && repairman) {
-      form.reset(repairman);
+    if (mode === "update" && technician) {
+      form.reset(technician);
     }
-  }, [repairman]);
+  }, [technician]);
 
   //Handlers----------------------------------------------------
-  const handleSubmit = async (data: RepairmanCreateDto) => {
+  const handleSubmit = async (data: TechnicianCreateDto) => {
     let res: { error?: any };
 
     switch (mode) {
       case "create":
-        res = await mutateRepairmanCreate(data);
+        res = await mutateTechnicianCreate(data);
         break;
 
       case "update":
-        res = await mutateRepairmanUpdate({ body: data, id: id! });
+        res = await mutateTechnicianUpdate({ body: data, id: id! });
         break;
     }
     if (!res?.error) onClose();
@@ -191,9 +191,9 @@ export default function RepairmanMutate({ mode, id, onClose }: Props) {
         <LoadingButton
           type="submit"
           className="w-full"
-          isLoading={isLoadingRepairmanCreate || isLoadingRepairmanUpdate}
+          isLoading={isLoadingTechnicianCreate || isLoadingTechnicianUpdate}
         >
-          {mode === "create" ? "Create Repairman" : "Update Repairman"}
+          {mode === "create" ? "Create Technician" : "Update Technician"}
         </LoadingButton>
       </form>
     </Form>

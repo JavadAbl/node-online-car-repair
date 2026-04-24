@@ -281,13 +281,13 @@ export type VehicleGroupByOutputType = {
   make: string
   model: string
   year: number
-  trim: string | null
-  fuelType: $Enums.FuelType | null
-  transmission: $Enums.TransmissionType | null
-  engine: string | null
-  color: string | null
-  mileage: number | null
-  licensePlate: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state: string | null
   status: $Enums.VehicleStatus
   isDeleted: boolean
@@ -326,13 +326,13 @@ export type VehicleWhereInput = {
   make?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringFilter<"Vehicle"> | string
   year?: Prisma.IntFilter<"Vehicle"> | number
-  trim?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  fuelType?: Prisma.EnumFuelTypeNullableFilter<"Vehicle"> | $Enums.FuelType | null
-  transmission?: Prisma.EnumTransmissionTypeNullableFilter<"Vehicle"> | $Enums.TransmissionType | null
-  engine?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  mileage?: Prisma.IntNullableFilter<"Vehicle"> | number | null
-  licensePlate?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  trim?: Prisma.StringFilter<"Vehicle"> | string
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFilter<"Vehicle"> | $Enums.TransmissionType
+  engine?: Prisma.StringFilter<"Vehicle"> | string
+  color?: Prisma.StringFilter<"Vehicle"> | string
+  mileage?: Prisma.IntFilter<"Vehicle"> | number
+  licensePlate?: Prisma.StringFilter<"Vehicle"> | string
   state?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFilter<"Vehicle"> | boolean
@@ -350,13 +350,13 @@ export type VehicleOrderByWithRelationInput = {
   make?: Prisma.SortOrder
   model?: Prisma.SortOrder
   year?: Prisma.SortOrder
-  trim?: Prisma.SortOrderInput | Prisma.SortOrder
-  fuelType?: Prisma.SortOrderInput | Prisma.SortOrder
-  transmission?: Prisma.SortOrderInput | Prisma.SortOrder
-  engine?: Prisma.SortOrderInput | Prisma.SortOrder
-  color?: Prisma.SortOrderInput | Prisma.SortOrder
-  mileage?: Prisma.SortOrderInput | Prisma.SortOrder
-  licensePlate?: Prisma.SortOrderInput | Prisma.SortOrder
+  trim?: Prisma.SortOrder
+  fuelType?: Prisma.SortOrder
+  transmission?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  licensePlate?: Prisma.SortOrder
   state?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -378,13 +378,13 @@ export type VehicleWhereUniqueInput = Prisma.AtLeast<{
   make?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringFilter<"Vehicle"> | string
   year?: Prisma.IntFilter<"Vehicle"> | number
-  trim?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  fuelType?: Prisma.EnumFuelTypeNullableFilter<"Vehicle"> | $Enums.FuelType | null
-  transmission?: Prisma.EnumTransmissionTypeNullableFilter<"Vehicle"> | $Enums.TransmissionType | null
-  engine?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  mileage?: Prisma.IntNullableFilter<"Vehicle"> | number | null
-  licensePlate?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  trim?: Prisma.StringFilter<"Vehicle"> | string
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFilter<"Vehicle"> | $Enums.TransmissionType
+  engine?: Prisma.StringFilter<"Vehicle"> | string
+  color?: Prisma.StringFilter<"Vehicle"> | string
+  mileage?: Prisma.IntFilter<"Vehicle"> | number
+  licensePlate?: Prisma.StringFilter<"Vehicle"> | string
   state?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFilter<"Vehicle"> | boolean
@@ -402,13 +402,13 @@ export type VehicleOrderByWithAggregationInput = {
   make?: Prisma.SortOrder
   model?: Prisma.SortOrder
   year?: Prisma.SortOrder
-  trim?: Prisma.SortOrderInput | Prisma.SortOrder
-  fuelType?: Prisma.SortOrderInput | Prisma.SortOrder
-  transmission?: Prisma.SortOrderInput | Prisma.SortOrder
-  engine?: Prisma.SortOrderInput | Prisma.SortOrder
-  color?: Prisma.SortOrderInput | Prisma.SortOrder
-  mileage?: Prisma.SortOrderInput | Prisma.SortOrder
-  licensePlate?: Prisma.SortOrderInput | Prisma.SortOrder
+  trim?: Prisma.SortOrder
+  fuelType?: Prisma.SortOrder
+  transmission?: Prisma.SortOrder
+  engine?: Prisma.SortOrder
+  color?: Prisma.SortOrder
+  mileage?: Prisma.SortOrder
+  licensePlate?: Prisma.SortOrder
   state?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
@@ -432,13 +432,13 @@ export type VehicleScalarWhereWithAggregatesInput = {
   make?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   model?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   year?: Prisma.IntWithAggregatesFilter<"Vehicle"> | number
-  trim?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
-  fuelType?: Prisma.EnumFuelTypeNullableWithAggregatesFilter<"Vehicle"> | $Enums.FuelType | null
-  transmission?: Prisma.EnumTransmissionTypeNullableWithAggregatesFilter<"Vehicle"> | $Enums.TransmissionType | null
-  engine?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
-  color?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
-  mileage?: Prisma.IntNullableWithAggregatesFilter<"Vehicle"> | number | null
-  licensePlate?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
+  trim?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
+  fuelType?: Prisma.EnumFuelTypeWithAggregatesFilter<"Vehicle"> | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeWithAggregatesFilter<"Vehicle"> | $Enums.TransmissionType
+  engine?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
+  color?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
+  mileage?: Prisma.IntWithAggregatesFilter<"Vehicle"> | number
+  licensePlate?: Prisma.StringWithAggregatesFilter<"Vehicle"> | string
   state?: Prisma.StringNullableWithAggregatesFilter<"Vehicle"> | string | null
   status?: Prisma.EnumVehicleStatusWithAggregatesFilter<"Vehicle"> | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Vehicle"> | boolean
@@ -453,13 +453,13 @@ export type VehicleCreateInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -476,13 +476,13 @@ export type VehicleUncheckedCreateInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -498,13 +498,13 @@ export type VehicleUpdateInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -521,13 +521,13 @@ export type VehicleUncheckedUpdateInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -544,13 +544,13 @@ export type VehicleCreateManyInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -565,13 +565,13 @@ export type VehicleUpdateManyMutationInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -586,13 +586,13 @@ export type VehicleUncheckedUpdateManyInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -715,24 +715,16 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumFuelTypeFieldUpdateOperationsInput = {
+  set?: $Enums.FuelType
+}
+
+export type EnumTransmissionTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TransmissionType
+}
+
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
-}
-
-export type NullableEnumFuelTypeFieldUpdateOperationsInput = {
-  set?: $Enums.FuelType | null
-}
-
-export type NullableEnumTransmissionTypeFieldUpdateOperationsInput = {
-  set?: $Enums.TransmissionType | null
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type EnumVehicleStatusFieldUpdateOperationsInput = {
@@ -812,13 +804,13 @@ export type VehicleCreateWithoutServicesInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -834,13 +826,13 @@ export type VehicleUncheckedCreateWithoutServicesInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -871,13 +863,13 @@ export type VehicleUpdateWithoutServicesInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -893,13 +885,13 @@ export type VehicleUncheckedUpdateWithoutServicesInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -914,13 +906,13 @@ export type VehicleCreateWithoutCustomerInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -936,13 +928,13 @@ export type VehicleUncheckedCreateWithoutCustomerInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -987,13 +979,13 @@ export type VehicleScalarWhereInput = {
   make?: Prisma.StringFilter<"Vehicle"> | string
   model?: Prisma.StringFilter<"Vehicle"> | string
   year?: Prisma.IntFilter<"Vehicle"> | number
-  trim?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  fuelType?: Prisma.EnumFuelTypeNullableFilter<"Vehicle"> | $Enums.FuelType | null
-  transmission?: Prisma.EnumTransmissionTypeNullableFilter<"Vehicle"> | $Enums.TransmissionType | null
-  engine?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  color?: Prisma.StringNullableFilter<"Vehicle"> | string | null
-  mileage?: Prisma.IntNullableFilter<"Vehicle"> | number | null
-  licensePlate?: Prisma.StringNullableFilter<"Vehicle"> | string | null
+  trim?: Prisma.StringFilter<"Vehicle"> | string
+  fuelType?: Prisma.EnumFuelTypeFilter<"Vehicle"> | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFilter<"Vehicle"> | $Enums.TransmissionType
+  engine?: Prisma.StringFilter<"Vehicle"> | string
+  color?: Prisma.StringFilter<"Vehicle"> | string
+  mileage?: Prisma.IntFilter<"Vehicle"> | number
+  licensePlate?: Prisma.StringFilter<"Vehicle"> | string
   state?: Prisma.StringNullableFilter<"Vehicle"> | string | null
   status?: Prisma.EnumVehicleStatusFilter<"Vehicle"> | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFilter<"Vehicle"> | boolean
@@ -1009,13 +1001,13 @@ export type VehicleCreateManyCustomerInput = {
   make: string
   model: string
   year: number
-  trim?: string | null
-  fuelType?: $Enums.FuelType | null
-  transmission?: $Enums.TransmissionType | null
-  engine?: string | null
-  color?: string | null
-  mileage?: number | null
-  licensePlate?: string | null
+  trim: string
+  fuelType: $Enums.FuelType
+  transmission: $Enums.TransmissionType
+  engine: string
+  color: string
+  mileage: number
+  licensePlate: string
   state?: string | null
   status?: $Enums.VehicleStatus
   isDeleted?: boolean
@@ -1029,13 +1021,13 @@ export type VehicleUpdateWithoutCustomerInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1051,13 +1043,13 @@ export type VehicleUncheckedUpdateWithoutCustomerInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1073,13 +1065,13 @@ export type VehicleUncheckedUpdateManyWithoutCustomerInput = {
   make?: Prisma.StringFieldUpdateOperationsInput | string
   model?: Prisma.StringFieldUpdateOperationsInput | string
   year?: Prisma.IntFieldUpdateOperationsInput | number
-  trim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fuelType?: Prisma.NullableEnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType | null
-  transmission?: Prisma.NullableEnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType | null
-  engine?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mileage?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  licensePlate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trim?: Prisma.StringFieldUpdateOperationsInput | string
+  fuelType?: Prisma.EnumFuelTypeFieldUpdateOperationsInput | $Enums.FuelType
+  transmission?: Prisma.EnumTransmissionTypeFieldUpdateOperationsInput | $Enums.TransmissionType
+  engine?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  mileage?: Prisma.IntFieldUpdateOperationsInput | number
+  licensePlate?: Prisma.StringFieldUpdateOperationsInput | string
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumVehicleStatusFieldUpdateOperationsInput | $Enums.VehicleStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1187,13 +1179,13 @@ export type $VehiclePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     make: string
     model: string
     year: number
-    trim: string | null
-    fuelType: $Enums.FuelType | null
-    transmission: $Enums.TransmissionType | null
-    engine: string | null
-    color: string | null
-    mileage: number | null
-    licensePlate: string | null
+    trim: string
+    fuelType: $Enums.FuelType
+    transmission: $Enums.TransmissionType
+    engine: string
+    color: string
+    mileage: number
+    licensePlate: string
     state: string | null
     status: $Enums.VehicleStatus
     isDeleted: boolean

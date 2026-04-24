@@ -40,6 +40,20 @@ export type StringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type EnumFuelTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[]
+  notIn?: $Enums.FuelType[]
+  not?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel> | $Enums.FuelType
+}
+
+export type EnumTransmissionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TransmissionType[]
+  notIn?: $Enums.TransmissionType[]
+  not?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel> | $Enums.TransmissionType
+}
+
 export type StringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | null
@@ -53,31 +67,6 @@ export type StringNullableFilter<$PrismaModel = never> = {
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
   search?: string
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
-}
-
-export type EnumFuelTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.FuelType[] | null
-  notIn?: $Enums.FuelType[] | null
-  not?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel> | $Enums.FuelType | null
-}
-
-export type EnumTransmissionTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TransmissionType[] | null
-  notIn?: $Enums.TransmissionType[] | null
-  not?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel> | $Enums.TransmissionType | null
-}
-
-export type IntNullableFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
 export type EnumVehicleStatusFilter<$PrismaModel = never> = {
@@ -153,6 +142,26 @@ export type StringWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringFilter<$PrismaModel>
 }
 
+export type EnumFuelTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[]
+  notIn?: $Enums.FuelType[]
+  not?: Prisma.NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel> | $Enums.FuelType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+}
+
+export type EnumTransmissionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TransmissionType[]
+  notIn?: $Enums.TransmissionType[]
+  not?: Prisma.NestedEnumTransmissionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransmissionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel>
+}
+
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | null
@@ -169,42 +178,6 @@ export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
-}
-
-export type EnumFuelTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.FuelType[] | null
-  notIn?: $Enums.FuelType[] | null
-  not?: Prisma.NestedEnumFuelTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.FuelType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel>
-}
-
-export type EnumTransmissionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TransmissionType[] | null
-  notIn?: $Enums.TransmissionType[] | null
-  not?: Prisma.NestedEnumTransmissionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.TransmissionType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel>
-}
-
-export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
 }
 
 export type EnumVehicleStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -381,6 +354,20 @@ export type NestedStringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type NestedEnumFuelTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[]
+  notIn?: $Enums.FuelType[]
+  not?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel> | $Enums.FuelType
+}
+
+export type NestedEnumTransmissionTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TransmissionType[]
+  notIn?: $Enums.TransmissionType[]
+  not?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel> | $Enums.TransmissionType
+}
+
 export type NestedStringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | null
@@ -394,31 +381,6 @@ export type NestedStringNullableFilter<$PrismaModel = never> = {
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
   search?: string
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
-}
-
-export type NestedEnumFuelTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.FuelType[] | null
-  notIn?: $Enums.FuelType[] | null
-  not?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel> | $Enums.FuelType | null
-}
-
-export type NestedEnumTransmissionTypeNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TransmissionType[] | null
-  notIn?: $Enums.TransmissionType[] | null
-  not?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel> | $Enums.TransmissionType | null
-}
-
-export type NestedIntNullableFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
 export type NestedEnumVehicleStatusFilter<$PrismaModel = never> = {
@@ -500,6 +462,26 @@ export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringFilter<$PrismaModel>
 }
 
+export type NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.FuelType[]
+  notIn?: $Enums.FuelType[]
+  not?: Prisma.NestedEnumFuelTypeWithAggregatesFilter<$PrismaModel> | $Enums.FuelType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFuelTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumTransmissionTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TransmissionType[]
+  notIn?: $Enums.TransmissionType[]
+  not?: Prisma.NestedEnumTransmissionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransmissionType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTransmissionTypeFilter<$PrismaModel>
+}
+
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | null
@@ -518,27 +500,7 @@ export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumFuelTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FuelType | Prisma.EnumFuelTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.FuelType[] | null
-  notIn?: $Enums.FuelType[] | null
-  not?: Prisma.NestedEnumFuelTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.FuelType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFuelTypeNullableFilter<$PrismaModel>
-}
-
-export type NestedEnumTransmissionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.TransmissionType | Prisma.EnumTransmissionTypeFieldRefInput<$PrismaModel> | null
-  in?: $Enums.TransmissionType[] | null
-  notIn?: $Enums.TransmissionType[] | null
-  not?: Prisma.NestedEnumTransmissionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.TransmissionType | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumTransmissionTypeNullableFilter<$PrismaModel>
-}
-
-export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+export type NestedIntNullableFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
   in?: number[] | null
   notIn?: number[] | null
@@ -546,23 +508,7 @@ export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
-}
-
-export type NestedFloatNullableFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
-  in?: number[] | null
-  notIn?: number[] | null
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
+  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
 }
 
 export type NestedEnumVehicleStatusWithAggregatesFilter<$PrismaModel = never> = {

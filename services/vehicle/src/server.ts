@@ -48,7 +48,7 @@ export async function startHttpServer() {
 
   app.register(testRoutes, { prefix: "/Test" });
   app.register(vehicleRoutes, { prefix: "/Vehicles" });
-  app.register(vehicleServiceRoutes, { prefix: "/VehicleService" });
+  app.register(vehicleServiceRoutes, { prefix: "/VehicleServices" });
 
   app.setErrorHandler(errorHandler);
 

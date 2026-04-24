@@ -14,7 +14,7 @@ datasource db {
   provider = "mysql"
 }
 
-model Repairman {
+model Technician {
   id             Int       @id() @default(autoincrement())
   employeeNumber String    @unique()
   firstName      String

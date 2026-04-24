@@ -13,49 +13,49 @@ import {
   Req,
   BadRequestException,
 } from '@nestjs/common';
-import { RepairmanService } from '../services/repairman.service';
+import { TechnicianService } from '../services/technician.service';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
-import { CreateRepairmanDto } from '../dto/request/create-repairman.dto';
-import { UpdateRepairmanDto } from '../dto/request/update-repairman.dto';
-import { RepairmanDto } from '../dto/response/repairman.dto';
+import { CreateTechnicianDto } from '../dto/request/create-technician.dto';
+import { UpdateTechnicianDto } from '../dto/request/update-technician.dto';
+import { TechnicianDto } from '../dto/response/technician.dto';
 import { type FastifyRequest } from 'fastify';
 import { pipeline } from 'stream/promises';
 import path from 'path';
 import { createWriteStream } from 'fs';
 import { mkdir } from 'fs/promises';
 
-@Controller('Repairmans')
-export class RepairmanController {
-  constructor(private readonly repairmanService: RepairmanService) {}
+@Controller('Technicians')
+export class TechnicianController {
+  constructor(private readonly technicianService: TechnicianService) {}
 
   @Get()
-  getManyRepairman(@Query() query: GetManyQuery): Promise<RepairmanDto[]> {
-    return this.repairmanService.findMany(query as GetManyQueryType<'Repairman'>);
+  getManyTechnician(@Query() query: GetManyQuery): Promise<TechnicianDto[]> {
+    return this.technicianService.findMany(query as GetManyQueryType<'Technician'>);
   }
 
   @Get(':id')
-  getById(@Param('id', ParseIntPipe) id: number): Promise<RepairmanDto> {
-    return this.repairmanService.getById(id);
+  getById(@Param('id', ParseIntPipe) id: number): Promise<TechnicianDto> {
+    return this.technicianService.getById(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createRepairmanDto: CreateRepairmanDto): Promise<RepairmanDto> {
-    return this.repairmanService.create(createRepairmanDto);
+  create(@Body() createTechnicianDto: CreateTechnicianDto): Promise<TechnicianDto> {
+    return this.technicianService.create(createTechnicianDto);
   }
 
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateRepairmanDto: UpdateRepairmanDto,
-  ): Promise<RepairmanDto> {
-    return this.repairmanService.update(id, updateRepairmanDto);
+    @Body() updateTechnicianDto: UpdateTechnicianDto,
+  ): Promise<TechnicianDto> {
+    return this.technicianService.update(id, updateTechnicianDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.repairmanService.remove(id);
+    return this.technicianService.remove(id);
   }
 
   @Post(':id/SetImage')
@@ -82,13 +82,13 @@ export class RepairmanController {
     // const now = new Date();
     // const timestamp = now.toISOString().replace(/[:]/g, '-').replace(/\..+/, ''); // "2026-04-21T14-25-30"
 
-    const safeFilename = `repairman_${id}${ext}`;
+    const safeFilename = `technician_${id}${ext}`;
     // const safeFilename = `image_${id}_${timestamp}${ext}`;
     const filePath = path.join(uploadDir, safeFilename);
 
     await pipeline(data.file, createWriteStream(filePath));
 
     const src = `https://localhost:3000/Service-Api/uploads/${safeFilename}`;
-    await this.repairmanService.setRepairmanImageSrc(id, src);
+    await this.technicianService.setTechnicianImageSrc(id, src);
   }
 }

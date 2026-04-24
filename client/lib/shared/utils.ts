@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -37,8 +36,6 @@ export type RemoveNullValues<T> = {
   [K in keyof T]: Exclude<T[K], null>;
 };
 
-
-
 export function persianDigitsToEnglish(str: string) {
   const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
   const englishDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -48,7 +45,7 @@ export function persianDigitsToEnglish(str: string) {
   });
 }
 
-export function enumToSelectOptions<T extends string>(
+export function enumToSelectOptions(
   enumObj: Record<string, string>,
 ): { label: string; value: string }[] {
   return Object.values(enumObj).map((value) => ({

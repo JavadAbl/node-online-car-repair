@@ -14,7 +14,7 @@ export function buildFindManyArgs<T extends keyof Prisma.TypeMap['model']>(
   options?: { searchableFields?: (keyof Prisma.TypeMap['model'][T]['fields'])[] },
 ): Prisma.TypeMap['model'][T]['operations']['findMany']['args'] {
   // Default page is now 1 (first page)
-  const { page = 1, pageSize = 10, sortBy, sortOrder = 'asc', search } = criteria;
+  const { page = 1, pageSize = 100, sortBy, sortOrder = 'asc', search } = criteria;
 
   // Guard against a zero or negative page value – treat it as the first page
   const safePage = Math.max(page, 1);

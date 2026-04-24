@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { appConfig, configValidationSchema } from './common/config/app.config';
-import { RepairmanModule } from './repairman-module/repairman.module';
+import { TechnicianModule } from './technician-module/technician.module';
 import { ServiceModule } from './serivce-module/service.module';
 import { EventBoxModule } from './infrastructure-modules/event-box-module/event-box.module';
 import { RmqModule } from './infrastructure-modules/rmq-module/rmq.module';
@@ -32,7 +32,7 @@ import { QueueModule } from './infrastructure-modules/queue-module/queue.module'
     CronModule,
     EventBoxModule,
 
-    RepairmanModule,
+    TechnicianModule,
     ServiceModule,
   ],
   providers: [],

@@ -1,7 +1,7 @@
 import { IsString, IsOptional, MaxLength, IsEnum } from 'class-validator';
 import { WorkShift } from 'src/generated/prisma/enums';
 
-export class UpdateRepairmanDto {
+export class UpdateTechnicianDto {
   @IsString()
   @IsOptional()
   @MaxLength(100)

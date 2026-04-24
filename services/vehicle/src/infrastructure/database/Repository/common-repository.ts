@@ -5,18 +5,32 @@ import { prisma } from "../prisma-provider.js";
 export class Repository<TModel extends keyof typeof prisma> {
   constructor(private readonly model: TModel) {}
 
-  private get entityName(): string {
+  private get entityName() {
     return String(this.model);
+  }
+
+  get prismaClient() {
+    return prisma;
   }
 
   // --- READ ---
 
   async findMany<TArgs extends Prisma.Args<(typeof prisma)[TModel], "findMany">>(
     args?: TArgs,
+  ): Promise<{ items: Prisma.Result<(typeof prisma)[TModel], TArgs, "findMany">; totalCount: number }> {
+    const [items, totalCount] = await Promise.all([
+      (prisma[this.model] as any).findMany(args),
+      (prisma[this.model] as any).count({ where: args?.where }),
+    ]);
+
+    return { totalCount, items };
+  }
+  /*   async findMany<TArgs extends Prisma.Args<(typeof prisma)[TModel], "findMany">>(
+    args?: TArgs,
   ): Promise<Prisma.Result<(typeof prisma)[TModel], TArgs, "findMany">> {
     return (prisma[this.model] as any).findMany(args);
   }
-
+ */
   async findUnique<TArgs extends Prisma.Args<(typeof prisma)[TModel], "findUnique">>(
     args: TArgs,
   ): Promise<Prisma.Result<(typeof prisma)[TModel], TArgs, "findUnique"> | null> {
@@ -52,6 +66,12 @@ export class Repository<TModel extends keyof typeof prisma> {
   ): Promise<void> {
     const entity = await (prisma[this.model] as any).findFirst(args);
     if (entity) throw new ConflictError(this.entityName, fieldName, value);
+  }
+
+  async count<TArgs extends Prisma.Args<(typeof prisma)[TModel], "count">>(
+    args?: TArgs,
+  ): Promise<Prisma.Result<(typeof prisma)[TModel], TArgs, "count">> {
+    return (prisma[this.model] as any).count(args);
   }
 
   // --- WRITE ---

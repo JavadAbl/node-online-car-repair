@@ -13,25 +13,37 @@ import {
   GetVehicleServiceByIdSchema,
 } from "../schemas/vehicle-service/request/get-by-id-vehicle-service.schema.js";
 import {
-  GetVehicleServiceHistoriesRouteType,
-  GetVehicleServiceHistoriesSchema,
-} from "../schemas/vehicle-service/request/get-vehicle-services.schema.js";
-import {
   UpdateVehicleServiceRouteType,
   UpdateVehicleServiceSchema,
 } from "../schemas/vehicle-service/request/update-vehicle-service.schema.js";
 import { VehicleServiceDto } from "../schemas/vehicle-service/reply/vehicle-service.schema.js";
 import { VehicleServiceControllerPermissions } from "../infrastructure/auth/permissions.js";
+import {
+  GetVehicleServicesRouteType,
+  GetVehicleServicesSchema,
+} from "../schemas/vehicle-service/request/get-vehicle-services.schema.js";
+import {
+  GetVehicleServicesByVehicleIdRouteType,
+  GetVehicleServicesByVehicleIdSchema,
+} from "../schemas/vehicle-service/request/get-vehicle-services-by-vehicle-id.schema.js";
 
 export const vehicleServiceRoutes: FastifyPluginAsync = async (app) => {
   // Get all vehicle service histories----------------------------------------------
-  app.get<GetVehicleServiceHistoriesRouteType>(
+  app.get<GetVehicleServicesRouteType>(
     "/",
     {
-      schema: GetVehicleServiceHistoriesSchema,
+      schema: GetVehicleServicesSchema,
       auth: { permission: VehicleServiceControllerPermissions.GetAllVehicleServices },
     },
-    (request, reply) => vehicleServiceEntityService.getMany(request.query) as unknown as VehicleServiceDto[],
+    (request, reply) => vehicleServiceEntityService.getMany(request.query),
+  );
+
+  // Get vehicle service by context----------------------------------------------
+  app.get<GetVehicleServicesByVehicleIdRouteType>(
+    "/Vehicle/:id",
+    { schema: GetVehicleServicesByVehicleIdSchema },
+    (request, reply) =>
+      vehicleServiceEntityService.getManyByVehicleId(request.user.id, request.params.id, request.query),
   );
 
   // Get vehicle service history by id---------------------------------------------

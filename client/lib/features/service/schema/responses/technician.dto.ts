@@ -1,6 +1,6 @@
 import { WorkShift } from "../../service-enums";
 
-export interface RepairmanDto {
+export interface TechnicianDto {
   id: number;
 
   firstName: string;

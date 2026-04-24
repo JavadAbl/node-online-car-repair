@@ -5,7 +5,7 @@ import { AllExceptionsFilter } from './common/error-handler/error-handler.filter
 import { ConfigService } from '@nestjs/config';
 import { AppConfig, ConfigType } from './common/config/config.type';
 import { AuthService } from './infrastructure-modules/auth-module/auth.service';
-import { RepairmanController } from './repairman-module/contollers/repairman.controller';
+import { TechnicianController } from './technician-module/contollers/technician.controller';
 import { ServiceController } from './serivce-module/controllers/service.controller';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -29,7 +29,7 @@ async function bootstrap() {
 
   const authService = app.get<AuthService>(AuthService);
 
-  authService.addControllerPermissions(RepairmanController);
+  authService.addControllerPermissions(TechnicianController);
   authService.addControllerPermissions(ServiceController);
   await authService.setupPermissions();
 

@@ -2,7 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { WorkShift } from 'src/generated/prisma/enums';
 
 @Exclude()
-export class RepairmanDto {
+export class TechnicianDto {
   @Expose()
   id: number;
 

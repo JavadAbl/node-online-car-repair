@@ -10,16 +10,17 @@ export interface VehicleDto {
   make: string;
   model: string;
   year: number;
-  trim: string | null;
-  fuelType: FUEL_TYPES | null;
-  transmission: TRANSMISSION_TYPES | null;
-  engine: string | null;
-  color: string | null;
-  mileage: number | null;
-  licensePlate: string | null;
+  trim: string;
+  fuelType: FUEL_TYPES;
+  transmission: TRANSMISSION_TYPES;
+  engine: string;
+  color: string;
+  mileage: number;
+  licensePlate: string;
   state: string | null;
   customerId: number;
   status: VEHICLE_STATUS;
+  description: string | null;
   createdAt: string;
-  updatedAt: string | null;
+  updatedAt: string;
 }

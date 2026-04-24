@@ -1,12 +1,12 @@
 "use client";
 import { ContainerCard } from "@/components/shared/cards/container-card";
-import RepairmansGrid from "./repairmans-grid";
+import TechniciansGrid from "./technician-grid";
 
-export default function Repairman() {
+export default function Technician() {
   return (
     <>
       <ContainerCard className=" w-full">
-        <RepairmansGrid />
+        <TechniciansGrid />
       </ContainerCard>
     </>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import { ContentCard } from "@/components/shared/cards/content-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +11,15 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
-import { useGetRepairmansQuery } from "@/lib/features/service/service-api";
+import { useGetTechniciansQuery } from "@/lib/features/service/service-api";
 import { WorkShift } from "@/lib/features/service/service-enums";
+import { VehicleDto } from "@/lib/features/vehicle/schema/responses/vehicle.dto";
+import { useGetCustomerVehiclesQuery } from "@/lib/features/vehicle/vehicle-api";
 import { useAppSelector } from "@/lib/hooks/use-state";
 import { getAuthorizedImage } from "@/lib/shared/base-api-client";
 import {
   Background_Gradient,
-  REPAINRMAN_IMAGE_PLACEHOLDER,
+  TECHNICIAN_IMAGE_PLACEHOLDER,
 } from "@/lib/shared/styles-classes";
 import { cn } from "@/lib/shared/utils";
 import {
@@ -37,59 +37,7 @@ import {
   ChevronRight,
   DollarSign,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-
-// Types
-type FUEL_TYPES =
-  | "gasoline"
-  | "diesel"
-  | "electric"
-  | "hybrid"
-  | "plugin_hybrid";
-type TRANSMISSION_TYPES = "manual" | "automatic" | "cvt" | "dct";
-type VEHICLE_STATUS = "active" | "in_service" | "completed" | "pending";
-
-interface ServiceDto {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  discountPercent: number;
-}
-
-interface VehicleServiceDto {
-  id: number;
-  serviceDate: string;
-  mileageAtService: number;
-  technicianName: string;
-  status: "reserved" | "done" | "canceled";
-  description?: string;
-  createdAt: string;
-  updatedAt?: string;
-  vehicleId: number;
-  serviceId: number;
-  repairmanId: number;
-}
-
-interface VehicleDto {
-  id: number;
-  vin: string;
-  make: string;
-  model: string;
-  year: number;
-  trim: string | null;
-  fuelType: FUEL_TYPES | null;
-  transmission: TRANSMISSION_TYPES | null;
-  engine: string | null;
-  color: string | null;
-  mileage: number | null;
-  licensePlate: string | null;
-  state: string | null;
-  customerId: number;
-  status: VEHICLE_STATUS;
-  createdAt: string;
-  updatedAt: string | null;
-}
+import { useEffect, useState } from "react";
 
 // Mock Data
 const mockServices: ServiceDto[] = [
@@ -161,61 +109,8 @@ const mockVehicleService: VehicleServiceDto = {
   updatedAt: "2024-01-20T11:15:00Z",
   vehicleId: 101,
   serviceId: 1,
-  repairmanId: 201,
+  technicianId: 201,
 };
-
-const mockRepairmen: RepairmanDto[] = [
-  {
-    id: 201,
-    firstName: "Michael",
-    lastName: "Chen",
-    profession: "Master Technician",
-    employeeNumber: "TECH-001",
-    workShift: "morning",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-    rating: 4.9,
-  },
-  {
-    id: 202,
-    firstName: "Sarah",
-    lastName: "Johnson",
-    profession: "Engine Specialist",
-    employeeNumber: "TECH-002",
-    workShift: "afternoon",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    rating: 4.8,
-  },
-  {
-    id: 203,
-    firstName: "David",
-    lastName: "Martinez",
-    profession: "Transmission Expert",
-    employeeNumber: "TECH-003",
-    workShift: "morning",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-    rating: 4.7,
-  },
-  {
-    id: 204,
-    firstName: "Emily",
-    lastName: "Rodriguez",
-    profession: "Electrical Systems",
-    employeeNumber: "TECH-004",
-    workShift: "evening",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-    rating: 5.0,
-  },
-  {
-    id: 205,
-    firstName: "James",
-    lastName: "Wilson",
-    profession: "Diagnostic Specialist",
-    employeeNumber: "TECH-005",
-    workShift: "morning",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
-    rating: 4.6,
-  },
-];
 
 // Helper Components
 const StatusBadge = ({ status }: { status: VehicleServiceDto["status"] }) => {
@@ -295,12 +190,12 @@ const WorkShiftBadge = ({ shift }: { shift: WorkShift }) => {
 export default function CustomerOverviewPage() {
   // Hooks----------------------------------------------------
   const accessToken = useAppSelector((s) => s.auth.accessToken);
-  const [repairmansAvatars, setRepairmansAvatars] = useState<
+  const [techniciansAvatars, setTechniciansAvatars] = useState<
     Record<string, string | null>
   >({});
 
   //Data Hooks----------------------------------------------------
-  const { data: repairmans } = useGetRepairmansQuery({
+  const { data: technicians } = useGetTechniciansQuery({
     pageSize: 5,
     sortBy: "rating",
     sortOrder: "desc",
@@ -309,22 +204,22 @@ export default function CustomerOverviewPage() {
   useEffect(() => {
     const fetchAvatars = async () => {
       const urls: Record<string, string | null> = {};
-      for (const repairman of repairmans || []) {
-        urls[repairman.id] = await getAuthorizedImage(
-          repairman.image,
+      for (const technician of technicians || []) {
+        urls[technician.id] = await getAuthorizedImage(
+          technician.image,
           accessToken!,
         );
       }
-      setRepairmansAvatars(urls);
+      setTechniciansAvatars(urls);
     };
 
-    if (repairmans?.length && accessToken) {
+    if (technicians?.length && accessToken) {
       fetchAvatars();
     }
-  }, [repairmans, accessToken]);
+  }, [technicians, accessToken]);
 
   return (
-    <div className={cn("min-h-screen bg-background", Background_Gradient)}>
+    <div className={cn("min-h-screen")}>
       {/* <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50"> */}
       <div className="container flex flex-col gap-6 mx-auto p-6 lg:p-8">
         {/* Header */}
@@ -609,16 +504,16 @@ export default function CustomerOverviewPage() {
 
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  {repairmans?.map((repairman) => (
+                  {technicians?.map((technician) => (
                     <div
-                      key={`repairman_${repairman.id}`}
+                      key={`technician_${technician.id}`}
                       className="group relative rounded-lg border p-4 transition-all hover:border-blue-200 hover:shadow-md"
                     >
                       <div className="flex items-start gap-3">
                         <img
                           src={
-                            repairmansAvatars[repairman.id] ??
-                            REPAINRMAN_IMAGE_PLACEHOLDER
+                            techniciansAvatars[technician.id] ??
+                            TECHNICIAN_IMAGE_PLACEHOLDER
                           }
                           className="h-12 w-12 border-2 rounded-full border-white shadow"
                         />
@@ -627,10 +522,10 @@ export default function CustomerOverviewPage() {
                           <div className="flex items-start justify-between">
                             <div>
                               <p className="font-semibold">
-                                {repairman.firstName} {repairman.lastName}
+                                {technician.firstName} {technician.lastName}
                               </p>
                               <p className="text-sm font-medium text-blue-600">
-                                {repairman.profession}
+                                {technician.profession}
                               </p>
                             </div>
 
@@ -646,11 +541,11 @@ export default function CustomerOverviewPage() {
                           </div>
 
                           <div className="mt-2 space-y-1">
-                            <RatingStars rating={repairman.rating} />
+                            <RatingStars rating={technician.rating} />
                             <div className="flex items-center gap-2">
-                              <WorkShiftBadge shift={repairman.workShift} />
+                              <WorkShiftBadge shift={technician.workShift} />
                               <Badge variant="outline" className="text-xs">
-                                ID: {repairman.employeeNumber}
+                                ID: {technician.employeeNumber}
                               </Badge>
                             </div>
                           </div>
@@ -659,10 +554,6 @@ export default function CustomerOverviewPage() {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" className="mt-4 w-full">
-                  View All Technicians
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
               </CardContent>
             </ContentCard>
           </div>

@@ -7,18 +7,18 @@ import { Download, FileSpreadsheet, Plus } from "lucide-react";
 import { IconButtonWithTooltip } from "@/components/shared/buttons/icon-button-tooltip";
 import ActionsDropDown from "@/components/shared/dropdowns/actions-drop-down";
 import {
-  useGetRepairmansQuery,
-  useRepairmanDeleteMutation,
+  useGetTechniciansQuery,
+  useTechnicianDeleteMutation,
 } from "@/lib/features/service/service-api";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
-import RepairmanMutate from "./repairman-mutate";
-import { RepairmanSetImageDialog } from "./rapairman-set-image";
+import TechnicianMutate from "./technician-mutate";
+import { TechnicianSetImageDialog } from "./technician-set-image";
 import { useAppSelector } from "@/lib/hooks/use-state";
 import { getAuthorizedImage } from "@/lib/shared/base-api-client";
-import { REPAINRMAN_IMAGE_PLACEHOLDER } from "@/lib/shared/styles-classes";
+import { TECHNICIAN_IMAGE_PLACEHOLDER } from "@/lib/shared/styles-classes";
+import { TechnicianDto } from "@/lib/features/service/schema/responses/technician.dto";
 
-export default function RepairmansGrid() {
+export default function TechniciansGrid() {
   //Hooks-------------------------------------------------
   const gridRef = useRef<{ exportCSV: () => any; exportExcel: () => any }>(
     null,
@@ -26,24 +26,24 @@ export default function RepairmansGrid() {
   const [isShowCreate, setIsShowCreate] = useState(false);
   const [isShowUpdate, setIsShowUpdate] = useState(false);
   const [isShowSetImage, setIsShowSetImage] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<RepairmanDto | null>(null);
+  const [selectedItem, setSelectedItem] = useState<TechnicianDto | null>(null);
   const accessToken = useAppSelector((s) => s.auth.accessToken);
 
   //Data Hooks-------------------------------------------------
-  const { data: repairmansRes, isLoading: isLoadingGetRepairmans } =
-    useGetRepairmansQuery();
-  const repairmans = repairmansRes;
+  const { data: techniciansRes, isLoading: isLoadingGetTechnicians } =
+    useGetTechniciansQuery();
+  const technicians = techniciansRes;
 
-  const [mutateRepairmanDelete, { isLoading: isLoadingRepairmanDelete }] =
-    useRepairmanDeleteMutation();
+  const [mutateTechnicianDelete, { isLoading: isLoadingTechnicianDelete }] =
+    useTechnicianDeleteMutation();
 
   //Col Defs-------------------------------------------
-  const columns: ColumnDef<RepairmanDto>[] = [
+  const columns: ColumnDef<TechnicianDto>[] = [
     {
       accessorKey: "image",
       header: "Image",
       cell: ({ row }) => (
-        <RepairmanImageCell
+        <TechnicianImageCell
           url={row.original.image}
           accessToken={accessToken!}
         />
@@ -51,8 +51,8 @@ export default function RepairmansGrid() {
     },
 
     {
-      accessorKey: "repairman",
-      header: "Repairman",
+      accessorKey: "technician",
+      header: "Technician",
       enableColumnFilter: true,
       cell: ({ row }) => {
         const value = row.original;
@@ -102,9 +102,9 @@ export default function RepairmansGrid() {
             {
               label: "Delete",
               icon: <Trash2 className="h-4 w-4" />,
-              onClick: (service) => mutateRepairmanDelete(service.id),
+              onClick: (service) => mutateTechnicianDelete(service.id),
               destructive: true,
-              disabled: isLoadingRepairmanDelete,
+              disabled: isLoadingTechnicianDelete,
             },
           ]}
         />
@@ -115,7 +115,7 @@ export default function RepairmansGrid() {
   //Handlers-------------------------------------------
 
   //Component-------------------------------------------
-  if (isLoadingGetRepairmans) {
+  if (isLoadingGetTechnicians) {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function RepairmansGrid() {
           />
         </div>
 
-        <DataGridVirtual ref={gridRef} data={repairmans} columns={columns} />
+        <DataGridVirtual ref={gridRef} data={technicians} columns={columns} />
       </div>
 
       <FormSheet
@@ -162,10 +162,10 @@ export default function RepairmansGrid() {
         setOpen={(open) => {
           setIsShowCreate(open);
         }}
-        title="Create New Repairman"
-        description="Fill the form to create a new Repairman."
+        title="Create New Technician"
+        description="Fill the form to create a new Technician."
       >
-        <RepairmanMutate
+        <TechnicianMutate
           mode="create"
           onClose={() => {
             setIsShowCreate(false);
@@ -179,10 +179,10 @@ export default function RepairmansGrid() {
           setIsShowUpdate(open);
           setSelectedItem(null);
         }}
-        title="Update Repairman"
-        description="Fill the form to update the Repairman."
+        title="Update Technician"
+        description="Fill the form to update the Technician."
       >
-        <RepairmanMutate
+        <TechnicianMutate
           id={selectedItem?.id}
           mode="update"
           onClose={() => {
@@ -191,16 +191,16 @@ export default function RepairmansGrid() {
         />
       </FormSheet>
 
-      <RepairmanSetImageDialog
+      <TechnicianSetImageDialog
         isShow={isShowSetImage}
         setIsShow={setIsShowSetImage}
-        repairman={selectedItem}
+        technician={selectedItem}
       />
     </>
   );
 }
 
-function RepairmanImageCell({
+function TechnicianImageCell({
   url,
   accessToken,
 }: {
@@ -229,8 +229,8 @@ function RepairmanImageCell({
   return (
     <div className="relative h-10 w-10">
       <img
-        src={imageSrc ?? REPAINRMAN_IMAGE_PLACEHOLDER}
-        alt="Repairman"
+        src={imageSrc ?? TECHNICIAN_IMAGE_PLACEHOLDER}
+        alt="Technician"
         className="object-cover rounded-full size-10"
       />
     </div>

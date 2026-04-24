@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import {
   Select,
@@ -28,105 +27,75 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CreateVehicleDto,
-  createVehicleSchema,
-} from "@/lib/features/vehicle/schema/create-vehicle-schema";
 import { FormInput } from "@/components/shared/inputs/form-input";
 import { FormTextarea } from "@/components/shared/inputs/form-textarea";
-import { createVehicleAction } from "@/lib/features/vehicle/actions/create-vehicle-action";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useVehicleCreateMutation } from "@/lib/features/vehicle/vehicle-api";
+import {
+  VehicleCreateDto,
+  VehicleCreateSchema,
+} from "@/lib/features/vehicle/schema/requests/vehicle-create.schema";
+import { useRouter } from "next/navigation";
+import { ContentCard } from "@/components/shared/cards/content-card";
+import { LoadingButton } from "@/components/shared/buttons/loading-button";
+import { cn, enumToSelectOptions } from "@/lib/shared/utils";
+import {
+  FUEL_TYPES,
+  TRANSMISSION_TYPES,
+  VEHICLE_STATUS,
+} from "@/lib/features/vehicle/vehicle-enums";
+import NumberInput from "@/components/shared/inputs/number-input";
+import { FormMessageFixed } from "@/components/shared/inputs/form-message-fixed";
 
-const defaultValues: CreateVehicleDto = {
-  // Basic Info
+const defaultValues: Partial<VehicleCreateDto> = {
   vin: "",
   make: "",
   model: "",
   year: null as unknown as number,
-  trim: null,
-  status: null,
-
-  // Specifications
-  fuelType: null,
-  transmission: null,
-  engine: null,
-  color: null,
-  mileage: null,
-
-  // Additional
-  licensePlate: null,
+  trim: "",
+  status: undefined,
+  fuelType: undefined,
+  transmission: undefined,
+  engine: "",
+  color: "",
+  mileage: NaN,
+  licensePlate: "",
   state: null,
   description: null,
 };
 
 export default function CreateVehicleForm() {
-  const [isPending, startTransition] = useTransition();
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [serverSuccess, setServerSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("basic");
+  const router = useRouter();
 
-  const form = useForm<CreateVehicleDto>({
-    resolver: zodResolver(createVehicleSchema) as Resolver<CreateVehicleDto>,
-    defaultValues,
+  const form = useForm<VehicleCreateDto>({
+    resolver: zodResolver(VehicleCreateSchema) as Resolver<VehicleCreateDto>,
+    defaultValues: defaultValues as VehicleCreateDto,
     mode: "onChange",
   });
 
-  async function onSubmit(values: CreateVehicleDto) {
-    setServerError(null);
-    setServerSuccess(null);
+  //DataHooks------------------------------------------------------
+  const [mutateCreate, { isLoading: isLoadingCreate }] =
+    useVehicleCreateMutation();
 
-    startTransition(async () => {
-      const result = await createVehicleAction(values);
-
-      if (!result?.success) {
-        setServerError(result?.error ?? "Failed to create vehicle.");
-
-        // Map server fieldErrors back to RHF
-        if (result?.fieldErrors) {
-          for (const [key, msgs] of Object.entries(result.fieldErrors)) {
-            const message = msgs?.[0];
-            if (!message) continue;
-
-            form.setError(key as keyof CreateVehicleDto, {
-              type: "server",
-              message,
-            });
-          }
-        }
-
-        return;
-      }
-
-      setServerSuccess("Vehicle created successfully!");
-      form.reset(defaultValues);
-    });
-  }
+  const handleSubmit = async (values: VehicleCreateDto) => {
+    const res = await mutateCreate(values);
+    if (!res.error) router.back();
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-8">
-      <Card>
+    <div className="w-full max-w-6xl mx-auto my-8">
+      <ContentCard>
         <CardHeader>
           <CardTitle>Create New Vehicle</CardTitle>
           <CardDescription>Add a new vehicle to the system</CardDescription>
         </CardHeader>
+
         <CardContent>
-          {serverSuccess && (
-            <Alert className="mb-6 bg-primary/10 border-primary text-foreground">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              <AlertDescription>{serverSuccess}</AlertDescription>
-            </Alert>
-          )}
-
-          {serverError && (
-            <Alert className="mb-6 bg-destructive/10 border-destructive text-foreground">
-              <AlertCircle className="h-4 w-4 text-destructive" />
-              <AlertDescription>{serverError}</AlertDescription>
-            </Alert>
-          )}
-
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
               <Tabs
                 value={activeTab}
                 onValueChange={setActiveTab}
@@ -141,7 +110,7 @@ export default function CreateVehicleForm() {
                 </TabsList>
 
                 {/* Basic Information Tab */}
-                <TabsContent value="basic" className="space-y-6">
+                <TabsContent value="basic">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* VIN */}
                     <FormField
@@ -158,10 +127,7 @@ export default function CreateVehicleForm() {
                               className="uppercase"
                             />
                           </FormControl>
-                          <FormDescription>
-                            Vehicle Identification Number
-                          </FormDescription>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -175,11 +141,12 @@ export default function CreateVehicleForm() {
                           <FormLabel>Make *</FormLabel>
                           <FormControl>
                             <FormInput
+                              className={cn("border-border")}
                               placeholder="e.g., Toyota, Honda, BMW"
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -197,7 +164,7 @@ export default function CreateVehicleForm() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -210,13 +177,13 @@ export default function CreateVehicleForm() {
                         <FormItem>
                           <FormLabel>Year *</FormLabel>
                           <FormControl>
-                            <FormInput
+                            <NumberInput
                               type="number"
                               placeholder="e.g., 2023"
-                              {...field}
+                              field={field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -227,14 +194,14 @@ export default function CreateVehicleForm() {
                       name="trim"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Trim</FormLabel>
+                          <FormLabel>Trim *</FormLabel>
                           <FormControl>
                             <FormInput
                               placeholder="e.g., SE, LE, XLE"
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -248,8 +215,9 @@ export default function CreateVehicleForm() {
                           <FormLabel>Status *</FormLabel>
                           <FormControl>
                             <Select
-                              onValueChange={field.onChange}
-                              // defaultValue={field.value}
+                              onValueChange={(e) =>
+                                e !== "" && field.onChange(e)
+                              }
                               value={field.value || ""}
                             >
                               <SelectTrigger>
@@ -257,30 +225,20 @@ export default function CreateVehicleForm() {
                               </SelectTrigger>
 
                               <SelectContent>
-                                <SelectItem value="Active">Active</SelectItem>
-                                <SelectItem value="InRepair">
-                                  In Repair
-                                </SelectItem>
-                                <SelectItem value="ReadyForPickup">
-                                  Ready For Pickup
-                                </SelectItem>
-                                <SelectItem value="Archived">
-                                  Archived
-                                </SelectItem>
-                                <SelectItem value="UnderWarranty">
-                                  Under Warranty
-                                </SelectItem>
-                                <SelectItem value="InService">
-                                  In Service
-                                </SelectItem>
-                                <SelectItem value="OnLoan">On Loan</SelectItem>
-                                <SelectItem value="NotOperational">
-                                  Not Operational
-                                </SelectItem>
+                                {enumToSelectOptions(VEHICLE_STATUS).map(
+                                  (option) => (
+                                    <SelectItem
+                                      key={option.value}
+                                      value={option.value}
+                                    >
+                                      {option.label}
+                                    </SelectItem>
+                                  ),
+                                )}
                               </SelectContent>
                             </Select>
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -296,9 +254,9 @@ export default function CreateVehicleForm() {
                       name="fuelType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Fuel Type</FormLabel>
+                          <FormLabel>Fuel Type *</FormLabel>
                           <Select
-                            onValueChange={field.onChange}
+                            onValueChange={(e) => e !== "" && field.onChange(e)}
                             value={field.value || ""}
                           >
                             <FormControl>
@@ -307,18 +265,17 @@ export default function CreateVehicleForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Gasoline">Gasoline</SelectItem>
-                              <SelectItem value="Diesel">Diesel</SelectItem>
-                              <SelectItem value="Electric">Electric</SelectItem>
-                              <SelectItem value="Hybrid">Hybrid</SelectItem>
-                              <SelectItem value="PlugInHybrid">
-                                Plug-in Hybrid
-                              </SelectItem>
-                              <SelectItem value="Hydrogen">Hydrogen</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
+                              {enumToSelectOptions(FUEL_TYPES).map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -329,9 +286,9 @@ export default function CreateVehicleForm() {
                       name="transmission"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Transmission</FormLabel>
+                          <FormLabel>Transmission *</FormLabel>
                           <Select
-                            onValueChange={field.onChange}
+                            onValueChange={(e) => e !== "" && field.onChange(e)}
                             value={field.value || ""}
                           >
                             <FormControl>
@@ -340,19 +297,19 @@ export default function CreateVehicleForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Automatic">
-                                Automatic
-                              </SelectItem>
-                              <SelectItem value="Manual">Manual</SelectItem>
-                              <SelectItem value="CVT">CVT</SelectItem>
-                              <SelectItem value="DualClutch">
-                                Dual Clutch
-                              </SelectItem>
-                              <SelectItem value="Robotic">Robotic</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
+                              {enumToSelectOptions(TRANSMISSION_TYPES).map(
+                                (option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ),
+                              )}
                             </SelectContent>
                           </Select>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -363,14 +320,14 @@ export default function CreateVehicleForm() {
                       name="engine"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Engine</FormLabel>
+                          <FormLabel>Engine *</FormLabel>
                           <FormControl>
                             <FormInput
                               placeholder="e.g., 2.5L V6, 3.0L Turbo"
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -381,14 +338,14 @@ export default function CreateVehicleForm() {
                       name="color"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Color</FormLabel>
+                          <FormLabel>Color *</FormLabel>
                           <FormControl>
                             <FormInput
                               placeholder="e.g., Black, Silver, Red"
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -399,15 +356,15 @@ export default function CreateVehicleForm() {
                       name="mileage"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Mileage (km)</FormLabel>
+                          <FormLabel>Mileage (km) *</FormLabel>
                           <FormControl>
-                            <FormInput
+                            <NumberInput
                               type="number"
                               placeholder="e.g., 45000"
-                              {...field}
+                              field={field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -423,14 +380,14 @@ export default function CreateVehicleForm() {
                       name="licensePlate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>License Plate</FormLabel>
+                          <FormLabel>License Plate *</FormLabel>
                           <FormControl>
                             <FormInput
                               placeholder="e.g., ABC-1234"
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -448,7 +405,7 @@ export default function CreateVehicleForm() {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessageFixed />
                         </FormItem>
                       )}
                     />
@@ -472,7 +429,7 @@ export default function CreateVehicleForm() {
                         <FormDescription>
                           Optional field for additional vehicle information
                         </FormDescription>
-                        <FormMessage />
+                        <FormMessageFixed />
                       </FormItem>
                     )}
                   />
@@ -481,17 +438,21 @@ export default function CreateVehicleForm() {
 
               {/* Form Actions */}
               <div className="flex justify-between gap-4 pt-6 border-t">
-                <Button type="button" variant="outline">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.back()}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? "Creating..." : "Create Vehicle"}
-                </Button>
+                <LoadingButton isLoading={isLoadingCreate} type="submit">
+                  {"Create Vehicle"}
+                </LoadingButton>
               </div>
             </form>
           </Form>
         </CardContent>
-      </Card>
+      </ContentCard>
     </div>
   );
 }

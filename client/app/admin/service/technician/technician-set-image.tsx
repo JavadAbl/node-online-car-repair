@@ -15,8 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { RepairmanDto } from "@/lib/features/service/schema/responses/repairman.dto";
-import { useRepairmanSetImageMutation } from "@/lib/features/service/service-api";
+import { TechnicianDto } from "@/lib/features/service/schema/responses/technician.dto";
+import { useTechnicianSetImageMutation } from "@/lib/features/service/service-api";
 import { LoadingButton } from "@/components/shared/buttons/loading-button";
 import {
   Form,
@@ -36,13 +36,13 @@ type FormValues = z.infer<typeof schema>;
 type Props = {
   isShow: boolean;
   setIsShow: (state: boolean) => any;
-  repairman?: RepairmanDto | null;
+  technician?: TechnicianDto | null;
 };
 
-export function RepairmanSetImageDialog({
+export function TechnicianSetImageDialog({
   isShow,
   setIsShow,
-  repairman,
+  technician,
 }: Props) {
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -51,7 +51,7 @@ export function RepairmanSetImageDialog({
   });
   const { handleSubmit } = form;
 
-  const [mutate, { isLoading }] = useRepairmanSetImageMutation();
+  const [mutate, { isLoading }] = useTechnicianSetImageMutation();
 
   useEffect(() => {
     if (isShow) {
@@ -60,11 +60,11 @@ export function RepairmanSetImageDialog({
         form.reset();
       });
     }
-  }, [form, isShow, repairman]);
+  }, [form, isShow, technician]);
 
-  if (!repairman) return null;
+  if (!technician) return null;
 
-  const { id: repairmanId, employeeNumber, firstName, lastName } = repairman;
+  const { id: technicianId, employeeNumber, firstName, lastName } = technician;
 
   const onSubmit = async (data: FormValues) => {
     if (!data.image) return;
@@ -73,7 +73,7 @@ export function RepairmanSetImageDialog({
     formData.append("image", data.image);
     console.log(data.image instanceof File);
 
-    const res = await mutate({ body: formData, id: repairmanId });
+    const res = await mutate({ body: formData, id: technicianId });
     if (!res.error) setIsShow(false);
   };
 
@@ -85,13 +85,13 @@ export function RepairmanSetImageDialog({
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Set Repairman Image</DialogTitle>
+          <DialogTitle>Set Technician Image</DialogTitle>
           <DialogDescription>
-            Upload and update the profile image for this repairman.
+            Upload and update the profile image for this technician.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Repairman Info Card */}
+        {/* Technician Info Card */}
         <div className="rounded-md border p-4 bg-muted/50 text-sm space-y-1">
           <p>
             <span className="font-semibold">Name: </span>

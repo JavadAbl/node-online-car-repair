@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { WorkShift } from "../../service-enums";
 
-export const RepairmanCreateSchema = z.object({
+export const TechnicianCreateSchema = z.object({
   firstName: z.string().min(1, "firstName is required").max(100),
   lastName: z.string().min(1, "lastName is required").max(100),
   profession: z.string().min(1, "profession is required").max(100),
@@ -9,4 +9,4 @@ export const RepairmanCreateSchema = z.object({
   workShift: z.enum(WorkShift),
 });
 
-export type RepairmanCreateDto = z.infer<typeof RepairmanCreateSchema>;
+export type TechnicianCreateDto = z.infer<typeof TechnicianCreateSchema>;
