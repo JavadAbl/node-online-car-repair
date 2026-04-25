@@ -62,11 +62,11 @@ export const vehicleApi = createApi({
 
     //VehicleService-----------------------------------------------------
     GetCustomerVehicleServices: builder.query<
-      VehicleServiceDto[],
+      GetManyReply<VehicleServiceDto>,
       GetManyQuery | void
     >({
       query: (params) => ({
-        url: `${SERVICE_DOMAIN}/VehicleService/CustomerVehiclesServices`,
+        url: `${SERVICE_DOMAIN}/VehicleServices`,
         params: params ?? undefined,
       }),
       providesTags: (result) => getProvidesTags("vehicle-services", result),
@@ -74,7 +74,7 @@ export const vehicleApi = createApi({
 
     GetVehicleServiceById: builder.query<VehicleServiceDto, number>({
       query: (id) => ({
-        url: `${SERVICE_DOMAIN}/VehicleService/${id}`,
+        url: `${SERVICE_DOMAIN}/VehicleServices/${id}`,
       }),
       providesTags: (result) => getProvidesTags("vehicle-services", result),
     }),
@@ -91,7 +91,7 @@ export const vehicleApi = createApi({
       VehicleServiceCreateDto
     >({
       query: (body) => ({
-        url: `${SERVICE_DOMAIN}/VehicleService`,
+        url: `${SERVICE_DOMAIN}/VehicleServices`,
         method: "POST",
         body,
       }),
@@ -104,7 +104,7 @@ export const vehicleApi = createApi({
       { id: number; body: Partial<VehicleServiceCreateDto> }
     >({
       query: ({ id, body }) => ({
-        url: `${SERVICE_DOMAIN}/VehicleService/${id}`,
+        url: `${SERVICE_DOMAIN}/VehicleServices/${id}`,
         method: "PUT",
         body,
       }),

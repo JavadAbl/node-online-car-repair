@@ -19,6 +19,32 @@ export class VehicleServiceEntityService {
     return this.vehicleServiceRep.findMany(predicate);
   }
 
+  async getManyByContext(
+    customerId: number,
+    query: GetManyQuery<"VehicleService">,
+  ): Promise<GetManyReply<VehicleServiceDto>> {
+    const predicate = buildFindManyArgs(query);
+    const data = await this.vehicleServiceRep.findMany({
+      ...predicate,
+      where: { ...predicate.where, vehicle: { customerId } },
+      omit: { createdAt: true, updatedAt: true },
+      include: { service: { select: { name: true } }, vehicle: { select: { model: true } } },
+    });
+    const parsedData: GetManyReply<VehicleServiceDto> = {
+      ...data,
+      items: data.items.map((item) => ({
+        ...item,
+        serviceName: item.service.name,
+        vehicleModel: item.vehicle.model,
+        serviceDate: item.serviceDate.toISOString(),
+        service: undefined,
+        vehicle: undefined,
+      })),
+    };
+
+    return parsedData;
+  }
+
   async getManyByVehicleId(
     customerId: number,
     vehicleId: number,

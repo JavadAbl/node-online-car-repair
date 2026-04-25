@@ -133,7 +133,8 @@ export type CustomerReferenceScalarFieldEnum = (typeof CustomerReferenceScalarFi
 export const ServiceReferenceScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  price: 'price'
+  price: 'price',
+  discountPercent: 'discountPercent'
 } as const
 
 export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFieldEnum)[keyof typeof ServiceReferenceScalarFieldEnum]

@@ -20,7 +20,7 @@ export async function startDatabase() {
   console.log("Connected to database");
 }
 
-const softDeleteModel = {
+/* const softDeleteModel = {
   async delete({ args, query }) {
     return query({ ...args, data: { isDeleted: true } });
   },
@@ -41,3 +41,4 @@ const softDeleteModel = {
 prisma.$extends(
   Prisma.defineExtension({ query: { vehicle: softDeleteModel, vehicleService: softDeleteModel } }),
 );
+ */

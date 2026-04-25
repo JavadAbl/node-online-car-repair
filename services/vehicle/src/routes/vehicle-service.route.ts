@@ -28,17 +28,17 @@ import {
 } from "../schemas/vehicle-service/request/get-vehicle-services-by-vehicle-id.schema.js";
 
 export const vehicleServiceRoutes: FastifyPluginAsync = async (app) => {
-  // Get all vehicle service histories----------------------------------------------
+  // Get vehicle service by context----------------------------------------------
   app.get<GetVehicleServicesRouteType>(
     "/",
-    {
+    /*  {
       schema: GetVehicleServicesSchema,
       auth: { permission: VehicleServiceControllerPermissions.GetAllVehicleServices },
-    },
-    (request, reply) => vehicleServiceEntityService.getMany(request.query),
+    }, */
+    (request, reply) => vehicleServiceEntityService.getManyByContext(request.user.id, request.query),
   );
 
-  // Get vehicle service by context----------------------------------------------
+  // Get vehicle service by vehicle id----------------------------------------------
   app.get<GetVehicleServicesByVehicleIdRouteType>(
     "/Vehicle/:id",
     { schema: GetVehicleServicesByVehicleIdSchema },

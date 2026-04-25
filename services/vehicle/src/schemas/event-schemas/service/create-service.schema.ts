@@ -6,7 +6,8 @@ export const CreateServiceSchema = Type.Object(
   {
     id: Type.Integer({ description: "Unique identifier for the service" }),
     name: Type.String({ description: "Service name" }),
-    price: Type.Integer({ description: "Service price" }),
+    price: Type.Number({ description: "Service price" }),
+    discountPercent: Type.Number({ description: "Service price" }),
   },
   { additionalProperties: false },
 );

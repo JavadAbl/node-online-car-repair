@@ -61,7 +61,7 @@ const customerMenu: MenuGroup[] = [
       { title: "My Vehicles", url: "/customer-panel/vehicles", icon: CarIcon },
       {
         title: "My Vehicle Services",
-        url: "/customer-panel/services",
+        url: "/customer-panel/vehicle-services",
         icon: ToolboxIcon,
       },
     ],
