@@ -55,6 +55,7 @@ export const ModelName = {
   VehicleService: 'VehicleService',
   CustomerReference: 'CustomerReference',
   ServiceReference: 'ServiceReference',
+  TechnicianReference: 'TechnicianReference',
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   InboxEvent: 'InboxEvent',
@@ -111,7 +112,8 @@ export const VehicleServiceScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vehicleId: 'vehicleId',
-  serviceId: 'serviceId'
+  serviceId: 'serviceId',
+  technicianId: 'technicianId'
 } as const
 
 export type VehicleServiceScalarFieldEnum = (typeof VehicleServiceScalarFieldEnum)[keyof typeof VehicleServiceScalarFieldEnum]
@@ -138,6 +140,16 @@ export const ServiceReferenceScalarFieldEnum = {
 } as const
 
 export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFieldEnum)[keyof typeof ServiceReferenceScalarFieldEnum]
+
+
+export const TechnicianReferenceScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  technicianNumber: 'technicianNumber'
+} as const
+
+export type TechnicianReferenceScalarFieldEnum = (typeof TechnicianReferenceScalarFieldEnum)[keyof typeof TechnicianReferenceScalarFieldEnum]
 
 
 export const PermissionScalarFieldEnum = {
@@ -251,6 +263,15 @@ export const ServiceReferenceOrderByRelevanceFieldEnum = {
 } as const
 
 export type ServiceReferenceOrderByRelevanceFieldEnum = (typeof ServiceReferenceOrderByRelevanceFieldEnum)[keyof typeof ServiceReferenceOrderByRelevanceFieldEnum]
+
+
+export const TechnicianReferenceOrderByRelevanceFieldEnum = {
+  firstName: 'firstName',
+  lastName: 'lastName',
+  technicianNumber: 'technicianNumber'
+} as const
+
+export type TechnicianReferenceOrderByRelevanceFieldEnum = (typeof TechnicianReferenceOrderByRelevanceFieldEnum)[keyof typeof TechnicianReferenceOrderByRelevanceFieldEnum]
 
 
 export const PermissionOrderByRelevanceFieldEnum = {

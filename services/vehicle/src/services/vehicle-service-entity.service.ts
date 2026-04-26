@@ -14,12 +14,7 @@ export class VehicleServiceEntityService {
     this.vehicleServiceRep = new VehicleServiceRepository();
   }
 
-  getMany(query: GetManyQuery<"VehicleService">): Promise<GetManyReply<VehicleServiceDto>> {
-    const predicate = buildFindManyArgs(query, { searchableFields: ["technicianName", "description"] });
-    return this.vehicleServiceRep.findMany(predicate);
-  }
-
-  async getManyByContext(
+  async getManyByCustomerId(
     customerId: number,
     query: GetManyQuery<"VehicleService">,
   ): Promise<GetManyReply<VehicleServiceDto>> {
@@ -28,7 +23,11 @@ export class VehicleServiceEntityService {
       ...predicate,
       where: { ...predicate.where, vehicle: { customerId } },
       omit: { createdAt: true, updatedAt: true },
-      include: { service: { select: { name: true } }, vehicle: { select: { model: true } } },
+      include: {
+        service: { select: { name: true } },
+        vehicle: { select: { model: true } },
+        technician: true,
+      },
     });
     const parsedData: GetManyReply<VehicleServiceDto> = {
       ...data,
@@ -37,8 +36,11 @@ export class VehicleServiceEntityService {
         serviceName: item.service.name,
         vehicleModel: item.vehicle.model,
         serviceDate: item.serviceDate.toISOString(),
+        technicianName: item.technician.firstName + " " + item.technician.lastName,
+        technicianNumber: item.technician.technicianNumber,
         service: undefined,
         vehicle: undefined,
+        technician: undefined,
       })),
     };
 
@@ -52,11 +54,32 @@ export class VehicleServiceEntityService {
   ): Promise<GetManyReply<VehicleServiceDto>> {
     await vehicleRep.findAndCheckExistsBy({ where: { id: vehicleId, customerId } }, "id", vehicleId);
     const predicate = buildFindManyArgs(query);
-    return this.vehicleServiceRep.findMany({
+    const data = await this.vehicleServiceRep.findMany({
       ...predicate,
-      where: { ...predicate.where, vehicleId },
-      include: { service: true, vehicle: true },
+      where: { ...predicate.where, vehicleId, vehicle: { customerId } },
+      omit: { createdAt: true, updatedAt: true },
+      include: {
+        service: { select: { name: true } },
+        vehicle: { select: { model: true } },
+        technician: true,
+      },
     });
+    const parsedData: GetManyReply<VehicleServiceDto> = {
+      ...data,
+      items: data.items.map((item) => ({
+        ...item,
+        serviceName: item.service.name,
+        vehicleModel: item.vehicle.model,
+        serviceDate: item.serviceDate.toISOString(),
+        technicianName: item.technician.firstName + " " + item.technician.lastName,
+        technicianNumber: item.technician.technicianNumber,
+        service: undefined,
+        vehicle: undefined,
+        technician: undefined,
+      })),
+    };
+
+    return parsedData;
   }
 
   getById(id: number) {

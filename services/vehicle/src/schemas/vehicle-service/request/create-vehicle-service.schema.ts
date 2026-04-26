@@ -10,6 +10,7 @@ const CreateVehicleServiceBodySchema = Type.Object({
   description: Type.Optional(Type.String({ description: "Description of the service performed" })),
   vehicleId: Type.Integer({ description: "ID of the vehicle that received the service" }),
   serviceId: Type.Integer({ description: "ID of the service reference" }),
+  technicianId: Type.Integer({ description: "ID of the technician reference" }),
 });
 
 export const CreateVehicleServiceSchema = {

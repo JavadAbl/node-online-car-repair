@@ -11,4 +11,6 @@ export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_DELETE = 'auth.api-role.permission.de
 //Publish
 export const RMQ_P_RK_SERVICE_CREATE = 'service.api-service.create';
 export const RMQ_P_RK_SERVICE_UPDATE = 'service.api-service.update';
+export const RMQ_P_RK_TECHNICIAN_CREATE = 'service.api-technician.create';
+export const RMQ_P_RK_TECHNICIAN_UPDATE = 'service.api-technician.update';
 export const RMQ_P_RK_PERMISSIONS = 'auth.api-permission.sync';

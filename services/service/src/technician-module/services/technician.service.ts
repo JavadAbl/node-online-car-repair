@@ -8,8 +8,8 @@ import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { plainToInstance } from 'class-transformer';
 import { RabbitMQPublisher } from 'src/infrastructure-modules/rmq-module/rmq-publisher.service';
 import {
-  RMQ_P_RK_SERVICE_CREATE,
-  RMQ_P_RK_SERVICE_UPDATE,
+  RMQ_P_RK_TECHNICIAN_CREATE,
+  RMQ_P_RK_TECHNICIAN_UPDATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 
 @Injectable()
@@ -20,14 +20,14 @@ export class TechnicianService {
   ) {}
 
   async create(payload: CreateTechnicianDto): Promise<TechnicianDto> {
-    const { employeeNumber } = payload;
+    const { technicianNumber } = payload;
     await this.technicianRep.checkDuplicateBy(
-      { where: { employeeNumber } },
-      'employeeNumber',
-      employeeNumber,
+      { where: { technicianNumber } },
+      'technicianNumber',
+      technicianNumber,
     );
     const technician = await this.technicianRep.create({ data: payload });
-    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_CREATE, technician);
+    await this.rmqPublisher.publish(RMQ_P_RK_TECHNICIAN_CREATE, technician);
     return plainToInstance(TechnicianDto, technician);
   }
 
@@ -45,7 +45,7 @@ export class TechnicianService {
   async update(id: number, payload: UpdateTechnicianDto): Promise<TechnicianDto> {
     await this.technicianRep.findAndCheckExistsBy({ where: { id } }, 'id', id);
     const updatedTechnician = await this.technicianRep.update({ where: { id }, data: payload });
-    await this.rmqPublisher.publish(RMQ_P_RK_SERVICE_UPDATE, updatedTechnician);
+    await this.rmqPublisher.publish(RMQ_P_RK_TECHNICIAN_UPDATE, updatedTechnician);
     return plainToInstance(TechnicianDto, updatedTechnician);
   }
 

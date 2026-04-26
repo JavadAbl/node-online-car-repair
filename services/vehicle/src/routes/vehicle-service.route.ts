@@ -35,7 +35,7 @@ export const vehicleServiceRoutes: FastifyPluginAsync = async (app) => {
       schema: GetVehicleServicesSchema,
       auth: { permission: VehicleServiceControllerPermissions.GetAllVehicleServices },
     }, */
-    (request, reply) => vehicleServiceEntityService.getManyByContext(request.user.id, request.query),
+    (request, reply) => vehicleServiceEntityService.getManyByCustomerId(request.user.id, request.query),
   );
 
   // Get vehicle service by vehicle id----------------------------------------------

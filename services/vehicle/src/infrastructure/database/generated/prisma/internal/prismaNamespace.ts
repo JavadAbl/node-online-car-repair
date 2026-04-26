@@ -388,6 +388,7 @@ export const ModelName = {
   VehicleService: 'VehicleService',
   CustomerReference: 'CustomerReference',
   ServiceReference: 'ServiceReference',
+  TechnicianReference: 'TechnicianReference',
   Permission: 'Permission',
   RolePermission: 'RolePermission',
   InboxEvent: 'InboxEvent',
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "vehicle" | "vehicleService" | "customerReference" | "serviceReference" | "permission" | "rolePermission" | "inboxEvent" | "outboxEvent"
+    modelProps: "vehicle" | "vehicleService" | "customerReference" | "serviceReference" | "technicianReference" | "permission" | "rolePermission" | "inboxEvent" | "outboxEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -672,6 +673,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ServiceReferenceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ServiceReferenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    TechnicianReference: {
+      payload: Prisma.$TechnicianReferencePayload<ExtArgs>
+      fields: Prisma.TechnicianReferenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TechnicianReferenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TechnicianReferenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        findFirst: {
+          args: Prisma.TechnicianReferenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TechnicianReferenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        findMany: {
+          args: Prisma.TechnicianReferenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>[]
+        }
+        create: {
+          args: Prisma.TechnicianReferenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        createMany: {
+          args: Prisma.TechnicianReferenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TechnicianReferenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        update: {
+          args: Prisma.TechnicianReferenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        deleteMany: {
+          args: Prisma.TechnicianReferenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TechnicianReferenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TechnicianReferenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TechnicianReferencePayload>
+        }
+        aggregate: {
+          args: Prisma.TechnicianReferenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTechnicianReference>
+        }
+        groupBy: {
+          args: Prisma.TechnicianReferenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TechnicianReferenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TechnicianReferenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TechnicianReferenceCountAggregateOutputType> | number
         }
       }
     }
@@ -1012,7 +1079,8 @@ export const VehicleServiceScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vehicleId: 'vehicleId',
-  serviceId: 'serviceId'
+  serviceId: 'serviceId',
+  technicianId: 'technicianId'
 } as const
 
 export type VehicleServiceScalarFieldEnum = (typeof VehicleServiceScalarFieldEnum)[keyof typeof VehicleServiceScalarFieldEnum]
@@ -1039,6 +1107,16 @@ export const ServiceReferenceScalarFieldEnum = {
 } as const
 
 export type ServiceReferenceScalarFieldEnum = (typeof ServiceReferenceScalarFieldEnum)[keyof typeof ServiceReferenceScalarFieldEnum]
+
+
+export const TechnicianReferenceScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  technicianNumber: 'technicianNumber'
+} as const
+
+export type TechnicianReferenceScalarFieldEnum = (typeof TechnicianReferenceScalarFieldEnum)[keyof typeof TechnicianReferenceScalarFieldEnum]
 
 
 export const PermissionScalarFieldEnum = {
@@ -1152,6 +1230,15 @@ export const ServiceReferenceOrderByRelevanceFieldEnum = {
 } as const
 
 export type ServiceReferenceOrderByRelevanceFieldEnum = (typeof ServiceReferenceOrderByRelevanceFieldEnum)[keyof typeof ServiceReferenceOrderByRelevanceFieldEnum]
+
+
+export const TechnicianReferenceOrderByRelevanceFieldEnum = {
+  firstName: 'firstName',
+  lastName: 'lastName',
+  technicianNumber: 'technicianNumber'
+} as const
+
+export type TechnicianReferenceOrderByRelevanceFieldEnum = (typeof TechnicianReferenceOrderByRelevanceFieldEnum)[keyof typeof TechnicianReferenceOrderByRelevanceFieldEnum]
 
 
 export const PermissionOrderByRelevanceFieldEnum = {
@@ -1399,6 +1486,7 @@ export type GlobalOmitConfig = {
   vehicleService?: Prisma.VehicleServiceOmit
   customerReference?: Prisma.CustomerReferenceOmit
   serviceReference?: Prisma.ServiceReferenceOmit
+  technicianReference?: Prisma.TechnicianReferenceOmit
   permission?: Prisma.PermissionOmit
   rolePermission?: Prisma.RolePermissionOmit
   inboxEvent?: Prisma.InboxEventOmit

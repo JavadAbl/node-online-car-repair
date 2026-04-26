@@ -51,6 +51,9 @@ model VehicleService {
 
   service   ServiceReference @relation(fields: [serviceId], references: [id])
   serviceId Int
+
+  technician   TechnicianReference @relation(fields: [technicianId], references: [id])
+  technicianId Int
 }
 
 //Reference Tables--------------------------------------------------------
@@ -72,7 +75,16 @@ model ServiceReference {
   price           Float
   discountPercent Float
 
-  vehicleServiceHistories VehicleService[]
+  vehicleService VehicleService[]
+}
+
+model TechnicianReference {
+  id               Int    @id
+  firstName        String
+  lastName         String
+  technicianNumber String
+
+  vehicleServices VehicleService[]
 }
 
 // Enums-------------------------------------------------------------------------

@@ -8,9 +8,9 @@ import { UpdateVehicle } from "../schemas/vehicle/request/update-vehicle.schema.
 import { buildFindManyArgs } from "../utils/prisma.utils.js";
 
 export class VehicleService {
-  getMany(query: GetManyQuery<"Vehicle">): Promise<GetManyReply<VehicleDto>> {
+  async getMany(query: GetManyQuery<"Vehicle">): Promise<GetManyReply<VehicleDto>> {
     const predicate = buildFindManyArgs(query, { searchableFields: ["vin", "make", "model", "year"] });
-    return vehicleRep.findMany(predicate);
+    return (await vehicleRep.findMany(predicate)) as unknown as GetManyReply<VehicleDto>;
   }
 
   async getManyByCustomerId(
@@ -19,7 +19,10 @@ export class VehicleService {
   ): Promise<GetManyReply<VehicleDto>> {
     await customerRep.findAndCheckExistsBy({ where: { id: customerId } }, "id", customerId);
     const predicate = buildFindManyArgs(query, { searchableFields: ["vin", "make", "model", "year"] });
-    return vehicleRep.findMany({ ...predicate, where: { ...predicate.where, customerId } });
+    return (await vehicleRep.findMany({
+      ...predicate,
+      where: { ...predicate.where, customerId },
+    })) as unknown as GetManyReply<VehicleDto>;
   }
 
   getById(id: number) {

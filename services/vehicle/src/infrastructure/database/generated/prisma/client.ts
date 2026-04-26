@@ -60,6 +60,11 @@ export type CustomerReference = Prisma.CustomerReferenceModel
  */
 export type ServiceReference = Prisma.ServiceReferenceModel
 /**
+ * Model TechnicianReference
+ * 
+ */
+export type TechnicianReference = Prisma.TechnicianReferenceModel
+/**
  * Model Permission
  * 
  */

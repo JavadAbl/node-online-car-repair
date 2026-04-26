@@ -15,6 +15,12 @@ export const RMQ_Q_RK_SERVICE_CREATE = "service.api-service.create";
 export const RMQ_Q_SERVICE_UPDATE = "vehicle.api-service.update";
 export const RMQ_Q_RK_SERVICE_UPDATE = "service.api-service.update";
 
+export const RMQ_Q_TECHNICIAN_CREATE = "vehicle.api-technician.create";
+export const RMQ_Q_RK_TECHNICIAN_CREATE = "service.api-technician.create";
+
+export const RMQ_Q_TECHNICIAN_UPDATE = "vehicle.api-technician.update";
+export const RMQ_Q_RK_TECHNICIAN_UPDATE = "service.api-technician.update";
+
 export const RMQ_Q_AUTH_ROLE_PERMISSION_CREATE = `vehicle.api-role.permission.create`;
 export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_CREATE = "auth.api-role.permission.create";
 

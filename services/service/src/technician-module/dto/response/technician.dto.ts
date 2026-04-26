@@ -13,7 +13,7 @@ export class TechnicianDto {
   lastName: string;
 
   @Expose()
-  employeeNumber: string;
+  technicianNumber: string;
 
   @Expose()
   profession: string;

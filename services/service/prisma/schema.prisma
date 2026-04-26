@@ -15,14 +15,14 @@ datasource db {
 }
 
 model Technician {
-  id             Int       @id() @default(autoincrement())
-  employeeNumber String    @unique()
-  firstName      String
-  lastName       String
-  workShift      WorkShift
-  image          String?
-  rating         Float     @default(0)
-  profession     String
+  id               Int       @id() @default(autoincrement())
+  technicianNumber String    @unique()
+  firstName        String
+  lastName         String
+  workShift        WorkShift
+  image            String?
+  rating           Float     @default(0)
+  profession       String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

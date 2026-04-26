@@ -5,7 +5,7 @@ export class CreateTechnicianDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  employeeNumber: string;
+  technicianNumber: string;
 
   @IsString()
   @IsNotEmpty()

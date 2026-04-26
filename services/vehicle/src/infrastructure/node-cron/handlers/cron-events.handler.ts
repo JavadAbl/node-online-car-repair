@@ -9,6 +9,8 @@ import {
   queueEventRolePermissionDelete,
   queueEventServiceCreate,
   queueEventServiceUpdate,
+  queueEventTechnicianCreate,
+  queueEventTechnicianUpdate,
 } from "../../queue/queue-provider.js";
 import {
   RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
@@ -18,6 +20,8 @@ import {
   RMQ_Q_RK_SERVICE_UPDATE,
   RMQ_Q_SERVICE_CREATE,
   RMQ_Q_SERVICE_UPDATE,
+  RMQ_Q_TECHNICIAN_CREATE,
+  RMQ_Q_TECHNICIAN_UPDATE,
 } from "../../rabbitmq/config/rmq-config.js";
 
 export class CronEventsHandler {
@@ -40,6 +44,14 @@ export class CronEventsHandler {
 
         case RMQ_Q_SERVICE_UPDATE:
           jobClient.create(queueEventServiceUpdate, event);
+          break;
+
+        case RMQ_Q_TECHNICIAN_CREATE:
+          jobClient.create(queueEventTechnicianCreate, event);
+          break;
+
+        case RMQ_Q_TECHNICIAN_UPDATE:
+          jobClient.create(queueEventTechnicianUpdate, event);
           break;
 
         case RMQ_Q_AUTH_ROLE_PERMISSION_CREATE:
