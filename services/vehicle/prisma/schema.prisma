@@ -37,11 +37,11 @@ model Vehicle {
 }
 
 model VehicleService {
-  id               Int      @id @default(autoincrement())
+  id               Int                  @id @default(autoincrement())
   serviceDate      DateTime
   mileageAtService Int
-  technicianName   String
   description      String?
+  status           VehicleServiceStatus @default(Pending)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -116,6 +116,12 @@ enum VehicleStatus {
   InService
   OnLoan
   NotOperational
+}
+
+enum VehicleServiceStatus {
+  Pending
+  InWork
+  Done
 }
 
 // Auth-------------------------------------------------------------------------

@@ -226,6 +226,23 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumVehicleServiceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleServiceStatus | Prisma.EnumVehicleServiceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleServiceStatus[]
+  notIn?: $Enums.VehicleServiceStatus[]
+  not?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel> | $Enums.VehicleServiceStatus
+}
+
+export type EnumVehicleServiceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleServiceStatus | Prisma.EnumVehicleServiceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleServiceStatus[]
+  notIn?: $Enums.VehicleServiceStatus[]
+  not?: Prisma.NestedEnumVehicleServiceStatusWithAggregatesFilter<$PrismaModel> | $Enums.VehicleServiceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel>
+}
+
 export type FloatFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   in?: number[]
@@ -582,6 +599,23 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumVehicleServiceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleServiceStatus | Prisma.EnumVehicleServiceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleServiceStatus[]
+  notIn?: $Enums.VehicleServiceStatus[]
+  not?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel> | $Enums.VehicleServiceStatus
+}
+
+export type NestedEnumVehicleServiceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VehicleServiceStatus | Prisma.EnumVehicleServiceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VehicleServiceStatus[]
+  notIn?: $Enums.VehicleServiceStatus[]
+  not?: Prisma.NestedEnumVehicleServiceStatusWithAggregatesFilter<$PrismaModel> | $Enums.VehicleServiceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVehicleServiceStatusFilter<$PrismaModel>
 }
 
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {

@@ -48,6 +48,15 @@ export const VehicleStatus = {
 export type VehicleStatus = (typeof VehicleStatus)[keyof typeof VehicleStatus]
 
 
+export const VehicleServiceStatus = {
+  Pending: 'Pending',
+  InWork: 'InWork',
+  Done: 'Done'
+} as const
+
+export type VehicleServiceStatus = (typeof VehicleServiceStatus)[keyof typeof VehicleServiceStatus]
+
+
 export const Role = {
   Admin: 'Admin',
   NewUser: 'NewUser',

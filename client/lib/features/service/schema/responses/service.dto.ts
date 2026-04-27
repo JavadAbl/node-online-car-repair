@@ -3,4 +3,5 @@ export interface ServiceDto {
   name: string;
   price: number;
   description: string;
+  discountPercent: number;
 }

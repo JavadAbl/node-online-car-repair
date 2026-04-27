@@ -27,3 +27,9 @@ export enum VEHICLE_STATUS {
   "OnLoan" = "OnLoan",
   "NotOperational" = "NotOperational",
 }
+
+export enum VehicleServiceStatus {
+  "Pending" = "Pending",
+  "InWork" = "InWork",
+  "Done" = "Done",
+}

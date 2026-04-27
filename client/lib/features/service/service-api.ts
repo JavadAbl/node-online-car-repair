@@ -2,7 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "@/lib/shared/base-api-client";
 import { ServiceCreateDto } from "./schema/requests/service-create-schema";
 import { ServiceDto } from "./schema/responses/service.dto";
-import { GetManyQuery } from "@/lib/shared/types";
+import { GetManyQuery, GetManyReply } from "@/lib/shared/types";
 import {
   getProvidesTags,
   getInvalidatesTags,
@@ -21,7 +21,7 @@ export const serviceApi = createApi({
   tagTypes: ["services", "technicians"],
   endpoints: (builder) => ({
     //Service-----------------------------------------------------
-    GetServices: builder.query<ServiceDto[], GetManyQuery | void>({
+    GetServices: builder.query<GetManyReply<ServiceDto>, GetManyQuery | void>({
       query: (params) => ({
         url: `${SERVICE_DOMAIN}/Service`,
         params: params ?? undefined,
@@ -69,7 +69,10 @@ export const serviceApi = createApi({
     }),
 
     //Technician-----------------------------------------------------
-    GetTechnicians: builder.query<TechnicianDto[], GetManyQuery | void>({
+    GetTechnicians: builder.query<
+      GetManyReply<TechnicianDto>,
+      GetManyQuery | void
+    >({
       query: (params) => ({
         url: `${SERVICE_DOMAIN}/Technicians`,
         params: params ?? undefined,

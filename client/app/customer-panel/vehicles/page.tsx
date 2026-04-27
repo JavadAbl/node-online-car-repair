@@ -45,11 +45,6 @@ import {
   Calendar,
 } from "lucide-react";
 import { VehicleDto } from "@/lib/features/vehicle/schema/responses/vehicle.dto";
-import {
-  TRANSMISSION_TYPES,
-  VEHICLE_STATUS,
-  FUEL_TYPES,
-} from "@/lib/features/vehicle/vehicle-enums";
 import { ContentCard } from "@/components/shared/cards/content-card";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

@@ -1074,8 +1074,8 @@ export const VehicleServiceScalarFieldEnum = {
   id: 'id',
   serviceDate: 'serviceDate',
   mileageAtService: 'mileageAtService',
-  technicianName: 'technicianName',
   description: 'description',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vehicleId: 'vehicleId',
@@ -1206,7 +1206,6 @@ export type VehicleOrderByRelevanceFieldEnum = (typeof VehicleOrderByRelevanceFi
 
 
 export const VehicleServiceOrderByRelevanceFieldEnum = {
-  technicianName: 'technicianName',
   description: 'description'
 } as const
 
@@ -1343,6 +1342,13 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'VehicleServiceStatus'
+ */
+export type EnumVehicleServiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VehicleServiceStatus'>
     
 
 
