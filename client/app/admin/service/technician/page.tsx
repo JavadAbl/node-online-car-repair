@@ -1,6 +1,6 @@
 "use client";
 import { ContainerCard } from "@/components/shared/cards/container-card";
-import TechniciansGrid from "./technician-grid";
+import TechniciansGrid from "./components/technician-grid";
 
 export default function Technician() {
   return (

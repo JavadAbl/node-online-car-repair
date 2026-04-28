@@ -10,13 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoadingButton } from "@/components/shared/buttons/loading-button";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useEffect } from "react";
-import {
-  useGetTechnicianByIdQuery,
-  useTechnicianCreateMutation,
-  useTechnicianUpdateMutation,
-} from "@/lib/features/service/service-api";
+import { useTechnicianCreateMutation } from "@/lib/features/service/service-api";
 import { FormMessageFixed } from "@/components/shared/inputs/form-message-fixed";
 import {
   Select,
@@ -34,19 +28,16 @@ import {
 
 interface Props {
   onClose: () => any;
-  mode: "create" | "update";
-  id?: number;
 }
 const defaultValues: TechnicianCreateDto = {
   firstName: "",
   lastName: "",
-  employeeNumber: "",
+  technicianNumber: "",
   profession: "",
-  //@ts-expect-error null
-  workShift: null,
+  workShift: null as unknown as WorkShift,
 };
 
-export default function TechnicianMutate({ mode, id, onClose }: Props) {
+export default function TechnicianCreate({ onClose }: Props) {
   //Hooks-----------------------------------------------------
   const form = useForm<TechnicianCreateDto>({
     resolver: zodResolver(
@@ -59,37 +50,12 @@ export default function TechnicianMutate({ mode, id, onClose }: Props) {
   const [mutateTechnicianCreate, { isLoading: isLoadingTechnicianCreate }] =
     useTechnicianCreateMutation();
 
-  const [mutateTechnicianUpdate, { isLoading: isLoadingTechnicianUpdate }] =
-    useTechnicianUpdateMutation();
-
-  const { data: serviceRes } = useGetTechnicianByIdQuery(id ?? skipToken);
-  const technician = serviceRes;
-
-  useEffect(() => {
-    console.log(technician);
-
-    if (mode === "update" && technician) {
-      form.reset(technician);
-    }
-  }, [technician]);
-
   //Handlers----------------------------------------------------
   const handleSubmit = async (data: TechnicianCreateDto) => {
-    let res: { error?: any };
+    const res = await mutateTechnicianCreate(data);
 
-    switch (mode) {
-      case "create":
-        res = await mutateTechnicianCreate(data);
-        break;
-
-      case "update":
-        res = await mutateTechnicianUpdate({ body: data, id: id! });
-        break;
-    }
     if (!res?.error) onClose();
   };
-
-  if (!mode || (mode === "update" && !id)) return null;
 
   //Component----------------------------------------------------
   return (
@@ -98,13 +64,13 @@ export default function TechnicianMutate({ mode, id, onClose }: Props) {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col w-full max-w-md"
       >
-        {/* employeeNumber */}
+        {/* technicianNumber */}
         <FormField
           control={form.control}
-          name="employeeNumber"
+          name="technicianNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>employeeNumber</FormLabel>
+              <FormLabel>Technician Number</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -191,9 +157,9 @@ export default function TechnicianMutate({ mode, id, onClose }: Props) {
         <LoadingButton
           type="submit"
           className="w-full"
-          isLoading={isLoadingTechnicianCreate || isLoadingTechnicianUpdate}
+          isLoading={isLoadingTechnicianCreate}
         >
-          {mode === "create" ? "Create Technician" : "Update Technician"}
+          {"Create Technician"}
         </LoadingButton>
       </form>
     </Form>

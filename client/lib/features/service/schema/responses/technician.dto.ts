@@ -7,7 +7,7 @@ export interface TechnicianDto {
 
   lastName: string;
 
-  employeeNumber: string;
+  technicianNumber: string;
 
   workShift: WorkShift;
 

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Table,
   TableHeader,
@@ -8,10 +7,8 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import {
   useReactTable,
   getCoreRowModel,
@@ -19,14 +16,21 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   flexRender,
+  ColumnDef,
 } from "@tanstack/react-table";
-
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import React, { useImperativeHandle, useRef } from "react";
+import { GetManyReply } from "@/lib/shared/types";
 
-export default function DataGrid({ data, columns, ref }) {
+interface Props {
+  data?: any[];
+  columns: ColumnDef<any, any>[];
+  ref: React.Ref<any>;
+}
+
+export default function DataGrid({ data, columns, ref }: Props) {
   // Safe defaults
   const safeData = Array.isArray(data) ? data : [];
   const safeColumns = Array.isArray(columns) ? columns : [];

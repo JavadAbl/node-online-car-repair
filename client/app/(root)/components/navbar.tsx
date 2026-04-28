@@ -12,7 +12,7 @@ import {
   LogOutIcon,
 } from "lucide-react";
 import Link from "next/link";
-import ThemeModeToggle from "../../components/shared/utils/theme-mode-toggle";
+import ThemeModeToggle from "../../../components/shared/utils/theme-mode-toggle";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
 import { authActions } from "@/lib/features/auth/auth-slice";
 import { useRouter } from "next/navigation";

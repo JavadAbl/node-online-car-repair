@@ -23,7 +23,9 @@ export class InboxEventCron {
   @Interval(10000)
   async handleInboxEvents() {
     await this.lockService.runLocked(this.handleInboxEvents.name, async () => {
-      const unhandledEvents = await this.inboxRep.findMany({ where: { status: 'Pending' } });
+      const unhandledEvents = await this.inboxRep.prismaClient.inboxEvent.findMany({
+        where: { status: 'Pending' },
+      });
 
       for (const event of unhandledEvents) {
         switch (event.queue) {

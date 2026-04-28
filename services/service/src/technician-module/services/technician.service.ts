@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTechnicianDto } from '../dto/request/create-technician.dto';
 import { UpdateTechnicianDto } from '../dto/request/update-technician.dto';
 import { TechnicianDto } from '../dto/response/technician.dto';
-import { GetManyQueryType } from 'src/common/contract/query/get-many-query';
+import { GetManyQueryType } from 'src/common/dto/reqest/get-many-query';
 import { TechnicianRepository } from '../repository/technician.repository';
 import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { plainToInstance } from 'class-transformer';
@@ -11,6 +11,7 @@ import {
   RMQ_P_RK_TECHNICIAN_CREATE,
   RMQ_P_RK_TECHNICIAN_UPDATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
+import { GetManyReply } from 'src/common/dto/response/get-many-reply';
 
 @Injectable()
 export class TechnicianService {
@@ -31,10 +32,11 @@ export class TechnicianService {
     return plainToInstance(TechnicianDto, technician);
   }
 
-  async findMany(query: GetManyQueryType<'Technician'>): Promise<TechnicianDto[]> {
+  async findMany(query: GetManyQueryType<'Technician'>): Promise<GetManyReply<TechnicianDto>> {
     const predicate = buildFindManyArgs(query, { searchableFields: ['firstName', 'lastName'] });
     const technicians = await this.technicianRep.findMany(predicate);
-    return plainToInstance(TechnicianDto, technicians);
+    const items = plainToInstance(TechnicianDto, technicians.items);
+    return { items, totalCount: technicians.totalCount };
   }
 
   async getById(id: number): Promise<TechnicianDto> {

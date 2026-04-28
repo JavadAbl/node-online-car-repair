@@ -12,13 +12,31 @@ export class Repository<TModel extends keyof PrismaClient> {
     return String(this.model);
   }
 
+  get prismaClient() {
+    return this.prismaProvider;
+  }
+
   // --- READ ---
 
-  async findMany<TArgs extends Prisma.Args<PrismaClient[TModel], 'findMany'>>(
+  async findMany<TArgs extends Prisma.Args<(typeof this.prismaProvider)[TModel], 'findMany'>>(
+    args?: TArgs,
+  ): Promise<{
+    items: Prisma.Result<(typeof this.prismaProvider)[TModel], TArgs, 'findMany'>;
+    totalCount: number;
+  }> {
+    const [items, totalCount] = await Promise.all([
+      (this.prismaProvider[this.model] as any).findMany(args),
+      (this.prismaProvider[this.model] as any).count({ where: args?.where }),
+    ]);
+
+    return { totalCount, items };
+  }
+
+  /*  async findMany<TArgs extends Prisma.Args<PrismaClient[TModel], 'findMany'>>(
     args?: TArgs,
   ): Promise<Prisma.Result<PrismaClient[TModel], TArgs, 'findMany'>> {
     return await (this.prismaProvider[this.model] as any).findMany(args);
-  }
+  } */
 
   async findUnique<TArgs extends Prisma.Args<PrismaClient[TModel], 'findUnique'>>(
     args: TArgs,

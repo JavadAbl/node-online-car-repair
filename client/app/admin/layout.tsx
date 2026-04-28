@@ -1,6 +1,6 @@
-import { AdminSidebar } from "@/app/admin/admin-sidebar";
+import { AdminSidebar } from "@/app/admin/components/admin-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import SidebarEdgeTab from "./sidebar-edge-tab";
+import SidebarEdgeTab from "./components/sidebar-edge-tab";
 import Auth from "@/components/shared/utils/auth";
 
 export default function LayoutAdmin({ children }: any) {

@@ -133,7 +133,11 @@ export default function ServicesGrid() {
           />
         </div>
 
-        <DataGridVirtual ref={gridRef} data={services} columns={columns} />
+        <DataGridVirtual
+          ref={gridRef}
+          data={services?.items}
+          columns={columns}
+        />
       </div>
 
       <FormSheet

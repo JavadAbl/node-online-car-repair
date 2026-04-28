@@ -1,4 +1,4 @@
-import { Navbar } from "@/app/(root)/navbar";
+import { Navbar } from "@/app/(root)/components/navbar";
 import Auth from "@/components/shared/utils/auth";
 
 export default function RootLayout({

@@ -11,12 +11,13 @@ import {
   useTechnicianDeleteMutation,
 } from "@/lib/features/service/service-api";
 import { Skeleton } from "@/components/ui/skeleton";
-import TechnicianMutate from "./technician-mutate";
 import { TechnicianSetImageDialog } from "./technician-set-image";
 import { useAppSelector } from "@/lib/hooks/use-state";
 import { getAuthorizedImage } from "@/lib/shared/base-api-client";
 import { TECHNICIAN_IMAGE_PLACEHOLDER } from "@/lib/shared/styles-classes";
 import { TechnicianDto } from "@/lib/features/service/schema/responses/technician.dto";
+import TechnicianUpdate from "./technician-update";
+import TechnicianCreate from "./technician-create";
 
 export default function TechniciansGrid() {
   //Hooks-------------------------------------------------
@@ -42,6 +43,7 @@ export default function TechniciansGrid() {
     {
       accessorKey: "image",
       header: "Image",
+      enableColumnFilter: false,
       cell: ({ row }) => (
         <TechnicianImageCell
           url={row.original.image}
@@ -61,8 +63,13 @@ export default function TechniciansGrid() {
     },
 
     {
-      accessorKey: "employeeNumber",
-      header: "Employee Number",
+      accessorKey: "technicianNumber",
+      header: "Technician Number",
+      enableColumnFilter: true,
+    },
+    {
+      accessorKey: "profession",
+      header: "Profession",
       enableColumnFilter: true,
     },
     {
@@ -74,7 +81,7 @@ export default function TechniciansGrid() {
     {
       accessorKey: "rating",
       header: "Rating",
-      enableColumnFilter: true,
+      enableColumnFilter: false,
     },
     {
       id: "actions",
@@ -154,7 +161,11 @@ export default function TechniciansGrid() {
           />
         </div>
 
-        <DataGridVirtual ref={gridRef} data={technicians} columns={columns} />
+        <DataGridVirtual
+          ref={gridRef}
+          data={technicians?.items}
+          columns={columns}
+        />
       </div>
 
       <FormSheet
@@ -165,8 +176,7 @@ export default function TechniciansGrid() {
         title="Create New Technician"
         description="Fill the form to create a new Technician."
       >
-        <TechnicianMutate
-          mode="create"
+        <TechnicianCreate
           onClose={() => {
             setIsShowCreate(false);
           }}
@@ -182,9 +192,8 @@ export default function TechniciansGrid() {
         title="Update Technician"
         description="Fill the form to update the Technician."
       >
-        <TechnicianMutate
+        <TechnicianUpdate
           id={selectedItem?.id}
-          mode="update"
           onClose={() => {
             setIsShowUpdate(false);
           }}

@@ -14,7 +14,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { TechnicianService } from '../services/technician.service';
-import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
+import { GetManyQuery, GetManyQueryType } from 'src/common/dto/reqest/get-many-query';
 import { CreateTechnicianDto } from '../dto/request/create-technician.dto';
 import { UpdateTechnicianDto } from '../dto/request/update-technician.dto';
 import { TechnicianDto } from '../dto/response/technician.dto';
@@ -23,13 +23,14 @@ import { pipeline } from 'stream/promises';
 import path from 'path';
 import { createWriteStream } from 'fs';
 import { mkdir } from 'fs/promises';
+import { GetManyReply } from 'src/common/dto/response/get-many-reply';
 
 @Controller('Technicians')
 export class TechnicianController {
   constructor(private readonly technicianService: TechnicianService) {}
 
   @Get()
-  getManyTechnician(@Query() query: GetManyQuery): Promise<TechnicianDto[]> {
+  getMany(@Query() query: GetManyQuery): Promise<GetManyReply<TechnicianDto>> {
     return this.technicianService.findMany(query as GetManyQueryType<'Technician'>);
   }
 

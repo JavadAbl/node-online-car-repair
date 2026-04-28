@@ -195,11 +195,12 @@ export default function CustomerOverviewPage() {
   >({});
 
   //Data Hooks----------------------------------------------------
-  const { data: technicians } = useGetTechniciansQuery({
+  const { data: techniciansRep } = useGetTechniciansQuery({
     pageSize: 5,
     sortBy: "rating",
     sortOrder: "desc",
   });
+  const technicians = techniciansRep?.items;
 
   useEffect(() => {
     const fetchAvatars = async () => {
@@ -504,55 +505,56 @@ export default function CustomerOverviewPage() {
 
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  {technicians?.map((technician) => (
-                    <div
-                      key={`technician_${technician.id}`}
-                      className="group relative rounded-lg border p-4 transition-all hover:border-blue-200 hover:shadow-md"
-                    >
-                      <div className="flex items-start gap-3">
-                        <img
-                          src={
-                            techniciansAvatars[technician.id] ??
-                            TECHNICIAN_IMAGE_PLACEHOLDER
-                          }
-                          className="h-12 w-12 border-2 rounded-full border-white shadow"
-                        />
+                  {technicians &&
+                    technicians?.map((technician) => (
+                      <div
+                        key={`technician_${technician.id}`}
+                        className="group relative rounded-lg border p-4 transition-all hover:border-blue-200 hover:shadow-md"
+                      >
+                        <div className="flex items-start gap-3">
+                          <img
+                            src={
+                              techniciansAvatars[technician.id] ??
+                              TECHNICIAN_IMAGE_PLACEHOLDER
+                            }
+                            className="h-12 w-12 border-2 rounded-full border-white shadow"
+                          />
 
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <p className="font-semibold">
-                                {technician.firstName} {technician.lastName}
-                              </p>
-                              <p className="text-sm font-medium text-blue-600">
-                                {technician.profession}
-                              </p>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <p className="font-semibold">
+                                  {technician.firstName} {technician.lastName}
+                                </p>
+                                <p className="text-sm font-medium text-blue-600">
+                                  {technician.profession}
+                                </p>
+                              </div>
+
+                              <div className="absolute right-4 top-4 opacity-0 transition-opacity group-hover:opacity-100">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                >
+                                  <ChevronRight className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
 
-                            <div className="absolute right-4 top-4 opacity-0 transition-opacity group-hover:opacity-100">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                              >
-                                <ChevronRight className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-
-                          <div className="mt-2 space-y-1">
-                            <RatingStars rating={technician.rating} />
-                            <div className="flex items-center gap-2">
-                              <WorkShiftBadge shift={technician.workShift} />
-                              <Badge variant="outline" className="text-xs">
-                                ID: {technician.employeeNumber}
-                              </Badge>
+                            <div className="mt-2 space-y-1">
+                              <RatingStars rating={technician.rating} />
+                              <div className="flex items-center gap-2">
+                                <WorkShiftBadge shift={technician.workShift} />
+                                <Badge variant="outline" className="text-xs">
+                                  ID: {technician.technicianNumber}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </CardContent>
             </ContentCard>

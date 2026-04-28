@@ -39,6 +39,7 @@ import {
   useGetCustomerVehiclesQuery,
   useVehicleServiceCreateMutation,
 } from "@/lib/features/vehicle/vehicle-api";
+import { formatToDatetimeInputToISO } from "@/lib/shared/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -87,7 +88,7 @@ export default function CreateVehicleService() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto my-8">
+    <div className="w-full max-w-6xl mx-auto my-0 overflow-auto h-full">
       <ContentCard>
         <CardHeader>
           <CardTitle>Create Vehicle Service Record</CardTitle>
@@ -98,11 +99,8 @@ export default function CreateVehicleService() {
 
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-8"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {/* Vehicle Selection */}
                 <FormField
                   control={form.control}
@@ -115,31 +113,29 @@ export default function CreateVehicleService() {
                         value={field.value ? String(field.value) : ""}
                         disabled={isloadingVehicles}
                       >
-                        <FormControl>
-                          <>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={
-                                  isloadingVehicles
-                                    ? "Loading vehicles..."
-                                    : "Select a vehicle"
-                                }
-                              />
-                            </SelectTrigger>
-
-                            <SelectContent>
-                              {vehicles?.map((vehicle) => (
-                                <SelectItem
-                                  key={vehicle.id}
-                                  value={String(vehicle.id)}
-                                >
-                                  {vehicle.year} {vehicle.make} {vehicle.model}{" "}
-                                  - {vehicle.licensePlate || vehicle.vin}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </>
+                        <FormControl className="w-60">
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                isloadingVehicles
+                                  ? "Loading vehicles..."
+                                  : "Select a vehicle"
+                              }
+                            />
+                          </SelectTrigger>
                         </FormControl>
+
+                        <SelectContent>
+                          {vehicles?.map((vehicle) => (
+                            <SelectItem
+                              key={vehicle.id}
+                              value={String(vehicle.id)}
+                            >
+                              {vehicle.year} {vehicle.make} {vehicle.model} -{" "}
+                              {vehicle.licensePlate || vehicle.vin}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
                       </Select>
                       <FormMessageFixed />
                     </FormItem>
@@ -158,7 +154,7 @@ export default function CreateVehicleService() {
                         value={field.value ? String(field.value) : ""}
                         disabled={isLoadingServices}
                       >
-                        <FormControl>
+                        <FormControl className="w-60">
                           <SelectTrigger>
                             <SelectValue
                               placeholder={
@@ -197,7 +193,7 @@ export default function CreateVehicleService() {
                         value={field.value ? String(field.value) : ""}
                         disabled={isLoadingTechnicians}
                       >
-                        <FormControl>
+                        <FormControl className="w-60">
                           <SelectTrigger>
                             <SelectValue
                               placeholder={
@@ -231,8 +227,22 @@ export default function CreateVehicleService() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Service Date *</FormLabel>
-                      <FormControl>
-                        <FormInput type="datetime-local" {...field} />
+                      <FormControl className="w-60">
+                        <FormInput
+                          type="datetime-local"
+                          {...field}
+                          value={
+                            field.value
+                              ? formatToDatetimeInputToISO(field.value)
+                              : ""
+                          }
+                          onChange={(e) => {
+                            const raw = e.target.value;
+                            field.onChange(
+                              raw ? new Date(raw).toISOString() : "",
+                            );
+                          }}
+                        />
                       </FormControl>
                       <FormMessageFixed />
                     </FormItem>
@@ -246,7 +256,7 @@ export default function CreateVehicleService() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Mileage at Service (km) *</FormLabel>
-                      <FormControl>
+                      <FormControl className="w-60">
                         <NumberInput
                           type="number"
                           placeholder="e.g., 45000"
@@ -270,7 +280,6 @@ export default function CreateVehicleService() {
                       <FormTextarea
                         placeholder="Add service details, notes, or observations..."
                         className="resize-none"
-                        rows={5}
                         {...field}
                         value={field.value ?? ""}
                       />

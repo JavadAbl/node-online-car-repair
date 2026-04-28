@@ -11,11 +11,12 @@ import {
   HttpStatus,
   ParseIntPipe,
 } from '@nestjs/common';
-import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
+import { GetManyQuery, GetManyQueryType } from 'src/common/dto/reqest/get-many-query';
 import { ServiceEntityService } from '../services/service-entity.service';
 import { CreateServiceDto } from '../dto/request/create-service.dto';
 import { ServiceDto } from '../dto/response/service.dto';
 import { UpdateServiceDto } from '../dto/request/update-service.dto';
+import { GetManyReply } from 'src/common/dto/response/get-many-reply';
 
 @Controller('Service')
 export class ServiceController {
@@ -29,7 +30,7 @@ export class ServiceController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  getMany(@Query() query: GetManyQuery): Promise<ServiceDto[]> {
+  getMany(@Query() query: GetManyQuery): Promise<GetManyReply<ServiceDto>> {
     return this.serviceEntityService.getMany(query as GetManyQueryType<'Service'>);
   }
 

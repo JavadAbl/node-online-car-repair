@@ -15,4 +15,9 @@ export class UpdateTechnicianDto {
   @IsEnum(WorkShift)
   @IsOptional()
   workShift?: WorkShift;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(100)
+  profession: string;
 }

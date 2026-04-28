@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateServiceDto } from '../dto/request/create-service.dto';
 import { ServiceDto } from '../dto/response/service.dto';
-import { GetManyQueryType } from 'src/common/contract/query/get-many-query';
+import { GetManyQueryType } from 'src/common/dto/reqest/get-many-query';
 import { ServiceRepository } from '../repository/service.repository';
 import { buildFindManyArgs } from 'src/common/utils/prisma-util';
 import { plainToInstance } from 'class-transformer';
@@ -11,6 +11,7 @@ import {
   RMQ_P_RK_SERVICE_CREATE,
   RMQ_P_RK_SERVICE_UPDATE,
 } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
+import { GetManyReply } from 'src/common/dto/response/get-many-reply';
 
 @Injectable()
 export class ServiceEntityService {
@@ -27,10 +28,11 @@ export class ServiceEntityService {
     return plainToInstance(ServiceDto, service);
   }
 
-  async getMany(query: GetManyQueryType<'Service'>): Promise<ServiceDto[]> {
+  async getMany(query: GetManyQueryType<'Service'>): Promise<GetManyReply<ServiceDto>> {
     const predicate = buildFindManyArgs(query, { searchableFields: ['name'] });
     const services = await this.serviceRep.findMany(predicate);
-    return plainToInstance(ServiceDto, services);
+    const items = plainToInstance(ServiceDto, services.items);
+    return { items, totalCount: services.totalCount };
   }
 
   async getById(id: number): Promise<ServiceDto> {
