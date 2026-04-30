@@ -14,7 +14,6 @@ export class RabbitMQPublisher {
   async publish<T>(routingKey: string, payload: T) {
     const serializedPayload = JSON.stringify(payload);
     const messageId = randomUUID();
-
     await this.connection.publish(RMQ_EXCHANGE, routingKey, payload, {
       appId: RMQ_APP_ID,
       messageId,

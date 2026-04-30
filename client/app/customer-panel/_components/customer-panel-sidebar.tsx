@@ -30,6 +30,7 @@ import {
   ArrowLeft,
   CarIcon,
   ToolboxIcon,
+  ReceiptTextIcon,
 } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -58,11 +59,16 @@ const customerMenu: MenuGroup[] = [
   {
     title: "Vehicles & Services",
     items: [
-      { title: "My Vehicles", url: "/customer-panel/vehicles", icon: CarIcon },
+      { title: "Vehicles", url: "/customer-panel/vehicles", icon: CarIcon },
       {
-        title: "My Vehicle Services",
+        title: "Vehicle Services",
         url: "/customer-panel/vehicle-services",
         icon: ToolboxIcon,
+      },
+      {
+        title: "Factors",
+        url: "/customer-panel/factors",
+        icon: ReceiptTextIcon,
       },
     ],
   },

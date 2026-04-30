@@ -5,10 +5,11 @@ import { CreateVehicle } from "../schemas/vehicle/request/create-vehicle.schema.
 import { VehicleDto } from "../schemas/vehicle/reply/vehicle.schema.js";
 import { TypeCompiler } from "@sinclair/typebox/compiler";
 import { Value } from "@sinclair/typebox/value";
+import { rmqRpcClient } from "../infrastructure/rabbitmq/rmq.provider.js";
 
 export const testRoutes: FastifyPluginAsync = async (app) => {
   app.get("/a/a/a", (request, reply) => {
-    return { x: 1 };
+    return rmqRpcClient.request("factor.api-rpc", "test", {});
   });
 
   app.get("/a", { auth: { roles: ["Admin"] } }, (request, reply) => {

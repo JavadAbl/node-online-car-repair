@@ -9,6 +9,7 @@ import {
 } from './config/rmq.config';
 import { RabbitMQPublisher } from './rmq-publisher.service';
 import { generateQueueRetryConfig } from './rmq.utils';
+import { RabbitMQEventConsumer } from './consumers/rmq-event.consumer';
 
 @Global()
 @Module({
@@ -35,7 +36,7 @@ import { generateQueueRetryConfig } from './rmq.utils';
       }),
     }),
   ],
-  providers: [RabbitMQPublisher],
+  providers: [RabbitMQPublisher, RabbitMQEventConsumer],
   exports: [RabbitMQPublisher],
 })
 export class RmqModule {}

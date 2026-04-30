@@ -48,14 +48,13 @@ import {
   User,
   Phone,
 } from "lucide-react";
-import { VehicleDto } from "@/lib/features/vehicle/schema/responses/vehicle.dto";
 import { ContentCard } from "@/components/shared/cards/content-card";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { VehicleServiceDto } from "@/lib/features/vehicle/schema/responses/vehicle-service.dto";
 
-export default function CustomerVehicleServicesPage() {
+export default function CustomerFactorsPage() {
   // State Management
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -235,7 +234,7 @@ export default function CustomerVehicleServicesPage() {
                         size="sm"
                         onClick={() => handleViewDetails(item)}
                       >
-                        View Details
+                        Payment
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -293,186 +292,6 @@ export default function CustomerVehicleServicesPage() {
           </CardContent>
         </ContentCard>
       )}
-
-      {/* Vehicle Service Details Modal */}
-
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl min-h-3/6">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">
-              {selectedVehicleService?.serviceName}
-            </DialogTitle>
-            <DialogDescription>
-              Complete service information and details
-            </DialogDescription>
-          </DialogHeader>
-          {selectedVehicleService && (
-            <Tabs defaultValue="overview" className="mt-4">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="details">Service Details</TabsTrigger>
-                <TabsTrigger value="technician">Technician</TabsTrigger>
-              </TabsList>
-
-              {/* ================= OVERVIEW ================= */}
-              <TabsContent value="overview" className="mt-6 space-y-6">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-muted-foreground">
-                      {selectedVehicleService.vehicleModel}
-                    </p>
-                    <Badge
-                      variant="secondary"
-                      className="mt-2 capitalize px-3 py-1 text-xs"
-                    >
-                      {selectedVehicleService.status}
-                    </Badge>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Service Date:</span>
-                    <span>
-                      {new Date(
-                        selectedVehicleService.serviceDate,
-                      ).toLocaleDateString()}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Gauge className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      Mileage at Service:
-                    </span>
-                    <span>
-                      {selectedVehicleService.mileageAtService?.toLocaleString()}{" "}
-                      miles
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Car className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Vehicle:</span>
-                    <span>{selectedVehicleService.vehicleModel}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Hash className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Service ID:</span>
-                    <span className="font-mono">
-                      {selectedVehicleService.serviceId}
-                    </span>
-                  </div>
-                </div>
-
-                {selectedVehicleService.description && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="text-sm font-medium mb-2">Description</p>
-                      <p className="text-sm text-muted-foreground">
-                        {selectedVehicleService.description}
-                      </p>
-                    </div>
-                  </>
-                )}
-              </TabsContent>
-
-              {/* ================= SERVICE DETAILS ================= */}
-              <TabsContent value="details" className="mt-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Service Date:</span>
-                    <span>
-                      {new Date(
-                        selectedVehicleService.serviceDate,
-                      ).toLocaleDateString()}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Status:</span>
-                    <Badge variant="outline" className="capitalize">
-                      {selectedVehicleService.status}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Gauge className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Mileage:</span>
-                    <span>
-                      {selectedVehicleService.mileageAtService?.toLocaleString()}{" "}
-                      miles
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Hash className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Vehicle ID:</span>
-                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
-                      {selectedVehicleService.vehicleId}
-                    </span>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* ================= TECHNICIAN ================= */}
-              <TabsContent value="technician" className="mt-6 space-y-6">
-                <div className="space-y-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Technician:</span>
-                    <span className="font-medium">
-                      {selectedVehicleService.technicianName}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      Contact Number:
-                    </span>
-                    <span>{selectedVehicleService.technicianNumber}</span>
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center gap-2">
-                    <Hash className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">
-                      Technician ID:
-                    </span>
-                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
-                      {selectedVehicleService.technicianId}
-                    </span>
-                  </div>
-
-                  <Separator />
-
-                  <div className="text-muted-foreground space-y-1">
-                    <div>
-                      Service Date:{" "}
-                      {new Date(
-                        selectedVehicleService.serviceDate,
-                      ).toLocaleDateString()}
-                    </div>
-                    <div>
-                      Vehicle: {selectedVehicleService.vehicleModel} (ID:{" "}
-                      {selectedVehicleService.vehicleId})
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

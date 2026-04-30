@@ -6,6 +6,7 @@ import { config } from "../config.js";
 import { RabbitMQClient } from "./client/rmq-client.js";
 import { RabbitMQConsumer } from "./client/rmq-cosumer.js";
 import { RabbitMQPublisher } from "./client/rmq-publisher.js";
+import { RabbitMQRPCServer } from "./client/rmq-rpc-server.js";
 import { RabbitMQSetup } from "./client/rmq-setup.js";
 import {
   RMQ_Q_CUSTOMER_CREATE,
@@ -14,6 +15,7 @@ import {
   RMQ_Q_RK_CUSTOMER_UPDATE,
   RMQ_Q_RK_SERVICE_CREATE,
   RMQ_Q_RK_SERVICE_UPDATE,
+  RMQ_Q_RPC,
   RMQ_Q_SERVICE_CREATE,
   RMQ_Q_SERVICE_UPDATE,
 } from "./config/rmq-config.js";
@@ -21,8 +23,19 @@ import { RabbitMQInboxHandler } from "./handlers/rmq-inbox.handler.js";
 
 const rmqClient = new RabbitMQClient(config.RABBITMQ_URL);
 const connection = rmqClient.connect();
+const rmqRpcServer = new RabbitMQRPCServer(
+  RMQ_Q_RPC,
+  {
+    test: () => {
+      console.log("rpc tested");
+      return "rpc tested";
+    },
+  },
+  connection,
+);
 
 export async function startRmq() {
+  await rmqRpcServer.runRPCServer();
   const setup = new RabbitMQSetup(connection);
   await setup.setupQueue(RMQ_Q_CUSTOMER_CREATE, RMQ_Q_RK_CUSTOMER_CREATE);
   await setup.setupQueue(RMQ_Q_CUSTOMER_UPDATE, RMQ_Q_RK_CUSTOMER_UPDATE);

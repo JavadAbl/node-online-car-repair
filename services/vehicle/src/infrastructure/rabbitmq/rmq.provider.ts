@@ -10,6 +10,7 @@ import { config } from "../config.js";
 import { RabbitMQClient } from "./client/rmq-client.js";
 import { RabbitMQConsumer } from "./client/rmq-consumer.js";
 import { RabbitMQPublisher } from "./client/rmq-publisher.js";
+import { RmqRpcClient } from "./client/rmq-rpc-client.js";
 import { RabbitMQSetup } from "./client/rmq-setup.js";
 import {
   RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
@@ -33,8 +34,10 @@ import { RabbitMQInboxHandler } from "./handlers/rmq-inbox.handler.js";
 
 const rmqClient = new RabbitMQClient(config.RABBITMQ_URL);
 const connection = rmqClient.connect();
+export const rmqRpcClient = new RmqRpcClient(connection);
 
 export async function startRmq() {
+  await rmqRpcClient.connect();
   const setup = new RabbitMQSetup(connection);
   await setup.setupQueue(RMQ_Q_CUSTOMER_CREATE, RMQ_Q_RK_CUSTOMER_CREATE);
   await setup.setupQueue(RMQ_Q_CUSTOMER_UPDATE, RMQ_Q_RK_CUSTOMER_UPDATE);
@@ -65,6 +68,7 @@ export async function startRmq() {
 }
 
 export async function stopRmq() {
+  await rmqRpcClient.close();
   await rmqClient.close();
 }
 
