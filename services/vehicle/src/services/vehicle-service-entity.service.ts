@@ -1,7 +1,11 @@
 import { VehicleServiceRepository } from "../infrastructure/database/Repository/vehicle-service.repository.js";
 import { vehicleRep } from "../infrastructure/database/Repository/vehicle.repository.js";
+import { RMQ_RPC_FACTOR_CREATE } from "../infrastructure/rabbitmq/config/rmq-config.js";
+import { rmqRpcClient } from "../infrastructure/rabbitmq/rmq.provider.js";
 import { GetManyReply } from "../schemas/common/get-many-reply.schema.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
+import { FactorCreate } from "../schemas/rpc-schemas/factor/factor-create.schema.js";
+import { Factor } from "../schemas/rpc-schemas/factor/factor.schema.js";
 import { VehicleServiceDto } from "../schemas/vehicle-service/reply/vehicle-service.schema.js";
 import { CreateVehicleService } from "../schemas/vehicle-service/request/create-vehicle-service.schema.js";
 import { UpdateVehicleService } from "../schemas/vehicle-service/request/update-vehicle-service.schema.js";
@@ -87,7 +91,25 @@ export class VehicleServiceEntityService {
   }
 
   async create(payload: CreateVehicleService) {
-    return this.vehicleServiceRep.create({ data: payload });
+    const { vehicleId, serviceId } = payload;
+    const vehicle = await vehicleRep.findAndCheckExistsBy(
+      { where: { id: vehicleId } },
+      "vehicleId",
+      vehicleId,
+    );
+
+    const factorCreatePayload: FactorCreate = {
+      customerId: vehicle!.customerId,
+      items: [{ quantity: 1, serviceId }],
+    };
+    const factorRes = await rmqRpcClient.request<Factor, FactorCreate>(
+      RMQ_RPC_FACTOR_CREATE,
+      factorCreatePayload,
+    );
+    if (!factorRes.success) throw new Error(factorRes.error);
+    const factor = factorRes.result;
+
+    return this.vehicleServiceRep.create({ data: { ...payload, factorId: factor.id } });
   }
 
   async update(id: number, payload: UpdateVehicleService) {

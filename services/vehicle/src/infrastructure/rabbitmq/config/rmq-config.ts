@@ -29,3 +29,6 @@ export const RMQ_Q_RK_AUTH_ROLE_PERMISSION_DELETE = "auth.api-role.permission.de
 
 //Publish
 export const RMQ_P_RK_PERMISSIONS = "auth.api-permission.sync";
+
+//RPC Calls
+export const RMQ_RPC_FACTOR_CREATE = { queue: "factor.api-rpc", rpcKey: "factor.create" };

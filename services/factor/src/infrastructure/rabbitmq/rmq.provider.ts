@@ -20,19 +20,11 @@ import {
   RMQ_Q_SERVICE_UPDATE,
 } from "./config/rmq-config.js";
 import { RabbitMQInboxHandler } from "./handlers/rmq-inbox.handler.js";
+import { RmqRpcHandlers } from "./handlers/rmq-rpc.handler.js";
 
 const rmqClient = new RabbitMQClient(config.RABBITMQ_URL);
 const connection = rmqClient.connect();
-const rmqRpcServer = new RabbitMQRPCServer(
-  RMQ_Q_RPC,
-  {
-    test: () => {
-      console.log("rpc tested");
-      return "rpc tested";
-    },
-  },
-  connection,
-);
+const rmqRpcServer = new RabbitMQRPCServer(RMQ_Q_RPC, RmqRpcHandlers.getHandlers(), connection);
 
 export async function startRmq() {
   await rmqRpcServer.runRPCServer();

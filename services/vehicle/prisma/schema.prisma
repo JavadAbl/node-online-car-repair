@@ -42,6 +42,7 @@ model VehicleService {
   mileageAtService Int
   description      String?
   status           VehicleServiceStatus @default(Pending)
+  factorId         Int
 
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt

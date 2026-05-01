@@ -1,5 +1,6 @@
 import { AmqpConnectionManager, ChannelWrapper } from "amqp-connection-manager";
 import { randomUUID } from "crypto";
+import { RpcReply } from "../../../schemas/common/rpc-reply.schema.js";
 
 type PendingRequest = {
   resolve: (value: any) => void;
@@ -44,7 +45,11 @@ export class RmqRpcClient {
     );
   }
 
-  async request(queue: string, rpcKey: string, payload: any, timeout = 5000) {
+  async request<R, T>(
+    rpcConfig: { queue: string; rpcKey: string },
+    payload: T,
+    timeout = 5000,
+  ): Promise<RpcReply<R>> {
     if (!this.channel || !this.replyQueue) {
       throw new Error("Not connected. Call connect() first.");
     }
@@ -62,10 +67,10 @@ export class RmqRpcClient {
     });
 
     // Publish the request
-    this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(payload)), {
+    this.channel.sendToQueue(rpcConfig.queue, Buffer.from(JSON.stringify(payload)), {
       correlationId,
       replyTo: this.replyQueue,
-      headers: { "x-rpc-key": rpcKey },
+      headers: { "x-rpc-key": rpcConfig.rpcKey },
     });
 
     return responsePromise;

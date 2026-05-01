@@ -1,23 +1,24 @@
 import { StatusCodes } from "http-status-codes";
-import { FactorItem } from "../infrastructure/database/generated/prisma/client.js";
-import { prisma } from "../infrastructure/database/prisma-provider.js";
+import { FactorItem, ServiceReference } from "../infrastructure/database/generated/prisma/client.js";
 import { GetManyQuery } from "../schemas/common/get-many-request.schema.js";
 import { CreateFactor } from "../schemas/factor/request/create-factor-schema.js";
 import { UpdateFactor } from "../schemas/factor/request/update-factor-schema.js";
-import { FactorDto } from "../types/dto/factor/factor-dto.js";
-import { Service } from "../types/event-types/service-event-types.js";
 import { AppError, NotFoundError } from "../utils/app.error.js";
-import { generateFactorNumber } from "../utils/app.utils.js";
+import { generateFactorNumber, percentOf } from "../utils/app.utils.js";
+import { FactorDto } from "../schemas/factor/response/factor.schema.js";
+import { serviceRep } from "../infrastructure/database/Repository/service.repository.js";
+import { factorRep } from "../infrastructure/database/Repository/factor.repository.js";
+import { GetManyReply } from "../schemas/common/get-many-reply.schema.js";
 import { buildFindManyArgs } from "../utils/prisma.util.js";
-import { serviceEntityService } from "./service-reference-service.js";
+import { customerRep } from "../infrastructure/database/Repository/customer.repository.js";
 
-function getMany(query: GetManyQuery<"Factor">) {
+function getMany(query: GetManyQuery<"Factor">): Promise<GetManyReply<FactorDto>> {
   const predicate = buildFindManyArgs(query, { searchableFields: ["factorNumber"] });
-  return prisma.factor.findMany(predicate);
+  return factorRep.findMany(predicate);
 }
 
 async function getById(id: number): Promise<FactorDto> {
-  const factor = await prisma.factor.findUnique({
+  const factor = await factorRep.findUnique({
     where: { id },
     include: { items: { omit: { factorId: true }, include: { service: { select: { name: true } } } } },
   });
@@ -28,21 +29,24 @@ async function getById(id: number): Promise<FactorDto> {
 async function create(payload: CreateFactor) {
   const { customerId, items, description } = payload;
 
+  await customerRep.findAndCheckExistsBy({ where: { id: customerId } }, "id", customerId);
   // Extract service IDs and validate
   const serviceIds = items.map((item) => item.serviceId);
   const serviceMap = await validateAndMapServices(serviceIds);
 
   // Calculate items and total price
-  const { itemsData: factorItemsData, totalPrice: factorTotalPrice } = calculateFactorItems(
-    items,
-    serviceMap,
-  );
+  const {
+    itemsData: factorItemsData,
+    totalPrice: factorTotalPrice,
+    totalDiscount,
+  } = calculateFactorItems(items, serviceMap);
 
   // Create Factor and Items in a single transaction
-  const factor = await prisma.factor.create({
+  const factor = await factorRep.create({
     data: {
       factorNumber: generateFactorNumber(),
       customerId,
+      totalDiscount,
       description,
       totalPrice: factorTotalPrice,
       items: { createMany: { data: factorItemsData } },
@@ -56,7 +60,7 @@ async function update(id: number, payload: UpdateFactor) {
   const { customerId, items, description } = payload;
 
   // Check if factor exists
-  const existingFactor = await prisma.factor.findUnique({ where: { id }, include: { items: true } });
+  const existingFactor = await factorRep.findUnique({ where: { id }, include: { items: true } });
 
   if (!existingFactor) throw new NotFoundError("Factor", "id", id);
 
@@ -73,7 +77,7 @@ async function update(id: number, payload: UpdateFactor) {
     );
 
     // Update factor with new items in a transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await factorRep.prismaClient.$transaction(async (tx) => {
       // Delete all existing items
       await tx.factorItem.deleteMany({ where: { factorId: id } });
 
@@ -105,7 +109,7 @@ async function update(id: number, payload: UpdateFactor) {
       updateData.description = description;
     }
 
-    const updatedFactor = await prisma.factor.update({
+    const updatedFactor = await factorRep.update({
       where: { id },
       data: updateData,
       include: { items: true },
@@ -116,16 +120,17 @@ async function update(id: number, payload: UpdateFactor) {
 }
 
 async function deleteById(id: number) {
-  const factor = await prisma.factor.findUnique({ where: { id }, select: { id: true } });
+  const factor = await factorRep.findUnique({ where: { id }, select: { id: true } });
   if (!factor) throw new NotFoundError("Factor", "id", id);
-  await prisma.factor.delete({ where: { id } });
+  await factorRep.remove({ where: { id } });
 }
 
 export const factorService = { getMany, getById, create, update, deleteById };
 
 // Shared helper functions--------------------------------------------------------------
-async function validateAndMapServices(serviceIds: number[]): Promise<Map<number, Service>> {
-  const services = await serviceEntityService.getManyRawParams({ where: { id: { in: serviceIds } } });
+async function validateAndMapServices(serviceIds: number[]): Promise<Map<number, ServiceReference>> {
+  const servicesRes = await serviceRep.findMany({ where: { id: { in: serviceIds } } });
+  const services = servicesRes.items;
 
   if (services.length !== serviceIds.length) {
     // Find missing service IDs
@@ -134,14 +139,15 @@ async function validateAndMapServices(serviceIds: number[]): Promise<Map<number,
     throw new AppError(`Services with IDs ${missingIds.join(", ")} not found`, StatusCodes.NOT_FOUND);
   }
 
-  return new Map<number, Service>(services.map((s) => [s.id, s]));
+  return new Map<number, ServiceReference>(services.map((s) => [s.id, s]));
 }
 
 function calculateFactorItems(
   items: Array<{ serviceId: number; quantity: number; description: string | null }>,
-  serviceMap: Map<number, Service>,
-): { itemsData: FactorItem[]; totalPrice: number } {
+  serviceMap: Map<number, ServiceReference>,
+): { itemsData: FactorItem[]; totalPrice: number; totalDiscount: number } {
   let factorTotalPrice = 0;
+  let factorTotalDiscount = 0;
 
   const factorItemsData = items.map((item) => {
     const service = serviceMap.get(item.serviceId);
@@ -149,7 +155,9 @@ function calculateFactorItems(
     if (!service) throw new NotFoundError("Service", "id", item.serviceId);
 
     const itemTotalPrice = service.price * item.quantity;
+    const itemTotalDiscount = percentOf(service.price, service.discountPercent) * item.quantity;
     factorTotalPrice += itemTotalPrice;
+    factorTotalDiscount += itemTotalDiscount;
 
     return {
       quantity: item.quantity,
@@ -160,5 +168,5 @@ function calculateFactorItems(
     } as FactorItem;
   });
 
-  return { itemsData: factorItemsData, totalPrice: factorTotalPrice };
+  return { itemsData: factorItemsData, totalPrice: factorTotalPrice, totalDiscount: factorTotalDiscount };
 }

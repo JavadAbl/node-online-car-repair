@@ -19,6 +19,7 @@ public
 # OS
 .DS_Store
 generated
+**/generated/
 
 # Tests
 /coverage

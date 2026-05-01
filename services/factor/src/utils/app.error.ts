@@ -19,7 +19,7 @@ export class AppError extends Error {
 
 export class NotFoundError extends AppError {
   constructor(entity: string, field: string, value: unknown, stack?: string) {
-    super(`${entity} not found: ${field} with value ${value}`, StatusCodes.NOT_FOUND, stack);
+    super(`${entity} ${field} with value ${value} not found`, StatusCodes.NOT_FOUND, stack);
     this.name = "NotFoundError";
   }
 }
@@ -31,11 +31,16 @@ export class ConflictError extends AppError {
   }
 }
 
+export class BadRequestError extends AppError {
+  constructor(message: string = "Bad Request", stack?: string) {
+    super(message, StatusCodes.BAD_REQUEST, stack);
+    this.name = "BadRequestError";
+  }
+}
+
 export class UnauthorizedError extends AppError {
-  constructor(entity?: string, message?: string, stack?: string) {
-    const baseMsg = message ?? "Unauthorized";
-    const fullMsg = entity ? `${baseMsg}: ${entity}` : baseMsg;
-    super(fullMsg, StatusCodes.UNAUTHORIZED, stack);
+  constructor(message = "Unauthorized", stack?: string) {
+    super(message, StatusCodes.UNAUTHORIZED, stack);
     this.name = "UnauthorizedError";
   }
 }

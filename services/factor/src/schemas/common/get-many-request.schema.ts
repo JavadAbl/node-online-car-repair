@@ -12,7 +12,7 @@ import { Prisma } from "../../infrastructure/database/generated/prisma/client.js
 
 export type GetManyQuery<T extends keyof Prisma.TypeMap["model"]> = {
   page?: number;
-  limit?: number;
+  pageSize?: number;
   sortBy?: keyof Prisma.TypeMap["model"][T]["fields"];
   sortOrder?: "asc" | "desc";
   search?: string;
@@ -20,7 +20,7 @@ export type GetManyQuery<T extends keyof Prisma.TypeMap["model"]> = {
 
 export const GetManyQuerySchema = z.object({
   page: z.string().optional(),
-  limit: z.string().optional(),
+  pageSize: z.string().optional(),
   sortBy: z.string().optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
   search: z.string().optional(),

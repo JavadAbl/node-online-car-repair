@@ -109,6 +109,7 @@ export const VehicleServiceScalarFieldEnum = {
   mileageAtService: 'mileageAtService',
   description: 'description',
   status: 'status',
+  factorId: 'factorId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vehicleId: 'vehicleId',

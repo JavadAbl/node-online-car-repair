@@ -1,8 +1,6 @@
-import { ServiceRepository } from "../../infrastructure/database/Repository/service.repository.js";
+import { serviceRep } from "../../infrastructure/database/Repository/service.repository.js";
 import { CreateServiceEvent } from "../../schemas/event-schemas/service/create-service.schema.js";
 import { UpdateServiceEvent } from "../../schemas/event-schemas/service/update-service.schema.js";
-
-const serviceRep = new ServiceRepository();
 
 async function createService(payload: CreateServiceEvent) {
   const { id } = payload;
@@ -16,4 +14,4 @@ async function updateService(payload: UpdateServiceEvent) {
   return await serviceRep.update({ select: { id: true }, where: { id }, data: body });
 }
 
-export const serviceService = { createService, updateService };
+export const serviceEntityService = { createService, updateService };

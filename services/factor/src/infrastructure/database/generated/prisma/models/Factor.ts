@@ -29,12 +29,14 @@ export type AggregateFactor = {
 export type FactorAvgAggregateOutputType = {
   id: number | null
   totalPrice: number | null
+  totalDiscount: number | null
   customerId: number | null
 }
 
 export type FactorSumAggregateOutputType = {
   id: number | null
   totalPrice: number | null
+  totalDiscount: number | null
   customerId: number | null
 }
 
@@ -44,6 +46,7 @@ export type FactorMinAggregateOutputType = {
   status: $Enums.FactorStatus | null
   issuedAt: Date | null
   totalPrice: number | null
+  totalDiscount: number | null
   description: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,6 +59,7 @@ export type FactorMaxAggregateOutputType = {
   status: $Enums.FactorStatus | null
   issuedAt: Date | null
   totalPrice: number | null
+  totalDiscount: number | null
   description: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -68,6 +72,7 @@ export type FactorCountAggregateOutputType = {
   status: number
   issuedAt: number
   totalPrice: number
+  totalDiscount: number
   description: number
   createdAt: number
   updatedAt: number
@@ -79,12 +84,14 @@ export type FactorCountAggregateOutputType = {
 export type FactorAvgAggregateInputType = {
   id?: true
   totalPrice?: true
+  totalDiscount?: true
   customerId?: true
 }
 
 export type FactorSumAggregateInputType = {
   id?: true
   totalPrice?: true
+  totalDiscount?: true
   customerId?: true
 }
 
@@ -94,6 +101,7 @@ export type FactorMinAggregateInputType = {
   status?: true
   issuedAt?: true
   totalPrice?: true
+  totalDiscount?: true
   description?: true
   createdAt?: true
   updatedAt?: true
@@ -106,6 +114,7 @@ export type FactorMaxAggregateInputType = {
   status?: true
   issuedAt?: true
   totalPrice?: true
+  totalDiscount?: true
   description?: true
   createdAt?: true
   updatedAt?: true
@@ -118,6 +127,7 @@ export type FactorCountAggregateInputType = {
   status?: true
   issuedAt?: true
   totalPrice?: true
+  totalDiscount?: true
   description?: true
   createdAt?: true
   updatedAt?: true
@@ -217,6 +227,7 @@ export type FactorGroupByOutputType = {
   status: $Enums.FactorStatus
   issuedAt: Date
   totalPrice: number
+  totalDiscount: number
   description: string | null
   createdAt: Date
   updatedAt: Date
@@ -251,7 +262,8 @@ export type FactorWhereInput = {
   factorNumber?: Prisma.StringFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.IntFilter<"Factor"> | number
+  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalDiscount?: Prisma.FloatFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -267,6 +279,7 @@ export type FactorOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -285,7 +298,8 @@ export type FactorWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.FactorWhereInput | Prisma.FactorWhereInput[]
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.IntFilter<"Factor"> | number
+  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalDiscount?: Prisma.FloatFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -301,6 +315,7 @@ export type FactorOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -320,7 +335,8 @@ export type FactorScalarWhereWithAggregatesInput = {
   factorNumber?: Prisma.StringWithAggregatesFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusWithAggregatesFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.IntWithAggregatesFilter<"Factor"> | number
+  totalPrice?: Prisma.FloatWithAggregatesFilter<"Factor"> | number
+  totalDiscount?: Prisma.FloatWithAggregatesFilter<"Factor"> | number
   description?: Prisma.StringNullableWithAggregatesFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Factor"> | Date | string
@@ -332,6 +348,7 @@ export type FactorCreateInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -346,6 +363,7 @@ export type FactorUncheckedCreateInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -358,7 +376,8 @@ export type FactorUpdateInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -372,7 +391,8 @@ export type FactorUncheckedUpdateInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -387,6 +407,7 @@ export type FactorCreateManyInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -397,7 +418,8 @@ export type FactorUpdateManyMutationInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,7 +430,8 @@ export type FactorUncheckedUpdateManyInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -427,6 +450,7 @@ export type FactorCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -436,6 +460,7 @@ export type FactorCountOrderByAggregateInput = {
 export type FactorAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
 }
 
@@ -445,6 +470,7 @@ export type FactorMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -457,6 +483,7 @@ export type FactorMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   description?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -466,6 +493,7 @@ export type FactorMinOrderByAggregateInput = {
 export type FactorSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
+  totalDiscount?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
 }
 
@@ -496,7 +524,7 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type IntFieldUpdateOperationsInput = {
+export type FloatFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
@@ -506,6 +534,14 @@ export type IntFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type FactorCreateNestedOneWithoutItemsInput = {
@@ -583,6 +619,7 @@ export type FactorCreateWithoutItemsInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -596,6 +633,7 @@ export type FactorUncheckedCreateWithoutItemsInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -623,7 +661,8 @@ export type FactorUpdateWithoutItemsInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -636,7 +675,8 @@ export type FactorUncheckedUpdateWithoutItemsInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -649,6 +689,7 @@ export type FactorCreateWithoutPaymentInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -662,6 +703,7 @@ export type FactorUncheckedCreateWithoutPaymentInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -689,7 +731,8 @@ export type FactorUpdateWithoutPaymentInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -702,7 +745,8 @@ export type FactorUncheckedUpdateWithoutPaymentInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -715,6 +759,7 @@ export type FactorCreateWithoutCustomerInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -728,6 +773,7 @@ export type FactorUncheckedCreateWithoutCustomerInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -769,7 +815,8 @@ export type FactorScalarWhereInput = {
   factorNumber?: Prisma.StringFilter<"Factor"> | string
   status?: Prisma.EnumFactorStatusFilter<"Factor"> | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
-  totalPrice?: Prisma.IntFilter<"Factor"> | number
+  totalPrice?: Prisma.FloatFilter<"Factor"> | number
+  totalDiscount?: Prisma.FloatFilter<"Factor"> | number
   description?: Prisma.StringNullableFilter<"Factor"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Factor"> | Date | string
@@ -782,6 +829,7 @@ export type FactorCreateManyCustomerInput = {
   status?: $Enums.FactorStatus
   issuedAt?: Date | string
   totalPrice: number
+  totalDiscount: number
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -791,7 +839,8 @@ export type FactorUpdateWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -804,7 +853,8 @@ export type FactorUncheckedUpdateWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -817,7 +867,8 @@ export type FactorUncheckedUpdateManyWithoutCustomerInput = {
   factorNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFactorStatusFieldUpdateOperationsInput | $Enums.FactorStatus
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalDiscount?: Prisma.FloatFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -860,6 +911,7 @@ export type FactorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   status?: boolean
   issuedAt?: boolean
   totalPrice?: boolean
+  totalDiscount?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -878,13 +930,14 @@ export type FactorSelectScalar = {
   status?: boolean
   issuedAt?: boolean
   totalPrice?: boolean
+  totalDiscount?: boolean
   description?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   customerId?: boolean
 }
 
-export type FactorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "factorNumber" | "status" | "issuedAt" | "totalPrice" | "description" | "createdAt" | "updatedAt" | "customerId", ExtArgs["result"]["factor"]>
+export type FactorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "factorNumber" | "status" | "issuedAt" | "totalPrice" | "totalDiscount" | "description" | "createdAt" | "updatedAt" | "customerId", ExtArgs["result"]["factor"]>
 export type FactorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerReferenceDefaultArgs<ExtArgs>
   payment?: boolean | Prisma.Factor$paymentArgs<ExtArgs>
@@ -905,6 +958,7 @@ export type $FactorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     status: $Enums.FactorStatus
     issuedAt: Date
     totalPrice: number
+    totalDiscount: number
     description: string | null
     createdAt: Date
     updatedAt: Date
@@ -1285,7 +1339,8 @@ export interface FactorFieldRefs {
   readonly factorNumber: Prisma.FieldRef<"Factor", 'String'>
   readonly status: Prisma.FieldRef<"Factor", 'FactorStatus'>
   readonly issuedAt: Prisma.FieldRef<"Factor", 'DateTime'>
-  readonly totalPrice: Prisma.FieldRef<"Factor", 'Int'>
+  readonly totalPrice: Prisma.FieldRef<"Factor", 'Float'>
+  readonly totalDiscount: Prisma.FieldRef<"Factor", 'Float'>
   readonly description: Prisma.FieldRef<"Factor", 'String'>
   readonly createdAt: Prisma.FieldRef<"Factor", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Factor", 'DateTime'>

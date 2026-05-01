@@ -1,8 +1,6 @@
-import { CustomerRepository } from "../../infrastructure/database/Repository/customer.repository.js";
+import { customerRep } from "../../infrastructure/database/Repository/customer.repository.js";
 import { CreateCustomerEvent } from "../../schemas/event-schemas/customer/create-customer.schema.js";
 import { UpdateCustomerEvent } from "../../schemas/event-schemas/customer/update-customer.schema.js";
-
-const customerRep = new CustomerRepository();
 
 async function createCustomer(payload: CreateCustomerEvent) {
   const { id } = payload;

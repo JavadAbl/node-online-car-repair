@@ -5,3 +5,7 @@ export async function pause(time: number) {
 export function generateFactorNumber() {
   return `FACTOR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
+
+export function percentOf(value: number, percent: number) {
+  return (value * percent) / 100;
+}

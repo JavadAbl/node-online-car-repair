@@ -27,7 +27,7 @@ export const vehicleApi = createApi({
         url: `${SERVICE_DOMAIN}/Vehicles/CustomerVehicles`,
         params: params ?? undefined,
       }),
-      providesTags: (result) => getProvidesTags("vehicles", result),
+      providesTags: (result) => getProvidesTags("vehicles", result?.items),
     }),
 
     GetVehicleById: builder.query<VehicleDto, number>({
@@ -69,7 +69,8 @@ export const vehicleApi = createApi({
         url: `${SERVICE_DOMAIN}/VehicleServices`,
         params: params ?? undefined,
       }),
-      providesTags: (result) => getProvidesTags("vehicle-services", result),
+      providesTags: (result) =>
+        getProvidesTags("vehicle-services", result?.items),
     }),
 
     GetVehicleServiceById: builder.query<VehicleServiceDto, number>({

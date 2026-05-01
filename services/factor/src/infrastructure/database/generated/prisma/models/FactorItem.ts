@@ -248,8 +248,8 @@ export type FactorItemWhereInput = {
   id?: Prisma.IntFilter<"FactorItem"> | number
   description?: Prisma.StringNullableFilter<"FactorItem"> | string | null
   quantity?: Prisma.IntFilter<"FactorItem"> | number
-  unitPrice?: Prisma.IntFilter<"FactorItem"> | number
-  totalPrice?: Prisma.IntFilter<"FactorItem"> | number
+  unitPrice?: Prisma.FloatFilter<"FactorItem"> | number
+  totalPrice?: Prisma.FloatFilter<"FactorItem"> | number
   factorId?: Prisma.IntFilter<"FactorItem"> | number
   serviceId?: Prisma.IntFilter<"FactorItem"> | number
   factor?: Prisma.XOR<Prisma.FactorScalarRelationFilter, Prisma.FactorWhereInput>
@@ -276,8 +276,8 @@ export type FactorItemWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.FactorItemWhereInput | Prisma.FactorItemWhereInput[]
   description?: Prisma.StringNullableFilter<"FactorItem"> | string | null
   quantity?: Prisma.IntFilter<"FactorItem"> | number
-  unitPrice?: Prisma.IntFilter<"FactorItem"> | number
-  totalPrice?: Prisma.IntFilter<"FactorItem"> | number
+  unitPrice?: Prisma.FloatFilter<"FactorItem"> | number
+  totalPrice?: Prisma.FloatFilter<"FactorItem"> | number
   factorId?: Prisma.IntFilter<"FactorItem"> | number
   serviceId?: Prisma.IntFilter<"FactorItem"> | number
   factor?: Prisma.XOR<Prisma.FactorScalarRelationFilter, Prisma.FactorWhereInput>
@@ -306,8 +306,8 @@ export type FactorItemScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
   description?: Prisma.StringNullableWithAggregatesFilter<"FactorItem"> | string | null
   quantity?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
-  unitPrice?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
-  totalPrice?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
+  unitPrice?: Prisma.FloatWithAggregatesFilter<"FactorItem"> | number
+  totalPrice?: Prisma.FloatWithAggregatesFilter<"FactorItem"> | number
   factorId?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
   serviceId?: Prisma.IntWithAggregatesFilter<"FactorItem"> | number
 }
@@ -334,8 +334,8 @@ export type FactorItemUncheckedCreateInput = {
 export type FactorItemUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factor?: Prisma.FactorUpdateOneRequiredWithoutItemsNestedInput
   service?: Prisma.ServiceReferenceUpdateOneRequiredWithoutFactorItemsNestedInput
 }
@@ -344,8 +344,8 @@ export type FactorItemUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factorId?: Prisma.IntFieldUpdateOperationsInput | number
   serviceId?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -363,16 +363,16 @@ export type FactorItemCreateManyInput = {
 export type FactorItemUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type FactorItemUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factorId?: Prisma.IntFieldUpdateOperationsInput | number
   serviceId?: Prisma.IntFieldUpdateOperationsInput | number
 }
@@ -575,8 +575,8 @@ export type FactorItemScalarWhereInput = {
   id?: Prisma.IntFilter<"FactorItem"> | number
   description?: Prisma.StringNullableFilter<"FactorItem"> | string | null
   quantity?: Prisma.IntFilter<"FactorItem"> | number
-  unitPrice?: Prisma.IntFilter<"FactorItem"> | number
-  totalPrice?: Prisma.IntFilter<"FactorItem"> | number
+  unitPrice?: Prisma.FloatFilter<"FactorItem"> | number
+  totalPrice?: Prisma.FloatFilter<"FactorItem"> | number
   factorId?: Prisma.IntFilter<"FactorItem"> | number
   serviceId?: Prisma.IntFilter<"FactorItem"> | number
 }
@@ -636,8 +636,8 @@ export type FactorItemCreateManyFactorInput = {
 export type FactorItemUpdateWithoutFactorInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   service?: Prisma.ServiceReferenceUpdateOneRequiredWithoutFactorItemsNestedInput
 }
 
@@ -645,8 +645,8 @@ export type FactorItemUncheckedUpdateWithoutFactorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -654,8 +654,8 @@ export type FactorItemUncheckedUpdateManyWithoutFactorInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   serviceId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -671,8 +671,8 @@ export type FactorItemCreateManyServiceInput = {
 export type FactorItemUpdateWithoutServiceInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factor?: Prisma.FactorUpdateOneRequiredWithoutItemsNestedInput
 }
 
@@ -680,8 +680,8 @@ export type FactorItemUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factorId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -689,8 +689,8 @@ export type FactorItemUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
-  unitPrice?: Prisma.IntFieldUpdateOperationsInput | number
-  totalPrice?: Prisma.IntFieldUpdateOperationsInput | number
+  unitPrice?: Prisma.FloatFieldUpdateOperationsInput | number
+  totalPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   factorId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -1114,8 +1114,8 @@ export interface FactorItemFieldRefs {
   readonly id: Prisma.FieldRef<"FactorItem", 'Int'>
   readonly description: Prisma.FieldRef<"FactorItem", 'String'>
   readonly quantity: Prisma.FieldRef<"FactorItem", 'Int'>
-  readonly unitPrice: Prisma.FieldRef<"FactorItem", 'Int'>
-  readonly totalPrice: Prisma.FieldRef<"FactorItem", 'Int'>
+  readonly unitPrice: Prisma.FieldRef<"FactorItem", 'Float'>
+  readonly totalPrice: Prisma.FieldRef<"FactorItem", 'Float'>
   readonly factorId: Prisma.FieldRef<"FactorItem", 'Int'>
   readonly serviceId: Prisma.FieldRef<"FactorItem", 'Int'>
 }

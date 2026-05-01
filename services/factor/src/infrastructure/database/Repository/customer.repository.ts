@@ -1,7 +1,9 @@
 import { Repository } from "./common-repository.js";
 
-export class CustomerRepository extends Repository<"customerReference"> {
+class CustomerRepository extends Repository<"customerReference"> {
   constructor() {
     super("customerReference");
   }
 }
+
+export const customerRep = new CustomerRepository();

@@ -26,7 +26,7 @@ export const serviceApi = createApi({
         url: `${SERVICE_DOMAIN}/Service`,
         params: params ?? undefined,
       }),
-      providesTags: (result) => getProvidesTags("services", result),
+      providesTags: (result) => getProvidesTags("services", result?.items),
     }),
 
     GetServiceById: builder.query<ServiceDto, number>({
@@ -77,7 +77,7 @@ export const serviceApi = createApi({
         url: `${SERVICE_DOMAIN}/Technicians`,
         params: params ?? undefined,
       }),
-      providesTags: (result) => getProvidesTags("technicians", result),
+      providesTags: (result) => getProvidesTags("technicians", result?.items),
     }),
 
     GetTechnicianById: builder.query<TechnicianDto, number>({

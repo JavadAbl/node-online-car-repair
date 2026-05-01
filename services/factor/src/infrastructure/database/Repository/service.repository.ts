@@ -1,7 +1,9 @@
 import { Repository } from "./common-repository.js";
 
-export class ServiceRepository extends Repository<"serviceReference"> {
+class ServiceRepository extends Repository<"serviceReference"> {
   constructor() {
     super("serviceReference");
   }
 }
+
+export const serviceRep = new ServiceRepository();
