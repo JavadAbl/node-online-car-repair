@@ -1,18 +1,17 @@
-FROM node:24.12-alpine
+FROM node:24.16-alpine
 
 WORKDIR /app
 
-COPY package.json .
-COPY prisma .
+# Copy package files first to leverage Docker cache
+COPY package*.json ./
 
-ENV DATABASE_URL="mysql://admin:admin@notifications-db:3306/notifications_db"
-
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
-
-RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD [ "npm","run","dev" ]
+# Use nodemon or tsx watch for development
+CMD ["npm", "run", "dev"]

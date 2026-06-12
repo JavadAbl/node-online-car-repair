@@ -1,83 +1,179 @@
 services:
-  # --- Services ---
-  # notification-service:
-  #   build: ./services/notification
-  #   volumes:
-  #     - ./services/notification/src:/app/src
-  #     - /app/node_modules
-  #   restart: always
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - notifications-db
-  #   # command: sh -c "npx prisma db push"
-
-  # --- REDIS ---
+  # --- INFRASTRUCTURE ---
 
   redis:
-    image: redis:alpine3.22
+    image: redis:7-alpine
     container_name: redis
     restart: always
-    command: ["redis-server", "--loglevel", "warning", "--requirepass", "redis"]
-    ports:
-      - "6379:6379"
+    command: ["redis-server", "--loglevel", "warning", "--requirepass", "redis_dev_pass"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - app_network
 
-  # --- MYSQL (Single instance for all services) ---
   mysql:
-    image: mysql:8.0
+    image: mysql:8.0.36
     container_name: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      # Pre-create all databases
-      # MYSQL_DATABASE: keycloak_db,vehicle_db,factor_db,customers_db,notifications_db
-    #  MYSQL_USER: admin
-    # MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: root_dev_pass
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_pass"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
 
-  # --- KEYCLOAK ---
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:26.4
-  #   container_name: keycloak
-  #   restart: always
-  #   environment:
-  #     KEYCLOAK_ADMIN: admin
-  #     KEYCLOAK_ADMIN_PASSWORD: admin
-  #     KC_DB: mysql
-  #     KC_DB_URL: jdbc:mysql://mysql:3306/keycloak_db?allowPublicKeyRetrieval=true&useSSL=false
-  #     KC_DB_USERNAME: root
-  #     KC_DB_PASSWORD: root
-  #     KC_HOSTNAME: localhost
-  #     KC_HOSTNAME_PORT: 8080
-  #     KC_HOSTNAME_STRICT: false
-  #     KC_HOSTNAME_STRICT_HTTPS: false
-  #     KC_HTTP_ENABLED: true
-  #   command: start-dev
-  #   depends_on:
-  #     - mysql
-  #   ports:
-  #     - "8080:8080"
-
-  # --- RABBITMQ ---
   rabbitmq:
     image: rabbitmq:4.0-management-alpine
     container_name: rabbitmq
     hostname: rabbitmq-host
     restart: always
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: app_user
+      RABBITMQ_DEFAULT_PASS: app_password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
 
-  # --- PHPMYADMIN ---
+  # --- MICROSERVICES (Internal Only - No Ports Exposed) ---
+
+  auth-service:
+    build: ./services/auth
+    container_name: auth-service
+    restart: always
+    env_file:
+      - ./services/auth/.env.docker
+    volumes:
+      - ./services/auth/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app_network
+
+  customer-service:
+    build: ./services/customer
+    container_name: customer-service
+    restart: always
+    env_file:
+      - ./services/customer/.env.docker
+    volumes:
+      - ./services/customer/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  factor-service:
+    build: ./services/factor
+    container_name: factor-service
+    restart: always
+    env_file:
+      - ./services/factor/.env.docker
+    volumes:
+      - ./services/factor/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  vehicle-service:
+    build: ./services/vehicle
+    container_name: vehicle-service
+    restart: always
+    env_file:
+      - ./services/vehicle/.env.docker
+    volumes:
+      - ./services/vehicle/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  notification-service:
+    build: ./services/notification
+    container_name: notification-service
+    restart: always
+    env_file:
+      - ./services/notification/.env.docker
+    volumes:
+      - ./services/notification/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  # Renamed from 'service' to 'core-service' for clarity
+  core-service:
+    build: ./services/core-service
+    container_name: core-service
+    restart: always
+    env_file:
+      - ./services/core-service/.env.docker
+    volumes:
+      - ./services/core-service/src:/app/src
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  # --- GATEWAY (The ONLY Public Entry Point) ---
+
+  gateway:
+    build: ./services/gateway
+    container_name: gateway
+    restart: always
+    env_file:
+      - ./services/gateway/.env.docker
+    volumes:
+      - ./services/gateway/src:/app/src
+      - /app/node_modules
+    ports:
+      - "3000:3000" # Exposed to host
+    depends_on:
+      - auth-service
+      - customer-service
+      - factor-service
+      - vehicle-service
+      - notification-service
+      - core-service
+    networks:
+      - app_network
+
+  # --- UTILS ---
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.3
     container_name: phpmyadmin
@@ -85,14 +181,23 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_USER: root
-      PMA_PASSWORD: root
+      PMA_PASSWORD: root_dev_pass
     ports:
       - "8082:80"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
 
 volumes:
   mysql_data:
     driver: local
   rabbitmq_data:
     driver: local
+  redis_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

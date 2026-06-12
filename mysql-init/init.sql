@@ -7,7 +7,7 @@ CREATE DATABASE IF NOT EXISTS auth_db;
 CREATE DATABASE IF NOT EXISTS service_db;
 
 -- (Optional) Create a user and grant access to all specific databases
-CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'admin';
+CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
 GRANT ALL PRIVILEGES ON vehicle_db.* TO 'admin'@'%';
 GRANT ALL PRIVILEGES ON factor_db.* TO 'admin'@'%';
 GRANT ALL PRIVILEGES ON customers_db.* TO 'admin'@'%';
