@@ -45,6 +45,7 @@ generated
 .env.production.local
 .env.local
 *.env
+.env.docker
 
 # temp directory
 .temp

@@ -12,10 +12,10 @@ import cors from "@fastify/cors";
 
 export const app = fastify({
   logger: false,
-  https: {
+  /*  https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
-  },
+  }, */
   routerOptions: { caseSensitive: false, ignoreTrailingSlash: false },
 });
 
@@ -45,7 +45,7 @@ async function setupFastifyPlugins() {
     done(null, payload);
   });
 
-  app.register(fastifyJwt, { secret: "your-secret-key-for-hashing" });
+  app.register(fastifyJwt, { secret: appConfig.JWT_ACCESS_SECRET });
 
   app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {
     try {

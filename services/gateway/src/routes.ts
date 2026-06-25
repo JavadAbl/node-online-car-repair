@@ -1,28 +1,15 @@
+//routes.ts
 import fp from "fastify-plugin";
 import { FastifyPluginAsync } from "fastify";
 import fastifyReplyFrom from "@fastify/reply-from";
 import { SERVICES } from "./services.js";
 
-/**
- * This plugin creates a scope for each service.
- * Inside this scope, HTTP/2 is enabled globally via 'base'.
- */
 export const serviceProxyPlugin: FastifyPluginAsync = fp(
   async (app) => {
     for (const [serviceName, baseUrl] of Object.entries(SERVICES)) {
       // Create a new context (scope) for this specific service
       await app.register(async function (serviceInstance) {
-        // 1. Register reply-from with HTTP/2 enabled for this scope
-        await serviceInstance.register(fastifyReplyFrom, {
-          base: baseUrl, // Fixed base for this service
-          http2: true, // HTTP/2 enabled globally here
-          disableCache: true,
-
-          // Global error handler for this upstream
-          onError: (reply, error) => {
-            app.log.error({ error, service: serviceName }, "Upstream error");
-          },
-        });
+        await serviceInstance.register(fastifyReplyFrom, { base: baseUrl, disableCache: true });
 
         // ---------------------------------------------------------
         // 2. The Main Gateway Routes (Existing)
@@ -33,7 +20,6 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
           { preValidation: [serviceInstance.auth] },
           async (request, reply) => {
             const wildcardValue = request.params["*"];
-
             const jwtPayload = request.user as any;
 
             return reply.from(wildcardValue, {
@@ -43,38 +29,15 @@ export const serviceProxyPlugin: FastifyPluginAsync = fp(
                 "x-user-role": jwtPayload.role,
                 "x-user-permissions": jwtPayload.permissions,
               }),
+
+              onError: (reply, error) => {
+                // If the specific microservice instance is down, return a clean error
+                app.log.error(`Proxy error to ${serviceName}: ${error.error.message}`);
+                reply.code(503).send({ error: `${serviceName} is currently unavailable` });
+              },
             });
           },
         );
-
-        /*     serviceInstance.all(
-          `/${serviceName}/:tail(.*)`,
-          // { preValidation: [serviceInstance.auth] },
-          async (request, reply) => {
-            const tail = (request.params as { tail?: string }).tail ?? "";
-            const dest = tail ? `/${tail}` : "/";
-            console.log(tail, dest);
-
-            const jwtPayload = request.user as any;
-
-            return reply.from(dest, {
-              rewriteRequestHeaders: (req, headers) => ({
-                ...headers,
-                "x-user-id": jwtPayload.userId,
-                "x-user-role": jwtPayload.role,
-                "x-user-permissions": jwtPayload.permissions,
-              }),
-            });
-          },
-        );
- */
-        /*  serviceInstance.all(
-          `/${serviceName}`,
-          { preValidation: [serviceInstance.auth] },
-          async (request, reply) => {
-            reply.redirect(`/${serviceName}/`);
-          },
-        ); */
 
         //Public routes
         if (serviceName === "auth-api") {

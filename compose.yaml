@@ -5,7 +5,14 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: always
-    command: ["redis-server", "--loglevel", "warning", "--requirepass", "redis_dev_pass"]
+    command:
+      [
+        "redis-server",
+        "--loglevel",
+        "warning",
+        "--requirepass",
+        "redis_dev_pass",
+      ]
     volumes:
       - redis_data:/data
     networks:
@@ -21,7 +28,17 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_pass"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-proot_dev_pass",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -50,7 +67,6 @@ services:
 
   auth-service:
     build: ./services/auth
-    container_name: auth-service
     restart: always
     env_file:
       - ./services/auth/.env.docker
@@ -67,7 +83,6 @@ services:
 
   customer-service:
     build: ./services/customer
-    container_name: customer-service
     restart: always
     env_file:
       - ./services/customer/.env.docker
@@ -82,7 +97,6 @@ services:
 
   factor-service:
     build: ./services/factor
-    container_name: factor-service
     restart: always
     env_file:
       - ./services/factor/.env.docker
@@ -99,7 +113,6 @@ services:
 
   vehicle-service:
     build: ./services/vehicle
-    container_name: vehicle-service
     restart: always
     env_file:
       - ./services/vehicle/.env.docker
@@ -114,7 +127,6 @@ services:
 
   notification-service:
     build: ./services/notification
-    container_name: notification-service
     restart: always
     env_file:
       - ./services/notification/.env.docker
@@ -131,15 +143,13 @@ services:
     networks:
       - app_network
 
-  # Renamed from 'service' to 'core-service' for clarity
-  core-service:
-    build: ./services/core-service
-    container_name: core-service
+  product-service:
+    build: ./services/product
     restart: always
     env_file:
-      - ./services/core-service/.env.docker
+      - ./services/product/.env.docker
     volumes:
-      - ./services/core-service/src:/app/src
+      - ./services/product/src:/app/src
       - /app/node_modules
     depends_on:
       mysql:
@@ -153,15 +163,14 @@ services:
 
   gateway:
     build: ./services/gateway
-    container_name: gateway
     restart: always
     env_file:
       - ./services/gateway/.env.docker
     volumes:
       - ./services/gateway/src:/app/src
       - /app/node_modules
-    ports:
-      - "3000:3000" # Exposed to host
+    expose:
+      - "3000" # This just documents that the container listens on 3000 internally
     depends_on:
       - auth-service
       - customer-service
@@ -171,6 +180,22 @@ services:
       - core-service
     networks:
       - app_network
+
+nginx:
+  image: nginx:alpine
+  container_name: nginx
+  restart: always
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    - ./certs:/etc/nginx/certs:ro
+  depends_on:
+    - gateway
+  networks:
+    - app_network
 
   # --- UTILS ---
 
