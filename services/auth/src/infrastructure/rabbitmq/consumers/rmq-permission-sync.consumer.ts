@@ -14,7 +14,6 @@ export class RabbitMQPermissionSyncConsumer {
 
           try {
             const payload = validatePermissionSync(JSON.parse(content as unknown as string));
-            console.log(232331);
 
             await authService.syncPermission(payload);
             channel.ack(msg);

@@ -72,7 +72,7 @@ services:
       - ./services/auth/.env.docker
     volumes:
       - ./services/auth/src:/app/src
-      - /app/node_modules
+      - auth_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -88,7 +88,7 @@ services:
       - ./services/customer/.env.docker
     volumes:
       - ./services/customer/src:/app/src
-      - /app/node_modules
+      - customer_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -170,32 +170,32 @@ services:
       - ./services/gateway/src:/app/src
       - /app/node_modules
     expose:
-      - "3000" # This just documents that the container listens on 3000 internally
+      - "3000"
     depends_on:
       - auth-service
       - customer-service
       - factor-service
       - vehicle-service
       - notification-service
-      - core-service
+      - product-service
     networks:
       - app_network
 
-nginx:
-  image: nginx:alpine
-  container_name: nginx
-  restart: always
-  ports:
-    - "80:80"
-    - "443:443"
-  volumes:
-    # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    - ./nginx/conf.d:/etc/nginx/conf.d:ro
-    - ./certs:/etc/nginx/certs:ro
-  depends_on:
-    - gateway
-  networks:
-    - app_network
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      # - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - gateway
+    networks:
+      - app_network
 
   # --- UTILS ---
 
@@ -221,6 +221,10 @@ volumes:
   rabbitmq_data:
     driver: local
   redis_data:
+    driver: local
+  auth_node_modules:
+    driver: local
+  customer_node_modules:
     driver: local
 
 networks:
