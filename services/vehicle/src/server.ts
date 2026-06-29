@@ -13,11 +13,11 @@ import { userContextPlugin } from "./plugins/user-context.plugin.js";
 
 export const app = fastify({
   logger: false,
-  http2: true,
+  /* http2: true,
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
-  },
+  }, */
   caseSensitive: false,
   ajv: { customOptions: { removeAdditional: "all" } },
 });

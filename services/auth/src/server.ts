@@ -12,11 +12,11 @@ export const app = fastify({
   logger: false,
   caseSensitive: false,
   ignoreTrailingSlash: true,
-  http2: true,
+  /*  http2: true,
   https: {
     key: readFileSync(join(process.cwd(), "localhost-private.key")),
     cert: readFileSync(join(process.cwd(), "localhost-cert.pem")),
-  },
+  }, */
 });
 
 export async function startHttpServer() {

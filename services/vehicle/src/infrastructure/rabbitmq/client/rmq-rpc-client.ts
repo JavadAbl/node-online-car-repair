@@ -19,7 +19,7 @@ export class RmqRpcClient {
 
   async connect() {
     // Exclusive reply queue
-    const { queue } = await this.channel.assertQueue("", { exclusive: true });
+    const { queue } = await this.channel.assertQueue("", { exclusive: true, durable: false });
     this.replyQueue = queue;
 
     // Single shared consumer for all replies
@@ -48,7 +48,7 @@ export class RmqRpcClient {
   async request<R, T>(
     rpcConfig: { queue: string; rpcKey: string },
     payload: T,
-    timeout = 5000,
+    timeout = 10000,
   ): Promise<RpcReply<R>> {
     if (!this.channel || !this.replyQueue) {
       throw new Error("Not connected. Call connect() first.");

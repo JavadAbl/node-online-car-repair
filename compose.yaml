@@ -1,3 +1,5 @@
+name: node-microservice-ecommerce
+
 services:
   # --- INFRASTRUCTURE ---
 
@@ -55,6 +57,8 @@ services:
       RABBITMQ_DEFAULT_PASS: app_password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_running"]
       interval: 10s
@@ -72,7 +76,7 @@ services:
       - ./services/auth/.env.docker
     volumes:
       - ./services/auth/src:/app/src
-      - auth_node_modules:/app/node_modules
+      - ./services/auth/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -88,7 +92,7 @@ services:
       - ./services/customer/.env.docker
     volumes:
       - ./services/customer/src:/app/src
-      - customer_node_modules:/app/node_modules
+      - ./services/customer/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -102,7 +106,7 @@ services:
       - ./services/factor/.env.docker
     volumes:
       - ./services/factor/src:/app/src
-      - /app/node_modules
+      - ./services/factor/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -118,7 +122,7 @@ services:
       - ./services/vehicle/.env.docker
     volumes:
       - ./services/vehicle/src:/app/src
-      - /app/node_modules
+      - ./services/vehicle/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -132,7 +136,7 @@ services:
       - ./services/notification/.env.docker
     volumes:
       - ./services/notification/src:/app/src
-      - /app/node_modules
+      - ./services/notification/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -150,7 +154,7 @@ services:
       - ./services/product/.env.docker
     volumes:
       - ./services/product/src:/app/src
-      - /app/node_modules
+      - ./services/product/node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -168,7 +172,7 @@ services:
       - ./services/gateway/.env.docker
     volumes:
       - ./services/gateway/src:/app/src
-      - /app/node_modules
+      - ./services/gateway/node_modules:/app/node_modules
     expose:
       - "3000"
     depends_on:
@@ -215,16 +219,30 @@ services:
     networks:
       - app_network
 
+        # --- MONITORING ---
+
+  dozzle:
+    image: amir20/dozzle:v10
+    container_name: dozzle
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "8083:8080"
+    environment:
+      # Optional: Enable real-time log streaming for better performance
+      DOZZLE_ENABLE_ACTIONS: "true"
+      # Optional: Filter to only show containers on this project's network
+      DOZZLE_FILTER: "label=com.docker.compose.project=node-microservice-ecommerce"
+    networks:
+      - app_network
+
 volumes:
   mysql_data:
     driver: local
   rabbitmq_data:
     driver: local
   redis_data:
-    driver: local
-  auth_node_modules:
-    driver: local
-  customer_node_modules:
     driver: local
 
 networks:

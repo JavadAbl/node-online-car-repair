@@ -15,12 +15,12 @@ import fastifyStatic from '@fastify/static';
 
 async function bootstrap() {
   const httpsOptions = {
-    http2: true,
+    /*  http2: true,
     https: {
       key: readFileSync(join(process.cwd(), 'localhost-private.key')),
       cert: readFileSync(join(process.cwd(), 'localhost-cert.pem')),
       allowHTTP1: true, // Optional: fall back to HTTP/1.1
-    },
+    }, */
   };
 
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(httpsOptions));

@@ -10,7 +10,6 @@ async function run() {
   await startHttpServer();
   await startRmq();
   await startCacheClient();
-  console.log(123);
 
   try {
   } catch (error: any) {

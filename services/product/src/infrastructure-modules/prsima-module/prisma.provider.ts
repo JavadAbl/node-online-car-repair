@@ -11,7 +11,7 @@ export class PrismaProvider extends PrismaClient {
 
     const adapter = new PrismaMariaDb({
       ssl: false,
-      host: config.HTTP_HOST,
+      host: config.DATABASE_HOST,
       user: config.DATABASE_USERNAME,
       password: config.DATABASE_PASSWORD,
       database: config.DATABASE_NAME,

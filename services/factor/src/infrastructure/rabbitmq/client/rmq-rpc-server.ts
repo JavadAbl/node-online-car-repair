@@ -14,7 +14,9 @@ export class RabbitMQRPCServer {
   }
 
   async runRPCServer() {
-    await this.channel.assertQueue(this.rpcQueueName, { durable: false, autoDelete: false });
+    await this.channel.waitForConnect();
+    await this.channel.assertQueue(this.rpcQueueName, { messageTtl: 10000 });
+
     console.log(" [*] RPC server waiting for messages...");
     this.process();
   }

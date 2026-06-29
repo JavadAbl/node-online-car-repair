@@ -16,8 +16,7 @@
     "prettier": "prettier --write src",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "prisma:studio": "prisma studio"
   },
   "keywords": [
     "authentication",
