@@ -1,4 +1,4 @@
-export const SERVICE_PERMISSION = 'service' as const;
+export const SERVICE_PERMISSION = 'product' as const;
 
 export const generateActionPermissionName = (controller: string, action: string) =>
   `${SERVICE_PERMISSION}.${controller}.${action}`;

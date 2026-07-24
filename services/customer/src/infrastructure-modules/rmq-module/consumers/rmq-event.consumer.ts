@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Nack, RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { AmqpConnection, Nack, RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {
   RMQ_EXCHANGE,
   RMQ_Q_AUTH_ROLE_PERMISSION_CREATE,
@@ -23,14 +23,14 @@ export class RabbitMQEventConsumer extends RabbitMQCommonConsumer {
     super(inboxRep);
   }
 
-  /*  @RabbitRPC({ exchange: RMQ_EXCHANGE, routingKey: 'test', queue: 'customer.test' })
+  @RabbitRPC({ exchange: RMQ_EXCHANGE, routingKey: 'test', queue: 'customer.test' })
   getUser(data: any) {
     // Process the request
     console.log(data);
 
     // Return response - this will be sent back to the caller
-    return data;
-  } */
+    return { id: 1 };
+  }
 
   @RabbitSubscribe(
     generateQueueConfig(RMQ_Q_AUTH_USER_CREATE, [

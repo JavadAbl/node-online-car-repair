@@ -15,10 +15,29 @@ import { UpdateCustomerDto } from '../dto/request/update-customer.dto';
 import { CustomerDto } from '../dto/response/customer.dto';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
 import { Auth } from 'src/common/decorators/auth.decorator';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { RMQ_EXCHANGE } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 
 @Controller('customers')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    private readonly customerService: CustomerService,
+    private readonly amqpConnection: AmqpConnection,
+  ) {}
+
+  @Get('test')
+  async test() {
+    const response = await this.amqpConnection.request<{ id: number }>({
+      exchange: RMQ_EXCHANGE,
+      routingKey: 'test',
+      payload: { username: 'testuser' },
+      timeout: 10000,
+    });
+
+    console.log(response);
+
+    return response;
+  }
 
   @Auth(CustomerController.name, CustomerController.prototype.getManyCustomers.name)
   @Get()

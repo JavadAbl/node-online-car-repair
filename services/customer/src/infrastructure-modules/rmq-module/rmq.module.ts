@@ -40,6 +40,6 @@ import { RabbitMQEventConsumer } from './consumers/rmq-event.consumer';
     }),
   ],
   providers: [RabbitMQPublisher, RabbitMQEventConsumer],
-  exports: [RabbitMQPublisher],
+  exports: [RabbitMQPublisher, RabbitMQModule],
 })
 export class RmqModule {}

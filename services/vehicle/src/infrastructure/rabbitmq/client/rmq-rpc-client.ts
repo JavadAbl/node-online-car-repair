@@ -19,6 +19,7 @@ export class RmqRpcClient {
 
   async connect() {
     // Exclusive reply queue
+    await this.channel.waitForConnect();
     const { queue } = await this.channel.assertQueue("", { exclusive: true, durable: false });
     this.replyQueue = queue;
 
