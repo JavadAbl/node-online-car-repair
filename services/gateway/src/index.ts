@@ -50,8 +50,8 @@ async function setupFastifyPlugins() {
   app.decorate("auth", async function (request: FastifyRequest, reply: FastifyReply) {
     try {
       await request.jwtVerify();
-    } catch (err) {
-      reply.send(err);
+    } catch (err: any) {
+      return reply.code(401).send({ error: "Unauthorized", message: err?.message ?? "Invalid token" });
     }
   });
 

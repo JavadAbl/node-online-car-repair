@@ -11,6 +11,10 @@ export class AuthRepository {
     return this.prismaProvider.rolePermission.findFirst(criteria);
   }
 
+  findManyRolePermission(criteria: Prisma.RolePermissionFindManyArgs) {
+    return this.prismaProvider.rolePermission.findMany(criteria);
+  }
+
   createRolePermission(criteria: Prisma.RolePermissionCreateArgs) {
     return this.prismaProvider.rolePermission.create(criteria);
   }

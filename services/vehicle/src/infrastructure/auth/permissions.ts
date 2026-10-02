@@ -1,4 +1,6 @@
-import { PermissionType } from "../database/generated/prisma/enums.js";
+// Permission name constants used by route definitions (single source of truth
+// for this service's action-level permissions; the full registry including
+// controller/service levels is derived from these at startup).
 
 export const SERVICE_PERMISSION = "vehicle" as const;
 
@@ -17,27 +19,9 @@ export const VehicleControllerPermissions = {
 const VehicleServiceController = `${SERVICE_PERMISSION}.VehicleServiceController`;
 export const VehicleServiceControllerPermissions = {
   GetAllVehicleServices: VehicleServiceController + ".GetAllVehicleServices",
+  GetVehicleServicesByVehicleId: VehicleServiceController + ".GetVehicleServicesByVehicleId",
   GetVehicleServiceById: VehicleServiceController + ".GetVehicleServiceById",
   CreateVehicleService: VehicleServiceController + ".CreateVehicleService",
   UpdateVehicleService: VehicleServiceController + ".UpdateVehicleService",
   DeleteVehicleService: VehicleServiceController + ".DeleteVehicleService",
 };
-
-export const APP_PERMISSIONS: { name: string; type: PermissionType }[] = [
-  { type: PermissionType.Service, name: SERVICE_PERMISSION },
-
-  { type: PermissionType.Controller, name: VehicleController },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.GetAllVehicles },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.GetCustomerVehicles },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.GetVehicleById },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.CreateVehicle },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.UpdateVehicle },
-  { type: PermissionType.Action, name: VehicleControllerPermissions.DeleteVehicle },
-
-  { type: PermissionType.Controller, name: VehicleServiceController },
-  { type: PermissionType.Action, name: VehicleServiceControllerPermissions.GetAllVehicleServices },
-  { type: PermissionType.Action, name: VehicleServiceControllerPermissions.GetVehicleServiceById },
-  { type: PermissionType.Action, name: VehicleServiceControllerPermissions.CreateVehicleService },
-  { type: PermissionType.Action, name: VehicleServiceControllerPermissions.UpdateVehicleService },
-  { type: PermissionType.Action, name: VehicleServiceControllerPermissions.DeleteVehicleService },
-] as const;

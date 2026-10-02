@@ -31,17 +31,20 @@ export const vehicleServiceRoutes: FastifyPluginAsync = async (app) => {
   // Get vehicle service by context----------------------------------------------
   app.get<GetVehicleServicesRouteType>(
     "/",
-    /*  {
+    {
       schema: GetVehicleServicesSchema,
       auth: { permission: VehicleServiceControllerPermissions.GetAllVehicleServices },
-    }, */
+    },
     (request, reply) => vehicleServiceEntityService.getManyByCustomerId(request.user.id, request.query),
   );
 
   // Get vehicle service by vehicle id----------------------------------------------
   app.get<GetVehicleServicesByVehicleIdRouteType>(
     "/Vehicle/:id",
-    { schema: GetVehicleServicesByVehicleIdSchema },
+    {
+      schema: GetVehicleServicesByVehicleIdSchema,
+      auth: { permission: VehicleServiceControllerPermissions.GetVehicleServicesByVehicleId },
+    },
     (request, reply) =>
       vehicleServiceEntityService.getManyByVehicleId(request.user.id, request.params.id, request.query),
   );

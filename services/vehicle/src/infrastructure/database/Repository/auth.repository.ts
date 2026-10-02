@@ -6,6 +6,10 @@ export class AuthRepository {
     return prisma.rolePermission.findFirst(criteria);
   }
 
+  findManyRolePermission(criteria: Prisma.RolePermissionFindManyArgs) {
+    return prisma.rolePermission.findMany(criteria);
+  }
+
   createRolePermission(criteria: Prisma.RolePermissionCreateArgs) {
     return prisma.rolePermission.create(criteria);
   }
@@ -15,14 +19,19 @@ export class AuthRepository {
   }
 
   async syncPermissions(permissions: { name: string; type: PermissionType }[]) {
+    const serviceEntry = permissions.find((p) => p.type === "Service");
+    if (!serviceEntry) throw new Error("Permission sync payload is missing its Service entry");
+
     // Use a transaction to ensure data integrity
     await prisma.$transaction(async (tx) => {
       // 1. Extract the names of the incoming permissions
       const incomingNames = permissions.map((p) => p.name);
 
-      // 2. Delete permissions that are NOT in the incoming array
-      // This handles the requirement: "if there is extra permission that doesnt exists in array should be removed"
-      await tx.permission.deleteMany({ where: { name: { notIn: incomingNames } } });
+      // 2. Delete THIS service's permissions that are no longer declared.
+      //    (The startsWith prefix guard keeps the deletion scoped to this service.)
+      await tx.permission.deleteMany({
+        where: { name: { notIn: incomingNames, startsWith: serviceEntry.name } },
+      });
 
       // 3. Upsert (Update or Insert) the incoming permissions
       // This handles the requirement: "new permissions should be inserted"

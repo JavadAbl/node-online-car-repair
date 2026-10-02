@@ -52,7 +52,7 @@ export async function startHttpServer() {
 
   app.setErrorHandler(errorHandler);
 
-  app.get("/health", async () => {
+  app.get("/health", { config: { public: true } }, async () => {
     return { status: "OK", timestamp: new Date().toISOString() };
   });
 

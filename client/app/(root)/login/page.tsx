@@ -63,7 +63,7 @@ export default function AuthPage() {
       );
       //   router.replace("/");
       window.location.replace("/");
-    } else toast.error(res.error?.data?.message);
+    } else toast.error((res.error as any)?.data?.message ?? "Verification failed");
   };
 
   return (

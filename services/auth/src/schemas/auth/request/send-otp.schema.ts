@@ -8,7 +8,7 @@ export const SendOtpSchema: FastifySchema = {
   body: SendOtpBodySchema,
   description: "Send an otp",
   tags: ["Auth"],
-  response: { [StatusCodes.OK]: Type.Null() },
+  response: { [StatusCodes.NO_CONTENT]: Type.Null() },
 };
 
 export type SendOtpDto = Static<typeof SendOtpBodySchema>;

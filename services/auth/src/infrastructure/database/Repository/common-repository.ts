@@ -83,4 +83,18 @@ export class Repository<TModel extends keyof typeof prisma> {
   ): Promise<Prisma.Result<(typeof prisma)[TModel], TArgs, "delete">> {
     return (prisma[this.model] as any).delete(args);
   }
+
+  // Bulk writes (used by refresh-token rotation/revocation and sweeps).
+
+  async updateMany<TArgs extends Prisma.Args<(typeof prisma)[TModel], "updateMany">>(
+    args: TArgs,
+  ): Promise<Prisma.BatchPayload> {
+    return (prisma[this.model] as any).updateMany(args);
+  }
+
+  async deleteMany<TArgs extends Prisma.Args<(typeof prisma)[TModel], "deleteMany">>(
+    args?: TArgs,
+  ): Promise<Prisma.BatchPayload> {
+    return (prisma[this.model] as any).deleteMany(args);
+  }
 }

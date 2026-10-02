@@ -1,24 +1,28 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { FastifyRequest } from "fastify";
 
 declare module "fastify" {
   interface FastifyRequest {
     user: UserContext;
   }
 
-  interface FastifyInstance {
-    auth: (
-      request: FastifyRequest,
-      reply: FastifyReply,
-      required: { roles?: string[]; permissions?: string[] },
-    ) => Promise<void>;
+  interface RouteShorthandOptions {
+    /** Route access rule for the authorization guard. */
+    auth?: {
+      /** Required action-level permission, e.g. "auth.UserController.SetUserRole". */
+      permission?: string;
+      /** Any authenticated identity passes; no permission required. */
+      authenticatedOnly?: boolean;
+    };
   }
 
-  interface RouteShorthandOptions {
-    auth?: { roles?: string[]; permissions?: string[] };
+  interface FastifyContextConfig {
+    /** Marks a route as public (skips the authorization guard). */
+    public?: boolean;
   }
 }
 
 export interface UserContext {
   id: number;
   role: string;
+  permissions: string[];
 }

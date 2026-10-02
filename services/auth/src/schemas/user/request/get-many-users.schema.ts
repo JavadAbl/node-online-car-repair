@@ -6,7 +6,7 @@ import { StatusCodes } from "http-status-codes";
 
 export const GetManyUsersSchema: FastifySchema = {
   querystring: GetManyQuerySchema,
-  description: "Set an user permission",
+  description: "List users (paginated; searchable by mobile; includes each user's role)",
   tags: ["User"],
   response: { [StatusCodes.OK]: Type.Array(UserSchema) },
 };

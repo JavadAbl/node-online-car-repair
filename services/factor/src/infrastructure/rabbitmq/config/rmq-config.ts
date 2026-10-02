@@ -20,5 +20,8 @@ export const RMQ_Q_RK_SERVICE_UPDATE = "service.api-service.update";
 export const RMQ_Q_VEHICLE_SERVICE_CREATE = "factor.api-vehicle.service.create";
 export const RMQ_Q_RK_VEHICLE_SERVICE_CREATE = "service.api-vehicle.service.create";
 
+//Publish
+export const RMQ_P_RK_PERMISSIONS = "auth.api-permission.sync";
+
 //RPC KEYS
 export const RMQ_RPC_KEY_FACTOR_CREATE = "factor.create";

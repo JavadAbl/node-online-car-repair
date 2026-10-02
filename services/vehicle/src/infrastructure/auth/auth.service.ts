@@ -1,14 +1,18 @@
 import { RolePermissionCreateEvent } from "../../schemas/event-schemas/auth/create-role-permission.schema.js";
 import { RolePermissionDeleteEvent } from "../../schemas/event-schemas/auth/delete-role-permission.schema.js";
-import { Role } from "../database/generated/prisma/enums.js";
+import { PermissionType, Role } from "../database/generated/prisma/enums.js";
 import { authRep } from "../database/Repository/auth.repository.js";
 import { RMQ_P_RK_PERMISSIONS } from "../rabbitmq/config/rmq-config.js";
 import { rmqPublisher } from "../rabbitmq/rmq.provider.js";
-import { APP_PERMISSIONS } from "./permissions.js";
 
-async function setupPermissions() {
-  await authRep.syncPermissions(APP_PERMISSIONS);
-  await rmqPublisher.publishNoLog(RMQ_P_RK_PERMISSIONS, APP_PERMISSIONS);
+/**
+ * Syncs this service's permission registry (derived from route definitions,
+ * see plugins/auth.plugin.ts + infrastructure/auth/auth-utils.ts) into the
+ * local catalog and publishes it to the auth service's global catalog.
+ */
+async function setupPermissions(permissions: { name: string; type: PermissionType }[]) {
+  await authRep.syncPermissions(permissions);
+  await rmqPublisher.publishNoLog(RMQ_P_RK_PERMISSIONS, permissions);
 }
 
 function createRolePermission(rolePermissionEvent: RolePermissionCreateEvent) {
@@ -21,13 +25,22 @@ function deleteRolePermission(rolePermissionEvent: RolePermissionDeleteEvent) {
   return authRep.deleteRolePermission({ where: { id } });
 }
 
-function findIncludedRolePermission(role: Role, permissionName: string) {
-  return authRep.findFirstRolePermission({ where: { role, permissionName: { contains: permissionName } } });
+/**
+ * All permission names granted to a role in this service's local mirror.
+ * Used by the guard as the fresh fallback when the token carries no matching claim.
+ */
+async function getRoleGrantNames(role: string) {
+  const roleStr = role as Role;
+  const rows = await authRep.findManyRolePermission({
+    where: { role: roleStr },
+    select: { permissionName: true },
+  });
+  return rows.map((row) => row.permissionName);
 }
 
 export const authService = {
   setupPermissions,
   createRolePermission,
   deleteRolePermission,
-  findIncludedRolePermission,
+  getRoleGrantNames,
 };

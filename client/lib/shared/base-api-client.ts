@@ -8,9 +8,10 @@ import { Mutex } from "async-mutex";
 import { RootState } from "./store";
 import { authActions } from "../features/auth/auth-slice";
 import { toast } from "sonner";
-import { HttpStatusCode } from "axios";
 
-const BASE_ADDRESS = "https://localhost:3000/";
+// Single configuration point for the API base address.
+// NEXT_PUBLIC_ prefix makes Next.js inline it into the client bundle.
+const BASE_ADDRESS = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://localhost:3000/";
 
 // Create a mutex to prevent multiple refresh requests at the same time
 const mutex = new Mutex();
@@ -20,10 +21,7 @@ const rawBaseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
     const token = state?.auth?.accessToken;
-    console.log("before set token");
-
     if (token) {
-      console.log("after set token");
       headers.set("Authorization", `Bearer ${token}`);
     }
     return headers;
@@ -44,14 +42,12 @@ export const baseApi: BaseQueryFn<
   if (!result.error) {
     if (
       // POST with Created (201)
-      (meta?.request.method === "POST" &&
-        meta?.response?.status === HttpStatusCode.Created) ||
+      (meta?.request.method === "POST" && meta?.response?.status === 201) ||
       // PUT or PATCH with OK (200)
       ((meta?.request.method === "PUT" || meta?.request.method === "PATCH") &&
-        meta?.response?.status === HttpStatusCode.Ok) ||
+        meta?.response?.status === 200) ||
       // DELETE with No Content (204)
-      (meta?.request.method === "DELETE" &&
-        meta?.response?.status === HttpStatusCode.NoContent)
+      (meta?.request.method === "DELETE" && meta?.response?.status === 204)
     )
       toast.success("Operation successful");
   }
@@ -69,46 +65,34 @@ export const baseApi: BaseQueryFn<
           const state = api.getState() as RootState;
           const refreshToken = state?.auth?.refreshToken;
 
-          // 3. If we have a refresh token, try to get a new access token
+          // 3. If we have a refresh token, try to get a new access token.
+          //    The server rotates it on every use; a rejected token means
+          //    it was already rotated (replay), revoked, or expired.
           if (refreshToken) {
-            // NOTE: Adjust the URL and parameters to match your Keycloak/OpenID configuration
-            // This example assumes a standard OAuth2 Token Endpoint (often at /protocol/openid-connect/token for Keycloak)
-            const refreshResult = await fetch(
-              `${BASE_ADDRESS}Auth-Api/Auth/Refresh`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  refreshToken,
-                }),
-              },
-            );
-            console.log(1);
+            const refreshResult = await fetch(`${BASE_ADDRESS}Auth-Api/Auth/Refresh`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ refreshToken }),
+            });
 
             if (refreshResult.ok) {
               const data = await refreshResult.json();
-              console.log(2);
-              // 4. Update the Redux store with the new access token
+              // 4. Update the Redux store with the new token pair
               api.dispatch(
                 authActions.setTokens({
                   accessToken: data.accessToken,
                   refreshToken: data.refreshToken,
                 }),
               );
-              console.log(343);
               // 5. Retry the original request with the new token
               // The rawBaseQuery will pick up the new token from the state via prepareHeaders
               result = await rawBaseQuery(args, api, extraOptions);
             } else {
-              console.log(2);
-              // Refresh failed (token expired or invalid) -> Logout
+              // Refresh failed (rotated/replayed, revoked or expired) -> drop the session
               api.dispatch(authActions.logout());
             }
           } else {
-            console.log(3);
-            // No refresh token in state -> Logout
+            // No refresh token in state -> drop the session
             api.dispatch(authActions.logout());
           }
         } finally {
@@ -126,7 +110,6 @@ export const baseApi: BaseQueryFn<
     if (result.error && result.error.status !== 401)
       if (api.endpoint !== "walletPaymentVerify") {
         let message = "Server error";
-        console.log(result.error);
 
         if (typeof result.error.data === "string") {
           message = result.error.data;
@@ -137,16 +120,15 @@ export const baseApi: BaseQueryFn<
         ) {
           message = (result.error.data as any).message;
         } else {
-          if (result?.error?.data?.detail)
-            message = result?.error?.data?.detail;
+          const detail = (result.error.data as { detail?: string } | undefined)?.detail;
+          if (detail) message = detail;
         }
 
         toast.error(message);
       }
 
-    // If we still have a 401 error after attempting refresh, logout
+    // If we still have a 401 error after attempting refresh, drop the session
     if (result.error && result.error.status === 401) {
-      console.log(4);
       api.dispatch(authActions.logout());
     }
   }

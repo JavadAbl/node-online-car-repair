@@ -1,15 +1,21 @@
 import fp from "fastify-plugin";
 import { FastifyPluginAsync } from "fastify";
-import { BadRequestError } from "../utils/app-error.js";
+import { parseClaims } from "../infrastructure/auth/auth-utils.js";
 
 const userContextPluginHandler: FastifyPluginAsync = async (fastify) => {
   fastify.decorateRequest("user");
 
   fastify.addHook("onRequest", async (request) => {
-    const userId: string = request.headers["x-user-id"] as string;
-    const role: string = request.headers["x-user-role"] as string;
+    const header = (key: string) => {
+      const value = request.headers[key];
+      return Array.isArray(value) ? value[0] : value;
+    };
 
-    request.user = { id: Number(userId), role };
+    request.user = {
+      id: Number(header("x-user-id")),
+      role: header("x-user-role") ?? "",
+      permissions: parseClaims(header("x-user-permissions")),
+    };
   });
 };
 

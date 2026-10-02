@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { authApi } from "../features/auth/auth-api";
+import { permissionsApi } from "../features/auth/permissions-api";
 import {
   authListenerMiddleware,
   authReducer,
@@ -14,6 +15,7 @@ export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [authApi.reducerPath]: authApi.reducer,
+    [permissionsApi.reducerPath]: permissionsApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [vehicleApi.reducerPath]: vehicleApi.reducer,
 
@@ -25,6 +27,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(authApi.middleware)
+      .concat(permissionsApi.middleware)
       .concat(serviceApi.middleware)
       .concat(vehicleApi.middleware)
       .prepend(authListenerMiddleware.middleware),

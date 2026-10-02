@@ -8,19 +8,19 @@ import { Value } from "@sinclair/typebox/value";
 import { rmqRpcClient } from "../infrastructure/rabbitmq/rmq.provider.js";
 
 export const testRoutes: FastifyPluginAsync = async (app) => {
-  app.get("/a/a/a", (request, reply) => {
-    return rmqRpcClient.request("factor.api-rpc", "test", {});
+  app.get("/a/a/a", { config: { public: true } }, (request, reply) => {
+    return rmqRpcClient.request({ queue: "factor.api-rpc", rpcKey: "test" }, {});
   });
 
-  app.get("/a", { auth: { roles: ["Admin"] } }, (request, reply) => {
+  app.get("/a", { config: { public: true } }, (request, reply) => {
     return { x: 1 };
   });
 
-  app.post<CreateVehicleRouteType>("/", { schema: CreateVehicleSchema }, (request, reply) => {
+  app.post<CreateVehicleRouteType>("/", { config: { public: true } }, (request, reply) => {
     console.log(request.body);
     const x = { vin: "1", x: 2 };
     Value.Clean(CreateVehicleBodySchema, x);
-    return x;
+    return x as any;
   });
 };
 

@@ -9,6 +9,8 @@ import { PrismaModule } from './infrastructure-modules/prsima-module/prisma.modu
 import { CronModule } from './infrastructure-modules/cron-module/cron.module';
 import { AuthModule } from './infrastructure-modules/auth-module/auth.module';
 import { QueueModule } from './infrastructure-modules/queue-module/queue.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   imports: [
@@ -35,6 +37,6 @@ import { QueueModule } from './infrastructure-modules/queue-module/queue.module'
     TechnicianModule,
     ServiceModule,
   ],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}

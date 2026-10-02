@@ -14,7 +14,6 @@ import { CustomerService } from '../services/customer.service';
 import { UpdateCustomerDto } from '../dto/request/update-customer.dto';
 import { CustomerDto } from '../dto/response/customer.dto';
 import { GetManyQuery, GetManyQueryType } from 'src/common/contract/query/get-many-query';
-import { Auth } from 'src/common/decorators/auth.decorator';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { RMQ_EXCHANGE } from 'src/infrastructure-modules/rmq-module/config/rmq.config';
 
@@ -39,7 +38,8 @@ export class CustomerController {
     return response;
   }
 
-  @Auth(CustomerController.name, CustomerController.prototype.getManyCustomers.name)
+  // Guarded by default (APP_GUARD): permission customer.CustomerController.getManyCustomers
+  // is derived from the class/handler names; only @Public() would opt out.
   @Get()
   getManyCustomers(@Query() query: GetManyQuery): Promise<CustomerDto[]> {
     return this.customerService.getMany(query as GetManyQueryType<'Customers'>);

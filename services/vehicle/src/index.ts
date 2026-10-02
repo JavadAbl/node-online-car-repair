@@ -5,6 +5,8 @@ import { startCronClient } from "./infrastructure/node-cron/cron.provider.js";
 import { queueGracefulShutdown, startQueues } from "./infrastructure/queue/queue-provider.js";
 import { startRmq, stopRmq } from "./infrastructure/rabbitmq/rmq.provider.js";
 import { startHttpServer } from "./server.js";
+import { collectedRoutePermissions } from "./plugins/auth.plugin.js";
+import { derivePermissionList } from "./infrastructure/auth/auth-utils.js";
 
 async function run() {
   validateConfig();
@@ -13,7 +15,7 @@ async function run() {
   await startRmq();
   startQueues();
   startCronClient();
-  authService.setupPermissions();
+  authService.setupPermissions(derivePermissionList("vehicle", [...collectedRoutePermissions]));
   try {
   } catch (error) {
     console.error(error);

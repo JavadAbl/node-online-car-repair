@@ -15,14 +15,25 @@ import Link from "next/link";
 import ThemeModeToggle from "../../../components/shared/utils/theme-mode-toggle";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/use-state";
 import { authActions } from "@/lib/features/auth/auth-slice";
+import { useLogoutMutation } from "@/lib/features/auth/auth-api";
 import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const dis = useAppDispatch();
-  const { isAuth, user } = useAppSelector((s) => s.auth);
+  const { isAuth, user, refreshToken } = useAppSelector((s) => s.auth);
   const router = useRouter();
+  const [mutateLogout] = useLogoutMutation();
 
   const handleLogout = async () => {
+    // Best-effort server-side revocation of the refresh token; the local
+    // session is dropped regardless of the outcome.
+    if (refreshToken) {
+      try {
+        await mutateLogout({ refreshToken }).unwrap();
+      } catch {
+        /* token already dead/revoked — nothing left to revoke */
+      }
+    }
     dis(authActions.logout());
     router.replace("/");
   };

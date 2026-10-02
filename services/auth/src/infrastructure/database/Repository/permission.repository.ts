@@ -1,8 +1,8 @@
 import { Repository } from "./common-repository.js";
 
-class PermissionRepository extends Repository<"permission"> {
+class PermissionRepository extends Repository<"permissionReference"> {
   constructor() {
-    super("permission");
+    super("permissionReference");
   }
 }
 

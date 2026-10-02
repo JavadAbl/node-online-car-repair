@@ -44,3 +44,10 @@ export class UnauthorizedError extends AppError {
     this.name = "UnauthorizedError";
   }
 }
+
+export class TooManyRequestsError extends AppError {
+  constructor(message = "Too Many Requests", stack?: string) {
+    super(message, StatusCodes.TOO_MANY_REQUESTS, stack);
+    this.name = "TooManyRequestsError";
+  }
+}

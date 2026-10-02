@@ -24,6 +24,8 @@ import {
   Mail,
   Users,
   Shield,
+  ShieldCheck,
+  UserCog,
   ChevronDown,
   ArrowLeft,
 } from "lucide-react";
@@ -47,6 +49,13 @@ const menuData: MenuGroup[] = [
     items: [
       { title: "Service", url: "/admin/service/service-entity", icon: Home },
       { title: "Technician", url: "/admin/service/technician", icon: User },
+    ],
+  },
+  {
+    title: "Access Control",
+    items: [
+      { title: "Roles & Permissions", url: "/admin/roles", icon: ShieldCheck },
+      { title: "Users & Permissions", url: "/admin/users", icon: UserCog },
     ],
   },
   {

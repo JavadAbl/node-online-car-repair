@@ -1,12 +1,14 @@
 import fs from "fs";
 import path from "path";
 
-// Define the configuration with the same logic as your source file
+// Define the configuration with the same logic as your source file.
+// NEXT_PUBLIC_* variables are inlined into the client bundle by Next.js.
+// The default matches the dev gateway (compose exposes it through nginx).
 const config = {
   NODE_ENV: "development",
   HTTP_PORT: 3024,
   HTTP_HOST: "localhost",
-  BACKEND_URL: "https://localhost:3000/",
+  NEXT_PUBLIC_API_BASE_URL: "https://localhost:3000/",
 };
 
 // 1. Convert the object into a string format for .env (KEY=VALUE)
@@ -19,10 +21,10 @@ const envContent = Object.entries(config)
   })
   .join("\n");
 
-// 2. Define the path to the .env file in the current directory
+// 2. Define the path for the .env file in the current directory
 const envFilePath = path.join(process.cwd(), ".env");
 
-// 3. Write the content to the file
+// 3. Write the content
 fs.writeFile(envFilePath, envContent, (err) => {
   if (err) {
     console.error("Error writing to .env file:", err);

@@ -30,8 +30,22 @@ export const authApi = createApi({
         body,
       }),
     }),
+
+    // Server-side logout: revokes the presented refresh token so it can never
+    // be replayed, even after the local session state is gone.
+    logout: builder.mutation<void, { refreshToken: string | null }>({
+      query: (body) => ({
+        url: "Auth-Api/Auth/Logout",
+        method: "POST",
+        body: { refreshToken: body.refreshToken },
+      }),
+    }),
   }),
 });
 
-export const { useLazyGetUserQuery, useSendOtpMutation, useVerifyOtpMutation } =
-  authApi;
+export const {
+  useLazyGetUserQuery,
+  useSendOtpMutation,
+  useVerifyOtpMutation,
+  useLogoutMutation,
+} = authApi;

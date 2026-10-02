@@ -4,12 +4,13 @@ import {
   generateControllerPermissionName,
   SERVICE_PERMISSION,
 } from './auth.utils';
-import { PermissionType, Role } from 'src/generated/prisma/enums';
+import { PermissionType } from 'src/generated/prisma/enums';
 import { AuthRepository } from './auth.repository';
 import { RabbitMQPublisher } from '../rmq-module/rmq-publisher.service';
 import { RMQ_P_RK_PERMISSIONS } from '../rmq-module/config/rmq.config';
 import { RolePermissionCreateEvent } from '../rmq-module/contracts/role-permission-create-event';
 import { RolePermissionDeleteEvent } from '../rmq-module/contracts/role-permission-delete-event';
+import { Role } from 'src/generated/prisma/enums';
 
 @Injectable()
 export class AuthService {
@@ -53,9 +54,15 @@ export class AuthService {
     return this.authRep.deleteRolePermission({ where: { id } });
   }
 
-  findIncludedRolePermission(role: Role, permissionName: string) {
-    return this.authRep.findFirstRolePermission({
-      where: { role, permissionName: { contains: permissionName } },
+  /**
+   * All permission names granted to a role in this service's local mirror.
+   * Used by the guard as the fresh fallback when the token carries no matching claim.
+   */
+  async getRoleGrantNames(role: string) {
+    const rows = await this.authRep.findManyRolePermission({
+      where: { role: role as Role },
+      select: { permissionName: true },
     });
+    return rows.map((row) => row.permissionName);
   }
 }

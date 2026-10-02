@@ -19,6 +19,30 @@ model User {
   updatedAt DateTime @updatedAt()
 
   userPermissions UserPermission[]
+  refreshTokens   RefreshToken[]
+}
+
+// Persisted refresh-token records (one row per issued refresh token).
+// Enables rotation, revocation and replay (reuse) detection — see doc.md §3.2.
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  // JWT id of the refresh token this row tracks (unique per issued token).
+  jti       String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  // Mirrors the JWT `exp` (used by the expired-row sweeper, not by verification).
+  expiresAt  DateTime
+  // Null while the token is live; set when rotated or revoked.
+  revokedAt  DateTime?
+  // Set on rotation: the jti of the token that replaced this one.
+  replacedByJti String?
+  // Audit context captured at issuance.
+  ip        String?
+  userAgent String?
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model PermissionReference {

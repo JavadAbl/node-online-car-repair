@@ -7,6 +7,7 @@ import { setupRouter } from "./routes/router.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { userContextPlugin } from "./plugins/user-context.plugin.js";
+import { authPlugin } from "./plugins/auth.plugin.js";
 
 export const app = fastify({
   logger: false,
@@ -40,7 +41,11 @@ export async function startHttpServer() {
     });
   }
 
-  app.register(userContextPlugin);
+  await app.register(userContextPlugin);
+
+  // Authorization guard. Registered AFTER swagger (so swagger routes stay exempt)
+  // and BEFORE the routers (so every route must declare an access rule).
+  await app.register(authPlugin);
 
   app.setErrorHandler(errorHandler);
 

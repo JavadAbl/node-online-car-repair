@@ -18,7 +18,7 @@
 
 #### فناوری‌ها
 
-NestJS، Express.js، Fastify، Next.js، React، TypeScript، RabbitMQ، Redis، Prisma ORM، PostgreSQL، RTK Query، React Hook Form، Shadcn/UI
+NestJS، Express.js، Fastify، Next.js، React، TypeScript، RabbitMQ، Redis، Prisma ORM، MySQL، RTK Query، React Hook Form، Shadcn/UI
 
 ---
 
@@ -44,4 +44,4 @@ Full-stack platform for providing online automobile repair and maintenance servi
 
 #### Technologies
 
-NestJS, Express.js, Fastify, Next.js, React, TypeScript, RabbitMQ, Redis, Prisma ORM, PostgreSQL, RTK Query, React Hook Form, Shadcn/UI
+NestJS, Express.js, Fastify, Next.js, React, TypeScript, RabbitMQ, Redis, Prisma ORM, MySQL, RTK Query, React Hook Form, Shadcn/UI
