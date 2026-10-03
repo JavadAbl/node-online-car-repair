@@ -69,4 +69,4 @@ Notes:
 
 * The client container runs `next dev` with hot reload (source is bind-mounted; `node_modules` lives in the `client_node_modules` named volume and is installed on first boot).
 * The browser-facing API address is injected as `NEXT_PUBLIC_API_BASE_URL=http://localhost/` in `compose.yaml`; a local `client/.env` cannot override it inside the container.
-* HTTPS (port 443) is mapped but no TLS listener/certificate is configured yet — the stack currently serves plain HTTP.
+* The stack intentionally serves plain **HTTP** for development; the 443 port mapping is left in place for a future TLS setup.
