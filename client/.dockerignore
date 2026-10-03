@@ -1,0 +1,26 @@
+# Dependencies (installed at runtime into the named volume)
+node_modules
+
+# Build output & caches
+.next
+out
+build
+*.tsbuildinfo
+next-env.d.ts
+
+# Env files (compose injects NEXT_PUBLIC_API_BASE_URL via the environment block)
+.env
+.env.*
+!.env.example
+
+# Logs & debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# VCS / IDE
+.git
+.vscode
+.idea
+.DS_Store

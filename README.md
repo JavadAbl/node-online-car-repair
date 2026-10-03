@@ -45,3 +45,28 @@ Full-stack platform for providing online automobile repair and maintenance servi
 #### Technologies
 
 NestJS, Express.js, Fastify, Next.js, React, TypeScript, RabbitMQ, Redis, Prisma ORM, MySQL, RTK Query, React Hook Form, Shadcn/UI
+
+---
+
+## Running with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Nginx is the single public entry point on port **80**: it routes the microservice API prefixes to the gateway and everything else to the Next.js client, so the browser talks to one origin (no CORS).
+
+| URL | What |
+| --- | --- |
+| http://localhost | Next.js client |
+| http://localhost/auth-api/... (also customer/factor/vehicle/product/notification-api) | Gateway → microservices |
+| http://localhost/api-docs/auth-api/swagger.json | Swagger specs (raw JSON) |
+| http://localhost:15672 | RabbitMQ management (app_user / app_password) |
+| http://localhost:8082 | phpMyAdmin |
+| http://localhost:8083 | Dozzle (container logs) |
+
+Notes:
+
+* The client container runs `next dev` with hot reload (source is bind-mounted; `node_modules` lives in the `client_node_modules` named volume and is installed on first boot).
+* The browser-facing API address is injected as `NEXT_PUBLIC_API_BASE_URL=http://localhost/` in `compose.yaml`; a local `client/.env` cannot override it inside the container.
+* HTTPS (port 443) is mapped but no TLS listener/certificate is configured yet — the stack currently serves plain HTTP.

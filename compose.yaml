@@ -185,6 +185,31 @@ services:
     networks:
       - app_network
 
+  # --- CLIENT (Next.js Web App - internal, served through Nginx) ---
+
+  client:
+    build: ./client
+    container_name: client
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      # Browser-facing API address: nginx is the single public origin on port 80
+      # and routes /{service}-api/* + /api-docs/* to the gateway, everything else
+      # (pages, /_next/* assets, HMR) to this container.
+      # NOTE: environment beats a bind-mounted .env file, so a stale host
+      # client/.env cannot break the container.
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost/
+    volumes:
+      - ./client:/app
+      - client_node_modules:/app/node_modules
+    expose:
+      - "3000"
+    depends_on:
+      - gateway
+    networks:
+      - app_network
+
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -198,6 +223,7 @@ services:
       # - ./certs:/etc/nginx/certs:ro
     depends_on:
       - gateway
+      - client
     networks:
       - app_network
 
@@ -243,6 +269,8 @@ volumes:
   rabbitmq_data:
     driver: local
   redis_data:
+    driver: local
+  client_node_modules:
     driver: local
 
 networks:
