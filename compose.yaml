@@ -194,6 +194,13 @@ services:
     environment:
       - NODE_ENV=development
       - NEXT_TELEMETRY_DISABLED=1
+      # Always install from the official registry, even if the host has an
+      # .npmrc pointing at a local mirror (e.g. hub.megan.ir). The bind mount
+      # (./client:/app) carries a host client/.npmrc into the container where
+      # npm would pick it up as project config; env vars take precedence over
+      # any .npmrc, so mirror sync gaps (404 on specific tarballs) can't break
+      # the container. Swap the URL if you need a different registry.
+      - NPM_CONFIG_REGISTRY=https://registry.npmjs.org/
       # Browser-facing API address: nginx is the single public origin on port 80
       # and routes /{service}-api/* + /api-docs/* to the gateway, everything else
       # (pages, /_next/* assets, HMR) to this container.

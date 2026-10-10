@@ -13,6 +13,11 @@ next-env.d.ts
 .env.*
 !.env.example
 
+# Host npm config (registry mirrors like hub.megan.ir) — the container must
+# install from the registry pinned in compose (NPM_CONFIG_REGISTRY), not a
+# host-local mirror that may be missing tarballs.
+.npmrc
+
 # Logs & debug
 npm-debug.log*
 yarn-debug.log*
