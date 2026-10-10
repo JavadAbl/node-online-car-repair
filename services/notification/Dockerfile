@@ -8,5 +8,8 @@ COPY package*.json ./
 
 COPY . .
 
-CMD ["sh", "-c", "npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
+# Wipe any stale/partial Prisma output (e.g. untracked leftovers in the
+# bind-mounted src from previous runs) so 'prisma generate' is idempotent
+# and never refuses with "exists and is not empty".
+CMD ["sh", "-c", "rm -rf src/infrastructure/database/generated/prisma && npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
 
