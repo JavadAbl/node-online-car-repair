@@ -1,7 +1,7 @@
 # Alpine is safe here: Prisma 7 engines are WASM (schema_engine_bg.wasm /
 # query_compiler_*_wasm — platform-free) and the whole dependency tree is
 # pure JS (verified: no .node/.so native modules anywhere).
-FROM node:24.16-alpine
+FROM node:24.18-alpine
 
 WORKDIR /app
 
