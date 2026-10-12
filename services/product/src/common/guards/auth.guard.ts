@@ -27,6 +27,16 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // RabbitMQ subscribers (context type 'rmq'): the global APP_GUARD wraps
+    // @RabbitSubscribe handlers too. There getRequest() returns the raw
+    // message payload — no HTTP headers, no caller identity — and reading
+    // them would crash the consumer (TypeError on x-user-id). These
+    // messages are internal service-to-service events (user-create
+    // replication, role-permission mirrors) published by our own services
+    // over the RMQ exchange: trusted system traffic. Authorization applies
+    // to HTTP routes only — let every non-HTTP context pass through.
+    if (context.getType() !== 'http') return true;
+
     // Public routes (login flow, health): skip the guard entirely.
     const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, [
       context.getHandler(),
