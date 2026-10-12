@@ -1,5 +1,5 @@
 # Production compose. Usage:
-#   NEXT_PUBLIC_API_BASE_URL=https://yourdomain/ docker compose -f "compose prod.yaml" up -d --build
+#   docker compose -f "compose prod.yaml" up -d --build
 #
 # Differences from the dev compose.yaml:
 #   * services build from Dockerfile.prod (multi-stage: compiled dist/,
@@ -200,16 +200,21 @@ services:
     networks:
       - app_network
 
-  # --- CLIENT (Next.js, built with the public API origin baked in) ---
+  # --- CLIENT (Next.js, built once — domain-agnostic) ---
 
   client:
     build:
       context: ./client
       dockerfile: Dockerfile.prod
       args:
-        # Inlined into the bundle AT BUILD TIME — changing it requires a
-        # rebuild of the client image!
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost/}
+        # Inlined into the bundle AT BUILD TIME. The default "/" is a
+        # RELATIVE base: nginx is the single origin and TLS terminates at
+        # an edge in front of it, so the browser resolves API calls
+        # against whatever origin it loaded the page from — the same image
+        # works on any domain and a domain change needs NO rebuild.
+        # Override with an absolute URL only for split-origin deployments
+        # (API served from a different origin than the pages).
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-/}
     restart: always
     environment:
       - NODE_ENV=production
@@ -224,9 +229,9 @@ services:
     image: nginx:alpine
     restart: always
     ports:
+      # TLS terminates at the edge (cloud LB / host nginx / Caddy) which
+      # forwards to this HTTP port; the container stays HTTP-only.
       - "80:80"
-      # Enable after adding TLS certs + a 443 server block:
-      # - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
     depends_on:

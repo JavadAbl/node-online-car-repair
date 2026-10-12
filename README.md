@@ -69,13 +69,13 @@ Development notes:
 
 * All Node containers (services + client) keep `node_modules` in per-service named volumes (`<service>_node_modules`) — installed once on first boot by Linux npm inside the container, surviving rebuilds and `up`/`down`. Host (e.g. Windows) `node_modules` never leak into the Linux containers, and bind-mounted source keeps hot reload working.
 * After editing a service's `package.json`, run `docker compose up -d --build <service>` so the image picks it up; the boot `npm install` then syncs the volume. To reset one service's dependencies: `docker volume rm node-microservice-ecommerce_<service>_node_modules` (careful: `docker compose down -v` also deletes `mysql_data`/`rabbitmq_data`).
-* The browser-facing API address is injected as `NEXT_PUBLIC_API_BASE_URL=http://localhost/` in `compose.yaml`; a local `client/.env` cannot override it inside the container.
+* The browser-facing API address is injected as `NEXT_PUBLIC_API_BASE_URL=/` (same-origin relative) in `compose.yaml`; a local `client/.env` cannot override it inside the container.
 * The dev stack intentionally serves plain **HTTP**.
 
 ### Production
 
 ```bash
-NEXT_PUBLIC_API_BASE_URL=https://yourdomain/ docker compose -f "compose prod.yaml" up -d --build
+docker compose -f "compose prod.yaml" up -d --build
 ```
 
 Every service builds from its `Dockerfile.prod`: a multi-stage image that installs dependencies, generates the Prisma client, compiles TypeScript (`tsc` / `nest build` / `next build`), prunes dev dependencies, and runs the compiled output as the non-root `node` user — no bind mounts, no dev servers, no dev utilities (phpMyAdmin/Dozzle are dev-only).
@@ -84,11 +84,10 @@ Before the first prod `up`:
 
 1. Create the gitignored `services/*/.env.docker` files (real secrets — structure documented in `services/*/.env.example`).
 2. Optionally set infra credentials via a root `.env` or shell: `MYSQL_ROOT_PASSWORD`, `REDIS_PASSWORD`, `RABBITMQ_USER`, `RABBITMQ_PASS` (defaults match the dev stack so it boots as-is).
-3. Pass the real public origin as shown above — it is baked into the client bundle at build time.
 
 Production notes:
 
 * The prod project is named `node-microservice-ecommerce-prod`, so it can coexist with the dev stack on the same host (separate volumes/networks).
-* The client's `NEXT_PUBLIC_API_BASE_URL` cannot be changed at runtime — it is inlined during `next build`; changing the domain requires rebuilding the client image.
+* The client is built with a RELATIVE API base (`NEXT_PUBLIC_API_BASE_URL=/`): nginx is the single origin and TLS terminates at the edge in front of it, so the same client image works on any domain — changing the domain later requires NO rebuild. (Pass the build arg only for split-origin deployments, where the API lives on a different origin than the pages.)
 * Services sync their schema at boot with `prisma db push --accept-data-loss` (the repo has no committed migrations yet). For real production data, adopt `prisma migrate` and switch the boot command to `prisma migrate deploy`.
-* HTTPS: port 443 is intentionally disabled until TLS certificates and a 443 server block are added to `nginx/conf.d`.
+* HTTPS: TLS terminates at the edge (cloud load balancer / host nginx / Caddy) which forwards to the stack's nginx over plain HTTP; the containers themselves stay HTTP-only behind it.

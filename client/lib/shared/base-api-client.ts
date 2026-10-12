@@ -11,7 +11,22 @@ import { toast } from "sonner";
 
 // Single configuration point for the API base address.
 // NEXT_PUBLIC_ prefix makes Next.js inline it into the client bundle.
-const BASE_ADDRESS = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://localhost:3000/";
+//
+// Default "/" = same-origin RELATIVE base. Nginx is the single public
+// origin (dev: port 80; prod: TLS terminates at an edge proxy that
+// forwards to nginx), so relative requests always reach the gateway no
+// matter which host/port/protocol the browser used — the baked bundle
+// stays domain-agnostic and never needs rebuilding for a domain change.
+// Set an absolute URL (e.g. http://localhost:3000/) ONLY for native dev,
+// where the client and the gateway run on different origins (the gateway
+// has CORS open for that case).
+const configuredBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/";
+
+// fetchBaseQuery concatenates baseUrl + url, and our endpoints are written
+// without a leading slash ("Auth-Api/..."), so the base must end with "/"
+// to avoid "https://host" + "Auth-Api/..." breakage. Also maps an empty
+// string to "/" (empty is not nullish, so "??" alone would not catch it).
+const BASE_ADDRESS = configuredBase.endsWith("/") ? configuredBase : `${configuredBase}/`;
 
 // Create a mutex to prevent multiple refresh requests at the same time
 const mutex = new Mutex();

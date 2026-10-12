@@ -186,12 +186,15 @@ services:
       # any .npmrc, so mirror sync gaps (404 on specific tarballs) can't break
       # the container. Swap the URL if you need a different registry.
       - NPM_CONFIG_REGISTRY=https://registry.npmjs.org/
-      # Browser-facing API address: nginx is the single public origin on port 80
-      # and routes /{service}-api/* + /api-docs/* to the gateway, everything else
-      # (pages, /_next/* assets, HMR) to this container.
+      # Browser-facing API address: "/" = same-origin RELATIVE — nginx is
+      # the single public origin (routes /{service}-api/* + /api-docs/* to
+      # the gateway, everything else — pages, /_next/* assets, HMR — to
+      # this container), so the browser resolves API calls against
+      # whatever host it loaded the page from (localhost, a LAN IP for
+      # mobile testing, ...) and the bundle stays host-agnostic.
       # NOTE: environment beats a bind-mounted .env file, so a stale host
       # client/.env cannot break the container.
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost/
+      - NEXT_PUBLIC_API_BASE_URL=/
     volumes:
       - ./client:/app
       - client_node_modules:/app/node_modules

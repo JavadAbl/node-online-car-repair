@@ -1,16 +1,21 @@
 # syntax=docker/dockerfile:1
 # Production image for the Next.js client.
 #
-# IMPORTANT: NEXT_PUBLIC_* variables are inlined into the bundle AT BUILD
-# TIME — they cannot be changed after the image is built. Pass the real
-# public origin via a build arg (compose prod.yaml does):
-#   docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://yourdomain/ ...
+# NOTE: NEXT_PUBLIC_* variables are inlined into the bundle AT BUILD TIME —
+# they cannot be changed after the image is built. The default below is "/"
+# (a RELATIVE base): nginx is the single public origin in every deployment
+# and TLS terminates at an edge in front of it, so the browser resolves
+# /<service>-api/* against whatever origin it loaded the page from. The
+# image is therefore domain-agnostic — changing the domain later needs NO
+# rebuild. Pass an absolute URL only for split-origin setups (API on a
+# different origin than the pages, e.g. native dev):
+#   --build-arg NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/
 
 # ---- build ----
 FROM node:24.18-alpine AS build
 WORKDIR /app
 
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost/
+ARG NEXT_PUBLIC_API_BASE_URL=/
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 
