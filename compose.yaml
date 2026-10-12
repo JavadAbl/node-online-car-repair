@@ -76,7 +76,9 @@ services:
       - ./services/auth/.env.docker
     volumes:
       - ./services/auth/src:/app/src
-      - ./services/auth/node_modules:/app/node_modules
+      # Container-owned node_modules (Linux npm, named volume) — host
+      # (Windows) node_modules must never leak into the Linux container.
+      - auth_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -92,7 +94,7 @@ services:
       - ./services/customer/.env.docker
     volumes:
       - ./services/customer/src:/app/src
-      - ./services/customer/node_modules:/app/node_modules
+      - customer_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -106,7 +108,7 @@ services:
       - ./services/factor/.env.docker
     volumes:
       - ./services/factor/src:/app/src
-      - ./services/factor/node_modules:/app/node_modules
+      - factor_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -122,7 +124,7 @@ services:
       - ./services/vehicle/.env.docker
     volumes:
       - ./services/vehicle/src:/app/src
-      - ./services/vehicle/node_modules:/app/node_modules
+      - vehicle_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -136,7 +138,7 @@ services:
       - ./services/notification/.env.docker
     volumes:
       - ./services/notification/src:/app/src
-      - ./services/notification/node_modules:/app/node_modules
+      - notification_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -154,7 +156,7 @@ services:
       - ./services/product/.env.docker
     volumes:
       - ./services/product/src:/app/src
-      - ./services/product/node_modules:/app/node_modules
+      - product_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -172,7 +174,7 @@ services:
       - ./services/gateway/.env.docker
     volumes:
       - ./services/gateway/src:/app/src
-      - ./services/gateway/node_modules:/app/node_modules
+      - gateway_node_modules:/app/node_modules
     expose:
       - "3000"
     depends_on:
@@ -278,6 +280,20 @@ volumes:
   redis_data:
     driver: local
   client_node_modules:
+    driver: local
+  auth_node_modules:
+    driver: local
+  customer_node_modules:
+    driver: local
+  product_node_modules:
+    driver: local
+  factor_node_modules:
+    driver: local
+  vehicle_node_modules:
+    driver: local
+  notification_node_modules:
+    driver: local
+  gateway_node_modules:
     driver: local
 
 networks:

@@ -67,6 +67,7 @@ Nginx is the single public entry point on port **80**: it routes the microservic
 
 Notes:
 
-* The client container runs `next dev` with hot reload (source is bind-mounted; `node_modules` lives in the `client_node_modules` named volume and is installed on first boot).
+* All Node containers (services + client) keep `node_modules` in per-service named volumes (`<service>_node_modules`) — installed once on first boot by Linux npm inside the container, surviving rebuilds and `up`/`down`. Host (e.g. Windows) `node_modules` never leak into the Linux containers, and bind-mounted source keeps hot reload working.
+* After editing a service's `package.json`, run `docker compose up -d --build <service>` so the image picks it up; the boot `npm install` then syncs the volume. To reset one service's dependencies: `docker volume rm node-microservice-ecommerce_<service>_node_modules` (careful: `docker compose down -v` also deletes `mysql_data`/`rabbitmq_data`).
 * The browser-facing API address is injected as `NEXT_PUBLIC_API_BASE_URL=http://localhost/` in `compose.yaml`; a local `client/.env` cannot override it inside the container.
 * The stack intentionally serves plain **HTTP** for development; the 443 port mapping is left in place for a future TLS setup.

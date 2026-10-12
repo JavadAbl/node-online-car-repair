@@ -14,4 +14,6 @@ COPY . .
 EXPOSE 3000
 
 # Use nodemon or tsx watch for development
-CMD ["npm", "run", "dev"]
+# Install into the container-owned named volume (gateway_node_modules).
+# Fast no-op when the volume is already in sync with package.json.
+CMD ["sh", "-c", "npm install --no-audit --no-fund && npm run dev"]

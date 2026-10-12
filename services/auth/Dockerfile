@@ -21,4 +21,6 @@ EXPOSE 3024
 # Wipe any stale/partial Prisma output (e.g. untracked leftovers in the
 # bind-mounted src from previous runs) so 'prisma generate' is idempotent
 # and never refuses with "exists and is not empty".
-CMD ["sh", "-c", "rm -rf src/infrastructure/database/generated/prisma && npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
+# Install into the container-owned named volume (auth_node_modules).
+# Fast no-op when the volume is already in sync with package.json.
+CMD ["sh", "-c", "npm install --no-audit --no-fund && rm -rf src/infrastructure/database/generated/prisma && npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
