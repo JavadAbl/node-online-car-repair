@@ -7,14 +7,7 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: always
-    command:
-      [
-        "redis-server",
-        "--loglevel",
-        "warning",
-        "--requirepass",
-        "redis_dev_pass",
-      ]
+    command: [ "redis-server", "--loglevel", "warning", "--requirepass", "redis_dev_pass" ]
     volumes:
       - redis_data:/data
     networks:
@@ -30,17 +23,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u",
-          "root",
-          "-proot_dev_pass",
-        ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_pass" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -60,7 +43,7 @@ services:
     ports:
       - "15672:15672"
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -73,7 +56,7 @@ services:
     build: ./services/auth
     restart: always
     env_file:
-      - ./services/auth/.env.docker
+      - ./services/auth/.env.example
     volumes:
       - ./services/auth/src:/app/src
       # Container-owned node_modules (Linux npm, named volume) — host
@@ -91,7 +74,7 @@ services:
     build: ./services/customer
     restart: always
     env_file:
-      - ./services/customer/.env.docker
+      - ./services/customer/.env.example
     volumes:
       - ./services/customer/src:/app/src
       - customer_node_modules:/app/node_modules
@@ -105,7 +88,7 @@ services:
     build: ./services/factor
     restart: always
     env_file:
-      - ./services/factor/.env.docker
+      - ./services/factor/.env.example
     volumes:
       - ./services/factor/src:/app/src
       - factor_node_modules:/app/node_modules
@@ -121,7 +104,7 @@ services:
     build: ./services/vehicle
     restart: always
     env_file:
-      - ./services/vehicle/.env.docker
+      - ./services/vehicle/.env.example
     volumes:
       - ./services/vehicle/src:/app/src
       - vehicle_node_modules:/app/node_modules
@@ -135,7 +118,7 @@ services:
     build: ./services/notification
     restart: always
     env_file:
-      - ./services/notification/.env.docker
+      - ./services/notification/.env.example
     volumes:
       - ./services/notification/src:/app/src
       - notification_node_modules:/app/node_modules
@@ -153,7 +136,7 @@ services:
     build: ./services/product
     restart: always
     env_file:
-      - ./services/product/.env.docker
+      - ./services/product/.env.example
     volumes:
       - ./services/product/src:/app/src
       - product_node_modules:/app/node_modules
@@ -171,7 +154,7 @@ services:
     build: ./services/gateway
     restart: always
     env_file:
-      - ./services/gateway/.env.docker
+      - ./services/gateway/.env.example
     volumes:
       - ./services/gateway/src:/app/src
       - gateway_node_modules:/app/node_modules
@@ -252,9 +235,7 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - app_network
-
-        # --- MONITORING ---
+      - app_network # --- MONITORING ---
 
   dozzle:
     image: amir20/dozzle:v10
