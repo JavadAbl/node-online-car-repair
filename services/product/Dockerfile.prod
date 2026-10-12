@@ -1,0 +1,37 @@
+# syntax=docker/dockerfile:1
+# Production image for the product service (NestJS).
+
+# ---- build: install, generate prisma client, compile ----
+FROM node:24.18-alpine AS build
+WORKDIR /app
+
+COPY package*.json ./
+COPY prisma ./prisma/
+COPY prisma.config.ts ./
+
+RUN npm install --no-audit --no-fund
+
+COPY . .
+
+RUN rm -rf src/generated/prisma \
+    && npx prisma generate \
+    && npm run build \
+    && npm prune --omit=dev
+
+# ---- runtime: compiled app + prod deps only ----
+FROM node:24.18-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./
+COPY --from=build /app/package.json ./
+
+USER node
+EXPOSE 3025
+
+# nest build emits dist/src/main.js (prisma.config.ts at the repo root pulls
+# the tsc common-root up, so src/ is preserved in the output path).
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node dist/src/main.js"]

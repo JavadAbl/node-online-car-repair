@@ -14,14 +14,16 @@ export function buildFindManyArgs<T extends keyof Prisma.TypeMap["model"]>(
   options?: { searchableFields?: (keyof Prisma.TypeMap["model"][T]["fields"])[] },
 ): Prisma.TypeMap["model"][T]["operations"]["findMany"]["args"] {
   // Default page is now 1 (first page)
-  const { page = 1, limit = 10, sortBy, sortOrder = "asc", search } = criteria;
+  // NOTE: the query schema (and zod parser) expose `pageSize` — destructure
+  // that, not `limit`, or client pagination is silently ignored.
+  const { page = 1, pageSize = 10, sortBy, sortOrder = "asc", search } = criteria;
 
   // Guard against a zero or negative page value – treat it as the first page
   const safePage = Math.max(page, 1);
 
   const args: Prisma.TypeMap["model"][T]["operations"]["findMany"]["args"] = {
-    skip: (safePage - 1) * limit,
-    take: Math.min(limit, 100),
+    skip: (safePage - 1) * pageSize,
+    take: Math.min(pageSize, 100),
   };
 
   if (sortBy) {

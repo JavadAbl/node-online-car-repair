@@ -8,11 +8,12 @@ import { generateFactorNumber, percentOf } from "../utils/app.utils.js";
 import { FactorDto } from "../schemas/factor/response/factor.schema.js";
 import { serviceRep } from "../infrastructure/database/Repository/service.repository.js";
 import { factorRep } from "../infrastructure/database/Repository/factor.repository.js";
-import { GetManyReply } from "../schemas/common/get-many-reply.schema.js";
 import { buildFindManyArgs } from "../utils/prisma.util.js";
 import { customerRep } from "../infrastructure/database/Repository/customer.repository.js";
 
-function getMany(query: GetManyQuery<"Factor">): Promise<GetManyReply<FactorDto>> {
+// Returns the raw page of Factor rows (same contract as payment-service);
+// no GetManyReply wrapper — callers get a bare array today.
+function getMany(query: GetManyQuery<"Factor">) {
   const predicate = buildFindManyArgs(query, { searchableFields: ["factorNumber"] });
   return factorRep.findMany(predicate);
 }

@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1
+# Production image for the Next.js client.
+#
+# IMPORTANT: NEXT_PUBLIC_* variables are inlined into the bundle AT BUILD
+# TIME — they cannot be changed after the image is built. Pass the real
+# public origin via a build arg (compose prod.yaml does):
+#   docker build --build-arg NEXT_PUBLIC_API_BASE_URL=https://yourdomain/ ...
+
+# ---- build ----
+FROM node:24.18-alpine AS build
+WORKDIR /app
+
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost/
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY package*.json ./
+RUN npm install --no-audit --no-fund
+
+COPY . .
+RUN npm run build && npm prune --omit=dev
+
+# ---- runtime ----
+FROM node:24.18-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/package.json ./
+
+USER node
+EXPOSE 3000
+
+CMD ["npm", "run", "start", "--", "-H", "0.0.0.0"]

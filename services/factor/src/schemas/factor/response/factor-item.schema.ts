@@ -11,7 +11,9 @@ export const FactorItemSchema = z.object({
 
   totalPrice: z.int(),
 
-  factorId: z.number().int(),
+  // Optional because getById's include omits factorId from items (it is
+  // redundant inside a Factor response).
+  factorId: z.number().int().optional(),
 
   serviceId: z.number().int(),
 });

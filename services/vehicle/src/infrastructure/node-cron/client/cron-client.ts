@@ -1,12 +1,15 @@
 import cron from "node-cron";
+// node-cron v4 exports its types as named exports, not on the default
+// import's namespace — import them explicitly.
+import type { ScheduledTask, TaskFn, TaskOptions } from "node-cron";
 
 // Define the type for the job wrapper
 interface JobWrapper {
   name: string;
   cronExpression: string;
-  task: cron.TaskFn;
-  job: cron.ScheduledTask;
-  options?: cron.TaskOptions;
+  task: TaskFn;
+  job: ScheduledTask;
+  options?: TaskOptions;
 }
 
 class CronClient {
@@ -22,8 +25,8 @@ class CronClient {
   private initializeJob(
     name: string,
     cronExpression: string,
-    task: cron.TaskFn,
-    options: cron.TaskOptions,
+    task: TaskFn,
+    options: TaskOptions,
   ): JobWrapper {
     const job = cron.schedule(cronExpression, task, options);
 
@@ -38,9 +41,9 @@ class CronClient {
   public addJob(
     name: string,
     cronExpression: string,
-    task: cron.TaskFn,
+    task: TaskFn,
     startOnInit = true,
-    options: cron.TaskOptions = {},
+    options: TaskOptions = {},
   ): void {
     if (this.jobs.has(name)) {
       throw new Error(`Job with name '${name}' already exists`);

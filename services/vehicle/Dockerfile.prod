@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+# Production image for the vehicle service (see compose prod.yaml).
+
+# ---- build: install, generate prisma client, compile ----
+FROM node:24.18-alpine AS build
+WORKDIR /app
+
+COPY package*.json ./
+COPY prisma ./prisma/
+COPY prisma.config.ts ./
+
+RUN npm install --no-audit --no-fund
+
+COPY . .
+
+RUN rm -rf src/infrastructure/database/generated/prisma \
+    && npx prisma generate \
+    && npm run build \
+    && npm prune --omit=dev
+
+# ---- runtime: compiled app + prod deps only ----
+FROM node:24.18-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./
+COPY --from=build /app/package.json ./
+
+USER node
+EXPOSE 3021
+
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && node dist/index.js"]

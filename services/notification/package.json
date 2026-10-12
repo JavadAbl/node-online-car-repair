@@ -40,7 +40,8 @@
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.12",
     "poolifier": "^5.1.7",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "prisma": "^7.2.0"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.3",
@@ -55,7 +56,6 @@
     "eslint": "^8.57.1",
     "jest": "^30.2.0",
     "prettier": "^3.7.4",
-    "prisma": "^7.2.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.6",
     "tsdown": "^0.19.0-beta.2",

@@ -1,13 +1,34 @@
-name: node-microservice-ecommerce
+# Production compose. Usage:
+#   NEXT_PUBLIC_API_BASE_URL=https://yourdomain/ docker compose -f "compose prod.yaml" up -d --build
+#
+# Differences from the dev compose.yaml:
+#   * services build from Dockerfile.prod (multi-stage: compiled dist/,
+#     pruned prod-only dependencies, non-root user, no bind mounts)
+#   * no dev utilities (phpmyadmin, dozzle) and no RabbitMQ management port
+#   * separate compose project (-prod suffix) so dev and prod can coexist
+#   * infra credentials are parameterized: put MYSQL_ROOT_PASSWORD,
+#     REDIS_PASSWORD, RABBITMQ_USER/PASS in a root .env or the shell
+#     (defaults match the dev stack so it boots as-is)
+#   * services read their secrets from the gitignored .env.docker files —
+#     create them (see services/*/.env.example) before the first `up`
+#   * NODE_ENV=production is forced per service (overrides env_file)
+
+name: node-microservice-ecommerce-prod
 
 services:
   # --- INFRASTRUCTURE ---
 
   redis:
     image: redis:7-alpine
-    container_name: redis
     restart: always
-    command: [ "redis-server", "--loglevel", "warning", "--requirepass", "redis_dev_pass" ]
+    command:
+      [
+        "redis-server",
+        "--loglevel",
+        "warning",
+        "--requirepass",
+        "${REDIS_PASSWORD:-redis_dev_pass}",
+      ]
     volumes:
       - redis_data:/data
     networks:
@@ -15,15 +36,24 @@ services:
 
   mysql:
     image: mysql:8.0.36
-    container_name: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root_dev_pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_dev_pass}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_dev_pass" ]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD:-root_dev_pass}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,37 +61,33 @@ services:
       - app_network
 
   rabbitmq:
-    image: rabbitmq:4.0-management-alpine
-    container_name: rabbitmq
+    image: rabbitmq:4.0-alpine
     hostname: rabbitmq-host
     restart: always
     environment:
-      RABBITMQ_DEFAULT_USER: app_user
-      RABBITMQ_DEFAULT_PASS: app_password
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-app_user}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-app_password}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - app_network
 
-  # --- MICROSERVICES (Internal Only - No Ports Exposed) ---
+  # --- MICROSERVICES (compiled, pruned, non-root) ---
 
   auth-service:
-    build: ./services/auth
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/auth/.env.docker
-    volumes:
-      - ./services/auth/src:/app/src
-      # Container-owned node_modules (Linux npm, named volume) — host
-      # (Windows) node_modules must never leak into the Linux container.
-      - auth_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -71,13 +97,14 @@ services:
       - app_network
 
   customer-service:
-    build: ./services/customer
+    build:
+      context: ./services/customer
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/customer/.env.docker
-    volumes:
-      - ./services/customer/src:/app/src
-      - customer_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -85,13 +112,14 @@ services:
       - app_network
 
   factor-service:
-    build: ./services/factor
+    build:
+      context: ./services/factor
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/factor/.env.docker
-    volumes:
-      - ./services/factor/src:/app/src
-      - factor_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -101,13 +129,14 @@ services:
       - app_network
 
   vehicle-service:
-    build: ./services/vehicle
+    build:
+      context: ./services/vehicle
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/vehicle/.env.docker
-    volumes:
-      - ./services/vehicle/src:/app/src
-      - vehicle_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -115,13 +144,14 @@ services:
       - app_network
 
   notification-service:
-    build: ./services/notification
+    build:
+      context: ./services/notification
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/notification/.env.docker
-    volumes:
-      - ./services/notification/src:/app/src
-      - notification_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -133,13 +163,14 @@ services:
       - app_network
 
   product-service:
-    build: ./services/product
+    build:
+      context: ./services/product
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/product/.env.docker
-    volumes:
-      - ./services/product/src:/app/src
-      - product_node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=production
     depends_on:
       mysql:
         condition: service_healthy
@@ -148,18 +179,17 @@ services:
     networks:
       - app_network
 
-  # --- GATEWAY (The ONLY Public Entry Point) ---
+  # --- GATEWAY ---
 
   gateway:
-    build: ./services/gateway
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile.prod
     restart: always
     env_file:
       - ./services/gateway/.env.docker
-    volumes:
-      - ./services/gateway/src:/app/src
-      - gateway_node_modules:/app/node_modules
-    expose:
-      - "3000"
+    environment:
+      - NODE_ENV=production
     depends_on:
       - auth-service
       - customer-service
@@ -170,86 +200,38 @@ services:
     networks:
       - app_network
 
-  # --- CLIENT (Next.js Web App - internal, served through Nginx) ---
+  # --- CLIENT (Next.js, built with the public API origin baked in) ---
 
   client:
-    build: ./client
-    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+      args:
+        # Inlined into the bundle AT BUILD TIME — changing it requires a
+        # rebuild of the client image!
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost/}
     restart: always
     environment:
-      - NODE_ENV=development
-      - NEXT_TELEMETRY_DISABLED=1
-      # Always install from the official registry, even if the host has an
-      # .npmrc pointing at a local mirror (e.g. hub.megan.ir). The bind mount
-      # (./client:/app) carries a host client/.npmrc into the container where
-      # npm would pick it up as project config; env vars take precedence over
-      # any .npmrc, so mirror sync gaps (404 on specific tarballs) can't break
-      # the container. Swap the URL if you need a different registry.
-      - NPM_CONFIG_REGISTRY=https://registry.npmjs.org/
-      # Browser-facing API address: nginx is the single public origin on port 80
-      # and routes /{service}-api/* + /api-docs/* to the gateway, everything else
-      # (pages, /_next/* assets, HMR) to this container.
-      # NOTE: environment beats a bind-mounted .env file, so a stale host
-      # client/.env cannot break the container.
-      - NEXT_PUBLIC_API_BASE_URL=http://localhost/
-    volumes:
-      - ./client:/app
-      - client_node_modules:/app/node_modules
-    expose:
-      - "3000"
+      - NODE_ENV=production
     depends_on:
       - gateway
     networks:
       - app_network
+
+  # --- NGINX (the ONLY public entry point) ---
 
   nginx:
     image: nginx:alpine
-    container_name: nginx
     restart: always
     ports:
       - "80:80"
-      - "443:443"
+      # Enable after adding TLS certs + a 443 server block:
+      # - "443:443"
     volumes:
-      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      # - ./certs:/etc/nginx/certs:ro
     depends_on:
       - gateway
       - client
-    networks:
-      - app_network
-
-  # --- UTILS ---
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.2.3
-    container_name: phpmyadmin
-    restart: always
-    environment:
-      PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: root_dev_pass
-    ports:
-      - "8082:80"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - app_network # --- MONITORING ---
-
-  dozzle:
-    image: amir20/dozzle:v10
-    container_name: dozzle
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    ports:
-      - "8083:8080"
-    environment:
-      # Optional: Enable real-time log streaming for better performance
-      DOZZLE_ENABLE_ACTIONS: "true"
-      # Optional: Filter to only show containers on this project's network
-      DOZZLE_FILTER: "label=com.docker.compose.project=node-microservice-ecommerce"
     networks:
       - app_network
 
@@ -259,22 +241,6 @@ volumes:
   rabbitmq_data:
     driver: local
   redis_data:
-    driver: local
-  client_node_modules:
-    driver: local
-  auth_node_modules:
-    driver: local
-  customer_node_modules:
-    driver: local
-  product_node_modules:
-    driver: local
-  factor_node_modules:
-    driver: local
-  vehicle_node_modules:
-    driver: local
-  notification_node_modules:
-    driver: local
-  gateway_node_modules:
     driver: local
 
 networks:

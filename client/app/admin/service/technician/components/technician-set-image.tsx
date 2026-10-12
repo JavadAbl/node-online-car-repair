@@ -64,7 +64,7 @@ export function TechnicianSetImageDialog({
 
   if (!technician) return null;
 
-  const { id: technicianId, employeeNumber, firstName, lastName } = technician;
+  const { id: technicianId, technicianNumber, firstName, lastName } = technician;
 
   const onSubmit = async (data: FormValues) => {
     if (!data.image) return;
@@ -99,7 +99,7 @@ export function TechnicianSetImageDialog({
           </p>
           <p>
             <span className="font-semibold">Employee Number: </span>
-            {employeeNumber}
+            {technicianNumber}
           </p>
         </div>
 

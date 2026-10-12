@@ -12,8 +12,16 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useGetTechniciansQuery } from "@/lib/features/service/service-api";
+import { ServiceDto } from "@/lib/features/service/schema/responses/service.dto";
 import { WorkShift } from "@/lib/features/service/service-enums";
 import { VehicleDto } from "@/lib/features/vehicle/schema/responses/vehicle.dto";
+import { VehicleServiceDto } from "@/lib/features/vehicle/schema/responses/vehicle-service.dto";
+import {
+  FUEL_TYPES,
+  TRANSMISSION_TYPES,
+  VEHICLE_STATUS,
+  VehicleServiceStatus,
+} from "@/lib/features/vehicle/vehicle-enums";
 import { useGetCustomerVehiclesQuery } from "@/lib/features/vehicle/vehicle-api";
 import { useAppSelector } from "@/lib/hooks/use-state";
 import { getAuthorizedImage } from "@/lib/shared/base-api-client";
@@ -85,15 +93,16 @@ const mockVehicle: VehicleDto = {
   model: "Accord",
   year: 2022,
   trim: "Sport",
-  fuelType: "gasoline",
-  transmission: "automatic",
+  fuelType: FUEL_TYPES.Gasoline,
+  transmission: TRANSMISSION_TYPES.Automatic,
   engine: "1.5L Turbo",
   color: "Pearl White",
   mileage: 28450,
   licensePlate: "ABC1234",
   state: "CA",
+  description: "Daily commuter sedan",
   customerId: 1,
-  status: "active",
+  status: VEHICLE_STATUS.Active,
   createdAt: "2023-01-15T10:30:00Z",
   updatedAt: "2024-01-10T15:20:00Z",
 };
@@ -103,10 +112,11 @@ const mockVehicleService: VehicleServiceDto = {
   serviceDate: "2024-01-25T09:00:00Z",
   mileageAtService: 28000,
   technicianName: "Michael Chen",
-  status: "reserved",
+  technicianNumber: "TECH-201",
+  vehicleModel: "Accord",
+  serviceName: "Full Synthetic Oil Change",
+  status: VehicleServiceStatus.Done,
   description: "Regular maintenance - Oil change and inspection",
-  createdAt: "2024-01-15T14:30:00Z",
-  updatedAt: "2024-01-20T11:15:00Z",
   vehicleId: 101,
   serviceId: 1,
   technicianId: 201,
@@ -115,23 +125,23 @@ const mockVehicleService: VehicleServiceDto = {
 // Helper Components
 const StatusBadge = ({ status }: { status: VehicleServiceDto["status"] }) => {
   const statusConfig = {
-    reserved: {
-      label: "Reserved",
+    [VehicleServiceStatus.Pending]: {
+      label: "Pending",
       icon: Clock,
       variant: "secondary" as const,
       className: "bg-blue-100 text-blue-700 border-blue-200",
     },
-    done: {
+    [VehicleServiceStatus.InWork]: {
+      label: "In Work",
+      icon: AlertCircle,
+      variant: "secondary" as const,
+      className: "bg-amber-100 text-amber-700 border-amber-200",
+    },
+    [VehicleServiceStatus.Done]: {
       label: "Completed",
       icon: CheckCircle2,
       variant: "default" as const,
       className: "bg-green-100 text-green-700 border-green-200",
-    },
-    canceled: {
-      label: "Canceled",
-      icon: XCircle,
-      variant: "destructive" as const,
-      className: "bg-red-100 text-red-700 border-red-200",
     },
   };
 
