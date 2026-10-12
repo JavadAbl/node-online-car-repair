@@ -16,10 +16,18 @@ export const config = {
   REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET!,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET!,
+  // Optional: fixed OTP code for dev (no SMS provider yet). Empty/unset =
+  // real random codes. Validated in infrastructure/auth/otp-mock.ts —
+  // NOT a required var, so it is skipped below.
+  OTP_FIXED_CODE: process.env.OTP_FIXED_CODE || "",
 };
+
+// Keys that may legitimately stay empty (never fail validation for these).
+const OPTIONAL_CONFIG_KEYS = new Set(["OTP_FIXED_CODE"]);
 
 export function validateConfig() {
   for (const [key, value] of Object.entries(config)) {
+    if (OPTIONAL_CONFIG_KEYS.has(key)) continue;
     if (!value) {
       console.error(`❌ Error: Environment variable "${key}" is missing or empty.`);
       process.exit(1);

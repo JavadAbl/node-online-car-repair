@@ -29,6 +29,7 @@ import { SyncRolePermissions } from "../schemas/auth/request/sync-role-permissio
 import { RefreshDto } from "../schemas/auth/request/refresh.schema.js";
 import { LogoutDto } from "../schemas/auth/request/logout.schema.js";
 import { isDev } from "../infrastructure/config.js";
+import { MOCK_OTP_CODE } from "../infrastructure/auth/otp-mock.js";
 import { Role } from "../infrastructure/database/generated/prisma/enums.js";
 
 /** Audit context captured whenever a session is issued or rotated. */
@@ -65,7 +66,10 @@ async function sendOtp(payload: SendOtpDto): Promise<void> {
   // The counter is only incremented once the request is allowed through.
   await otpStore.incrSendCount(mobile);
 
-  const otp = generateOtp();
+  // Dev mock (OTP_FIXED_CODE): predictable value, REAL pipeline — the code
+  // is stored in Redis and must still be verified within its TTL, under the
+  // same cooldown / volume cap / attempt limits as production.
+  const otp = MOCK_OTP_CODE ?? generateOtp();
   await otpStore.setCode(mobile, otp);
   await otpStore.startCooldown(mobile);
   // A fresh code gets a fresh attempt budget.
@@ -383,8 +387,9 @@ async function syncRolePermissions(payload: SyncRolePermissions): Promise<RolePe
 // ---------------------------------------------------------------------------
 
 function generateOtp() {
-  // Always a real random code — the dev variant is only HOW it is delivered
-  // (logged to the server console instead of an SMS, see sendOtp).
+  // Random code used when the dev mock (OTP_FIXED_CODE) is disabled. When
+  // the mock is active, sendOtp short-circuits to the fixed value — see
+  // infrastructure/auth/otp-mock.ts.
   return randomInt(100000, 999999).toString();
 }
 
