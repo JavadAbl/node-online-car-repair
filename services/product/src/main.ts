@@ -44,7 +44,9 @@ async function bootstrap() {
       },
     });
 
-  // Serve /uploads as /Service-Api/uploads/
+  // Serve the uploads folder at /uploads. It is reached from the browser
+  // through the gateway as /Service-Api/uploads/* (the gateway wildcard
+  // strips the service-api prefix before forwarding here).
   //@ts-ignore
   await app.register(fastifyStatic, {
     root: join(process.cwd(), 'uploads'),

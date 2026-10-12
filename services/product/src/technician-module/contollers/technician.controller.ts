@@ -89,7 +89,12 @@ export class TechnicianController {
 
     await pipeline(data.file, createWriteStream(filePath));
 
-    const src = `https://localhost:3000/Service-Api/uploads/${safeFilename}`;
+    // Relative path: the browser resolves it against the current origin
+    // (nginx single origin routes /Service-Api/* to the gateway, which
+    // forwards to this service's /uploads). A hardcoded absolute origin
+    // (https://localhost:3000/...) would only work in one specific
+    // native-dev layout and breaks behind nginx / in docker.
+    const src = `/Service-Api/uploads/${safeFilename}`;
     await this.technicianService.setTechnicianImageSrc(id, src);
   }
 }

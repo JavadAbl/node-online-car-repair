@@ -59,7 +59,7 @@ Nginx is the single public entry point on port **80**: it routes the microservic
 | URL | What |
 | --- | --- |
 | http://localhost | Next.js client |
-| http://localhost/auth-api/... (also customer/factor/vehicle/product/notification-api) | Gateway -> microservices |
+| http://localhost/auth-api/... (also customer/factor/vehicle/product/notification/service-api) | Gateway -> microservices |
 | http://localhost/api-docs/auth-api/swagger.json | Swagger specs (raw JSON) |
 | http://localhost:15672 | RabbitMQ management (app_user / app_password) |
 | http://localhost:8082 | phpMyAdmin |
