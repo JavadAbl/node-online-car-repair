@@ -6,6 +6,7 @@ import { startHttpServer } from "./server.js";
 import { collectedRoutePermissions } from "./plugins/auth.plugin.js";
 import { derivePermissionList } from "./infrastructure/auth/auth-utils.js";
 import { authService } from "./services/auth.service.js";
+import { seedService } from "./services/seed.service.js";
 
 /** How often expired RefreshToken rows are swept (6h). */
 const REFRESH_PRUNE_INTERVAL_MS = 6 * 60 * 60 * 1000;
@@ -37,6 +38,15 @@ async function run() {
   } catch (error: any) {
     console.error(error?.message, error);
     process.exit(1);
+  }
+
+  // Bootstrap admin (SEED_ADMIN_MOBILE; skipped when unset). Best-effort:
+  // a failed seed must not take down login for everyone — the error is
+  // logged loudly instead, and the next restart retries.
+  try {
+    await seedService.seedAdminUser();
+  } catch (error: any) {
+    console.error("[seed] admin seed failed:", error?.message ?? error);
   }
 
   scheduleRefreshTokenPruning();

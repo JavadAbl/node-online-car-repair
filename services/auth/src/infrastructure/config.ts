@@ -20,10 +20,13 @@ export const config = {
   // real random codes. Validated in infrastructure/auth/otp-mock.ts —
   // NOT a required var, so it is skipped below.
   OTP_FIXED_CODE: process.env.OTP_FIXED_CODE || "",
+  // Optional: mobile number seeded as the bootstrap Admin at boot (see
+  // services/seed.service.ts). Empty/unset = seed disabled.
+  SEED_ADMIN_MOBILE: process.env.SEED_ADMIN_MOBILE || "",
 };
 
 // Keys that may legitimately stay empty (never fail validation for these).
-const OPTIONAL_CONFIG_KEYS = new Set(["OTP_FIXED_CODE"]);
+const OPTIONAL_CONFIG_KEYS = new Set(["OTP_FIXED_CODE", "SEED_ADMIN_MOBILE"]);
 
 export function validateConfig() {
   for (const [key, value] of Object.entries(config)) {
