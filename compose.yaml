@@ -196,7 +196,7 @@ services:
       # client/.env cannot break the container.
       - NEXT_PUBLIC_API_BASE_URL=/
     volumes:
-      - ./client:/app
+      - ./client/src:/app/src
       - client_node_modules:/app/node_modules
       - client_next:/app/.next
     expose:
