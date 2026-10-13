@@ -22,7 +22,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService<ConfigType>);
   const port = configService.get<AppConfig>('app')!.HTTP_PORT;
+  const host = configService.get<AppConfig>('app')!.HTTP_HOST;
 
-  await app.listen(port);
+  // Bind the configured host explicitly (0.0.0.0 in docker) instead of
+  // relying on Express's 0.0.0.0 default — the Fastify-based services must
+  // pass it (fastify defaults to localhost and would be unreachable from
+  // other containers), so keep every service consistent and explicit.
+  await app.listen(port, host);
 }
 bootstrap();

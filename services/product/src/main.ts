@@ -8,22 +8,15 @@ import { AuthService } from './infrastructure-modules/auth-module/auth.service';
 import { TechnicianController } from './technician-module/contollers/technician.controller';
 import { ServiceController } from './serivce-module/controllers/service.controller';
 import { join } from 'node:path';
-import { readFileSync } from 'node:fs';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import fastifyMultipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 
 async function bootstrap() {
-  const httpsOptions = {
-    /*  http2: true,
-    https: {
-      key: readFileSync(join(process.cwd(), 'localhost-private.key')),
-      cert: readFileSync(join(process.cwd(), 'localhost-cert.pem')),
-      allowHTTP1: true, // Optional: fall back to HTTP/1.1
-    }, */
-  };
-
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(httpsOptions));
+  // Plain HTTP adapter: fastify would only enable TLS if an `https` option
+  // object with key/cert were passed (the old native-dev TLS experiment —
+  // see git history). In compose every hop is plain HTTP inside the network.
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
 
   const configService = app.get<ConfigService<ConfigType>>(ConfigService);
 
@@ -59,7 +52,15 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
 
   const port = configService.get<AppConfig>('app')!.HTTP_PORT;
+  const host = configService.get<AppConfig>('app')!.HTTP_HOST;
 
-  await app.listen(port);
+  // CRITICAL: pass the host explicitly. Fastify's default listen host is
+  // "localhost" — app.listen(port) alone binds 127.0.0.1 INSIDE the
+  // container, making the service unreachable from the gateway/nginx
+  // (connection refused -> gateway answers 503 "currently unavailable").
+  // Express's default is 0.0.0.0, which is why the Express-based services
+  // never hit this. HTTP_HOST=0.0.0.0 in the env makes it reachable on the
+  // compose network (and stays correct for native dev via localhost).
+  await app.listen(port, host);
 }
 bootstrap();
