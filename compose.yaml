@@ -198,6 +198,7 @@ services:
     volumes:
       - ./client:/app
       - client_node_modules:/app/node_modules
+      - client_next:/app/.next
     expose:
       - "3000"
     depends_on:
@@ -264,6 +265,8 @@ volumes:
   redis_data:
     driver: local
   client_node_modules:
+    driver: local
+  client_next:
     driver: local
   auth_node_modules:
     driver: local
