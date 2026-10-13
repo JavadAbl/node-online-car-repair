@@ -27,5 +27,16 @@
     "dist",
     "scripts",
     "test"
-  ]
+  ],
+  // Hot reload inside docker: `nest start --watch` compiles with tsc's
+  // watcher, but the compose bind mount (./services/customer/src) crosses
+  // the Docker Desktop VM boundary, where file-system events from the host
+  // never reach the container — without polling, source edits only apply
+  // after a container restart. Top-level watchOptions (NOT compilerOptions —
+  // tsc rejects watchFile there with TS5023); ignored by `nest build`.
+  "watchOptions": {
+    "watchFile": "fixedPollingInterval",
+    "watchDirectory": "fixedPollingInterval",
+    "fallbackPolling": "fixedInterval"
+  }
 }
