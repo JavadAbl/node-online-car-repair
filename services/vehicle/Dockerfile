@@ -16,11 +16,11 @@ COPY . .
 #  RUN DATABASE_URL="mysql://dummy:dummy@localhost:3306/dummy" npx prisma generate
 
 EXPOSE 3021
-
+CMD ["sh", "-c", "npx prisma generate && npx prisma db push --accept-data-loss && exec npm run dev"]
 # Wipe any stale/partial Prisma output (e.g. untracked leftovers in the
 # bind-mounted src from previous runs) so 'prisma generate' is idempotent
 # and never refuses with "exists and is not empty".
 # Install into the container-owned named volume (vehicle_node_modules).
 # Fast no-op when the volume is already in sync with package.json.
-CMD ["sh", "-c", "npm install --no-audit --no-fund && rm -rf src/infrastructure/database/generated/prisma && npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
+# CMD ["sh", "-c", "npm install --no-audit --no-fund && rm -rf src/infrastructure/database/generated/prisma && npx prisma generate && npx prisma db push --accept-data-loss && npm run dev"]
 

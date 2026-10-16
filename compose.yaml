@@ -61,7 +61,8 @@ services:
       - ./services/auth/src:/app/src
       # Container-owned node_modules (Linux npm, named volume) — host
       # (Windows) node_modules must never leak into the Linux container.
-      - auth_node_modules:/app/node_modules
+      - ./services/auth/node_modules:/app/node_modules
+      # - auth_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -77,7 +78,8 @@ services:
       - ./services/customer/.env.example
     volumes:
       - ./services/customer/src:/app/src
-      - customer_node_modules:/app/node_modules
+      - ./services/customer/node_modules:/app/node_modules
+      # - customer_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -91,7 +93,8 @@ services:
       - ./services/factor/.env.example
     volumes:
       - ./services/factor/src:/app/src
-      - factor_node_modules:/app/node_modules
+      - ./services/factor/node_modules:/app/node_modules
+      # - factor_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -107,7 +110,8 @@ services:
       - ./services/vehicle/.env.example
     volumes:
       - ./services/vehicle/src:/app/src
-      - vehicle_node_modules:/app/node_modules
+      - ./services/vehicle/node_modules:/app/node_modules
+      # - vehicle_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -121,7 +125,8 @@ services:
       - ./services/notification/.env.example
     volumes:
       - ./services/notification/src:/app/src
-      - notification_node_modules:/app/node_modules
+      - ./services/notification/node_modules:/app/node_modules
+      # - notification_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -139,7 +144,8 @@ services:
       - ./services/product/.env.example
     volumes:
       - ./services/product/src:/app/src
-      - product_node_modules:/app/node_modules
+      - ./services/product/node_modules:/app/node_modules
+      # - product_node_modules:/app/node_modules
     depends_on:
       mysql:
         condition: service_healthy
@@ -157,7 +163,8 @@ services:
       - ./services/gateway/.env.example
     volumes:
       - ./services/gateway/src:/app/src
-      - gateway_node_modules:/app/node_modules
+      - ./services/gateway/node_modules:/app/node_modules
+      # - gateway_node_modules:/app/node_modules
     expose:
       - "3000"
     depends_on:
@@ -197,10 +204,12 @@ services:
       - NEXT_PUBLIC_API_BASE_URL=/
     volumes:
       - ./client/src:/app/src
-      - client_node_modules:/app/node_modules
+      - ./client/node_modules:/app/node_modules
+      # - client_node_modules:/app/node_modules
       - client_next:/app/.next
     expose:
       - "3000"
+    # user: "${UID:-1000}:${GID:-1000}"
     depends_on:
       - gateway
     networks:
@@ -264,24 +273,24 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  client_node_modules:
-    driver: local
   client_next:
     driver: local
-  auth_node_modules:
-    driver: local
-  customer_node_modules:
-    driver: local
-  product_node_modules:
-    driver: local
-  factor_node_modules:
-    driver: local
-  vehicle_node_modules:
-    driver: local
-  notification_node_modules:
-    driver: local
-  gateway_node_modules:
-    driver: local
+  # client_node_modules:
+  #   driver: local
+  # auth_node_modules:
+  #   driver: local
+  # customer_node_modules:
+  #   driver: local
+  # product_node_modules:
+  #   driver: local
+  # factor_node_modules:
+  #   driver: local
+  # vehicle_node_modules:
+  #   driver: local
+  # notification_node_modules:
+  #   driver: local
+  # gateway_node_modules:
+  #   driver: local
 
 networks:
   app_network:
