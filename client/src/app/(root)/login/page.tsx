@@ -44,6 +44,19 @@ export default function AuthPage() {
     }
   }, [isAuth, router]);
 
+  // <Auth> redirects here with ?reason=session-expired when a stored session
+  // failed to restore (expired/revoked/rotated refresh token). Tell the user
+  // instead of silently landing them on the login form. Window-based read
+  // avoids the useSearchParams Suspense requirement; URL is cleaned so a
+  // manual reload doesn't repeat the toast.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("reason") === "session-expired") {
+      toast.info("Your session has expired — please sign in again.");
+      window.history.replaceState({}, "", "/login");
+    }
+  }, []);
+
   const handleSendOtp = async () => {
     const res = await mutateSendOtp({ mobile: mobileNumber });
     if (res.error) {

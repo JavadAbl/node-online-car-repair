@@ -53,6 +53,10 @@ export const baseApi: BaseQueryFn<
 
   let result = await rawBaseQuery(args, api, extraOptions);
   const meta = result.meta;
+  // Set when a refresh token exchange SUCCEEDED in this call. Only then can
+  // a still-401 retry mean "the new token pair is dead" (see the trailing
+  // logout below) — a 401 from a rejected/skipped refresh must NOT log out.
+  let refreshSucceeded = false;
 
   if (!result.error) {
     if (
@@ -91,6 +95,7 @@ export const baseApi: BaseQueryFn<
             });
 
             if (refreshResult.ok) {
+              refreshSucceeded = true;
               const data = await refreshResult.json();
               // 4. Update the Redux store with the new token pair
               api.dispatch(
@@ -103,12 +108,26 @@ export const baseApi: BaseQueryFn<
               // The rawBaseQuery will pick up the new token from the state via prepareHeaders
               result = await rawBaseQuery(args, api, extraOptions);
             } else {
-              // Refresh failed (rotated/replayed, revoked or expired) -> drop the session
-              api.dispatch(authActions.logout());
+              // Refresh failed (rotated/replayed, revoked or expired) -> drop
+              // the session — BUT only if the rejected token is still the one
+              // in storage. When two tabs restore at nearly the same time they
+              // can present the SAME (single-use) refresh token; the server
+              // honors the first request and rejects the second as a replay.
+              // Without this guard the losing tab's logout() would wipe the
+              // fresh token pair the winning tab just persisted, killing a
+              // healthy session for every future page load.
+              const storedRefresh = localStorage.getItem("refreshToken");
+              if (!storedRefresh || storedRefresh === refreshToken) {
+                api.dispatch(authActions.logout());
+              }
             }
           } else {
-            // No refresh token in state -> drop the session
-            api.dispatch(authActions.logout());
+            // No refresh token in state -> drop the session, again only when
+            // storage doesn't hold a token somebody else may have just
+            // refreshed (another tab's restore could be in flight).
+            if (!localStorage.getItem("refreshToken")) {
+              api.dispatch(authActions.logout());
+            }
           }
         } finally {
           // 6. Release the mutex so other requests can proceed
@@ -142,8 +161,12 @@ export const baseApi: BaseQueryFn<
         toast.error(message);
       }
 
-    // If we still have a 401 error after attempting refresh, drop the session
-    if (result.error && result.error.status === 401) {
+    // If we still have a 401 error after a SUCCESSFUL refresh, the new token
+    // pair is genuinely rejected -> drop the session. (When the refresh was
+    // rejected or skipped, the rotation guard above already made the call —
+    // logging out here anyway would kill the healthy session another tab
+    // just refreshed.)
+    if (result.error && result.error.status === 401 && refreshSucceeded) {
       api.dispatch(authActions.logout());
     }
   }

@@ -8,6 +8,10 @@ export function useAuth() {
   const dis = useAppDispatch();
   const isAuth = useAppSelector((s) => s.auth.isAuth);
   const [isAuthDone, setIsAuthDone] = useState(false);
+  // True when this load FOUND tokens in storage — i.e. the visitor had a
+  // session before (as opposed to never having logged in). Lets <Auth> tell
+  // the login page WHY it is sending the user there.
+  const [hadSession, setHadSession] = useState(false);
   const [fetchUser] = useLazyGetUserQuery();
 
   useEffect(() => {
@@ -19,6 +23,8 @@ export function useAuth() {
 
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
+
+      if (accessToken || refreshToken) setHadSession(true);
 
       if (!refreshToken) {
         setIsAuthDone(true);
@@ -57,5 +63,5 @@ export function useAuth() {
     handleAuth();
   }, [dis, fetchUser]);
 
-  return { isAuthDone };
+  return { isAuthDone, hadSession };
 }

@@ -12,15 +12,20 @@ export default function Auth({
   redirect?: boolean;
   children: React.ReactNode;
 }) {
-  const { isAuthDone } = useAuth();
+  const { isAuthDone, hadSession } = useAuth();
   const isAuth = useAppSelector((s) => s.auth.isAuth);
   const router = useRouter();
 
   useEffect(() => {
     if (isAuthDone && !isAuth && redirect) {
-      router.replace("/login");
+      // Tell the login page WHY the user was sent there: an expired/revoked
+      // session (they were logged in, tokens no longer restore) gets a
+      // notice, while plain "not logged in yet" redirects silently.
+      router.replace(
+        hadSession ? "/login?reason=session-expired" : "/login",
+      );
     }
-  }, [isAuthDone, isAuth, redirect, router]);
+  }, [isAuthDone, isAuth, hadSession, redirect, router]);
 
   if (!isAuthDone) return null;
   if (!isAuth && redirect) return null;
