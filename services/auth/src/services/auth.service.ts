@@ -7,7 +7,7 @@ import { BadRequestError, TooManyRequestsError, UnauthorizedError } from "../uti
 import { isMobileNumber } from "../utils/app.util.js";
 import { VerifyOtpDto } from "../schemas/auth/request/verify-otp.schema.js";
 import { userService } from "./user.service.js";
-import { tokenService, REFRESH_TOKEN_TTL_MS } from "./token.service.js";
+import { tokenService, REFRESH_TOKEN_TTL_MS, REFRESH_REUSE_GRACE_MS } from "./token.service.js";
 import { AuthDto } from "../schemas/auth/reply/auth.schema.js";
 import { PermissionsSyncEvent } from "../schemas/event-schemas/auth/permission-sync.schema.js";
 import { CreateRolePermission } from "../schemas/auth/request/create-role-permission.schema.js";
@@ -194,7 +194,41 @@ async function refresh(payload: RefreshDto, ctx: SessionContext = {}): Promise<A
   if (!claimed) {
     const record = await refreshTokenRepository.findUnique({ where: { jti: oldJti } });
     if (record && record.revokedAt) {
-      // Replay of an already-rotated token: assume compromise, kill all sessions.
+      const revokedMsAgo = now.getTime() - record.revokedAt.getTime();
+      // replacedByJti is set ONLY by a normal rotation — a sibling tab lost
+      // the claim race to another refresh. A row revoked WITHOUT a successor
+      // was killed by reuse detection or logout; those must never be
+      // refreshed again, grace or not (else a thief could resurrect a nuked
+      // session by replaying within the window).
+      const revokedByRotation = record.replacedByJti !== null;
+      if (revokedByRotation && revokedMsAgo <= REFRESH_REUSE_GRACE_MS) {
+        // Concurrent use of the SAME token by sibling tabs: every tab of a
+        // user restores the same pair from localStorage, and when the access
+        // token expires they can all hit 401 at once — only one wins the
+        // atomic claim. The losers are NOT attackers; without a grace window
+        // the reuse detection below revoked EVERY session of the user, and
+        // every subsequent direct page load bounced to /login (observed as
+        // "sidebar missing on direct /admin load" while warm SPA tabs kept
+        // working). Within the grace window a losing tab gets its own
+        // successor instead. Trade-off: a thief replaying within the window
+        // also succeeds — accepted, and standard practice (cf. Auth0/Cognito
+        // reuse-detection grace). Beyond the window it is treated as theft.
+        const graceJti = randomUUID();
+        await refreshTokenRepository.create({
+          data: {
+            jti: graceJti,
+            userId: user.id,
+            expiresAt: new Date(now.getTime() + REFRESH_TOKEN_TTL_MS),
+            ip: ctx.ip,
+            userAgent: ctx.userAgent,
+          },
+        });
+        return tokenService.generateTokens(
+          { userId: user.id, role: user.role, permissions },
+          { refreshJti: graceJti },
+        );
+      }
+      // Replay of an already-rotated token (beyond grace): assume compromise, kill all sessions.
       await refreshTokenRepository.updateMany({
         where: { userId: record.userId, revokedAt: null },
         data: { revokedAt: new Date() },

@@ -81,10 +81,18 @@ export const baseApi: BaseQueryFn<
         const release = await mutex.acquire();
 
         try {
-          const state = api.getState() as RootState;
-          const refreshToken = state?.auth?.refreshToken;
-
           // 3. If we have a refresh token, try to get a new access token.
+          //    STORAGE-FIRST: sibling tabs share localStorage but NOT redux.
+          //    A tab whose redux still holds a rotated-away refresh token must
+          //    present the NEWEST one from storage — otherwise the server sees
+          //    a replay and its reuse detection revokes EVERY session of the
+          //    user ("sidebar missing on direct /admin load" afterwards).
+          const storedRefreshToken =
+            typeof window !== "undefined"
+              ? localStorage.getItem("refreshToken")
+              : null;
+          const state = api.getState() as RootState;
+          const refreshToken = storedRefreshToken ?? state?.auth?.refreshToken ?? null;
           //    The server rotates it on every use; a rejected token means
           //    it was already rotated (replay), revoked, or expired.
           if (refreshToken) {
@@ -110,14 +118,14 @@ export const baseApi: BaseQueryFn<
             } else {
               // Refresh failed (rotated/replayed, revoked or expired) -> drop
               // the session — BUT only if the rejected token is still the one
-              // in storage. When two tabs restore at nearly the same time they
-              // can present the SAME (single-use) refresh token; the server
-              // honors the first request and rejects the second as a replay.
-              // Without this guard the losing tab's logout() would wipe the
-              // fresh token pair the winning tab just persisted, killing a
+              // in storage. Another tab may have rotated the pair between our
+              // read and the server's answer; logging out anyway would kill a
               // healthy session for every future page load.
-              const storedRefresh = localStorage.getItem("refreshToken");
-              if (!storedRefresh || storedRefresh === refreshToken) {
+              const currentStored =
+                typeof window !== "undefined"
+                  ? localStorage.getItem("refreshToken")
+                  : null;
+              if (!currentStored || currentStored === refreshToken) {
                 api.dispatch(authActions.logout());
               }
             }

@@ -17,6 +17,12 @@ const ACCESS_TOKEN_EXPIRES_IN = "15m";
 const REFRESH_TOKEN_EXPIRES_IN = "7d";
 /** Refresh-token lifetime in ms — mirrored into the RefreshToken DB rows. */
 export const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+/**
+ * Grace window after a refresh token was rotated, during which a SECOND
+ * presentation of the same token is treated as a sibling-tab race (not theft)
+ * and gets its own successor. See auth.service.ts refresh() for the rationale.
+ */
+export const REFRESH_REUSE_GRACE_MS = 30_000;
 
 export interface TokenPayload {
   userId: number;
