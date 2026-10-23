@@ -31,6 +31,45 @@ const BASE_ADDRESS = configuredBase.endsWith("/") ? configuredBase : `${configur
 // Create a mutex to prevent multiple refresh requests at the same time
 const mutex = new Mutex();
 
+/**
+ * How long a tab whose refresh was REJECTED waits for a sibling tab's
+ * in-flight refresh to land its new pair in localStorage (see the failure
+ * branch below). Short enough that a genuinely dead session still bounces
+ * to /login promptly, long enough to cover a slow winner.
+ */
+const REFRESH_RACE_POLL_MS = 2500;
+
+/**
+ * Polls localStorage for a refresh token DIFFERENT from the one that was
+ * just rejected. Resolves the newer token if a sibling tab wrote one within
+ * `timeoutMs`, otherwise null. Never rejects.
+ */
+function waitForFreshRefreshToken(
+  rejectedToken: string,
+  timeoutMs: number,
+): Promise<string | null> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") {
+      resolve(null);
+      return;
+    }
+    const startedAt = Date.now();
+    const poll = () => {
+      const stored = localStorage.getItem("refreshToken");
+      if (stored && stored !== rejectedToken) {
+        resolve(stored);
+        return;
+      }
+      if (Date.now() - startedAt >= timeoutMs) {
+        resolve(null);
+        return;
+      }
+      setTimeout(poll, 250);
+    };
+    setTimeout(poll, 250);
+  });
+}
+
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: BASE_ADDRESS,
   prepareHeaders: (headers, { getState }) => {
@@ -118,15 +157,52 @@ export const baseApi: BaseQueryFn<
             } else {
               // Refresh failed (rotated/replayed, revoked or expired) -> drop
               // the session — BUT only if the rejected token is still the one
-              // in storage. Another tab may have rotated the pair between our
-              // read and the server's answer; logging out anyway would kill a
-              // healthy session for every future page load.
-              const currentStored =
-                typeof window !== "undefined"
-                  ? localStorage.getItem("refreshToken")
-                  : null;
-              if (!currentStored || currentStored === refreshToken) {
-                api.dispatch(authActions.logout());
+              // in storage. A sibling tab that presented the SAME token may
+              // have WON the server race while its 200 is still IN FLIGHT:
+              // its new pair has not reached localStorage yet, so an immediate
+              // storage read still sees the old (rejected) token. Poll storage
+              // briefly for a newer token first; if one appears, retry the
+              // refresh with it instead of killing a healthy session.
+              const healedToken = await waitForFreshRefreshToken(
+                refreshToken,
+                REFRESH_RACE_POLL_MS,
+              );
+              if (healedToken) {
+                const retryResult = await fetch(
+                  `${BASE_ADDRESS}Auth-Api/Auth/Refresh`,
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ refreshToken: healedToken }),
+                  },
+                );
+                if (retryResult.ok) {
+                  refreshSucceeded = true;
+                  const data = await retryResult.json();
+                  api.dispatch(
+                    authActions.setTokens({
+                      accessToken: data.accessToken,
+                      refreshToken: data.refreshToken,
+                    }),
+                  );
+                  result = await rawBaseQuery(args, api, extraOptions);
+                } else {
+                  const currentStored =
+                    typeof window !== "undefined"
+                      ? localStorage.getItem("refreshToken")
+                      : null;
+                  if (!currentStored || currentStored === healedToken) {
+                    api.dispatch(authActions.logout());
+                  }
+                }
+              } else {
+                const currentStored =
+                  typeof window !== "undefined"
+                    ? localStorage.getItem("refreshToken")
+                    : null;
+                if (!currentStored || currentStored === refreshToken) {
+                  api.dispatch(authActions.logout());
+                }
               }
             }
           } else {
